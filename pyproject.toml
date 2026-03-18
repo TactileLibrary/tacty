@@ -1,0 +1,23 @@
+[project]
+name = "tacty"
+version = "0.1.0"
+description = "Integrated finger tracking toolkit."
+readme = "README.md"
+authors = [
+    { name = "Iulian Rotaru", email = "iulian@rotaru.cc" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "pyside6>=6.10.2",
+]
+
+[project.scripts]
+tacty = "tacty:main"
+
+[build-system]
+requires = ["uv_build>=0.10.11,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
