@@ -3,6 +3,6 @@
     <file>icons/tl.svg</file>
 </qresource>
 <qresource prefix="/">
-    <file>templates/about.html</file>
+    <file>templates/about.md</file>
 </qresource>
 </RCC>

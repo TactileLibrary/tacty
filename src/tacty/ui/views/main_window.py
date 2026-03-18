@@ -8,7 +8,7 @@ from PySide6.QtCore import (
     QSettings,
     QTextStream,
 )
-from PySide6.QtGui import QCloseEvent
+from PySide6.QtGui import QCloseEvent, QTextDocument
 from PySide6.QtWidgets import QMainWindow, QMenu, QMessageBox
 
 
@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         _ = self.menuBar().addMenu(aboutMenu)
 
     def showAbout(self) -> None:
-        file = QFile(":templates/about.html")
+        file = QFile(":templates/about.md")
         _ = file.open(
             QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text
         )  # TODO: proper error handling
@@ -64,11 +64,15 @@ class MainWindow(QMainWindow):
         file.close()
         templateValues = {
             "title": "About Tacty",
-            "p1": "Tacty is an open source integrated tactile interaction analysis toolkit.",
+            "description": "Tacty is an open source integrated tactile interaction analysis toolkit.",
+            "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-6147b5284/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
             "version": f"Current version: v{QCoreApplication.applicationVersion()}",
         }
         aboutText = template.format(**templateValues)
-        QMessageBox.about(self, "About", aboutText)
+        doc = QTextDocument()
+        doc.setMarkdown(aboutText)
+        html_doc = doc.toHtml()
+        QMessageBox.about(self, "About", html_doc)
 
     def showAboutQt(self) -> None:
         QMessageBox.aboutQt(self)
