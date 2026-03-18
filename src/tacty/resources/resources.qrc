@@ -1,5 +1,8 @@
 <!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="icons">
-    <file>tl.svg</file>
+<qresource prefix="/">
+    <file>icons/tl.svg</file>
+</qresource>
+<qresource prefix="/">
+    <file>templates/about.html</file>
 </qresource>
 </RCC>
