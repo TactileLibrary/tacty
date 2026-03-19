@@ -1,7 +1,7 @@
 import sys
 from importlib.metadata import PackageNotFoundError, version
 
-from PySide6.QtCore import QFile, QIODevice, QSettings, Qt, QTextStream
+from PySide6.QtCore import QFile, QIODevice, QSettings, QTextStream
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QStyleFactory
 
@@ -30,21 +30,26 @@ def main() -> None:
 
     # Load the theme
     app.setStyle(QStyleFactory.create("Fusion"))
-    if QSettings().value("lightMode", type=bool):
-        file = QFile(":/light/stylesheet.qss")
-        _ = file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text)
-        stream = QTextStream(file)
-        app.setStyleSheet(stream.readAll())
-    else:
-        app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
-        file = QFile(":/dark/stylesheet.qss")
-        _ = file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text)
-        stream = QTextStream(file)
-        app.setStyleSheet(stream.readAll())
+    loadTheme(app)
 
     # Load the main window.
     main_window = MainWindow()
     main_window.show()
 
+    # Connect signals
+    _ = main_window.themeChanged.connect(lambda: loadTheme(app))
+
     # Run the program.
     _ = app.exec()
+
+
+def loadTheme(app: QApplication):
+    settings = QSettings()
+    settings.beginGroup("appearance")
+    theme = settings.value("theme", type=str) or "dark"
+    color = settings.value("color", type=str) or "blue"
+    settings.endGroup()
+    file = QFile(f":/{theme}-{color}/stylesheet.qss")
+    _ = file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text)
+    stream = QTextStream(file)
+    app.setStyleSheet(stream.readAll())

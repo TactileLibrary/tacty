@@ -6,16 +6,19 @@ from PySide6.QtCore import (
     QFile,
     QIODevice,
     QSettings,
-    Qt,
     QTextStream,
+    Signal,
 )
-from PySide6.QtGui import QActionGroup, QCloseEvent, QTextDocument
-from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMenu, QMessageBox
+from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QTextDocument
+from PySide6.QtWidgets import QFileDialog, QMainWindow, QMenu, QMessageBox
 
 from tacty.ui.views import WelcomeView
 
 
 class MainWindow(QMainWindow):
+    # Signals
+    themeChanged: Signal = Signal()
+
     def __init__(self):
         super().__init__()
         settings = QSettings()
@@ -60,23 +63,39 @@ class MainWindow(QMainWindow):
         _ = self.menuBar().addMenu(fileMenu)
 
         # View menu
+        themes = ["light", "dark"]
+        colors = ["blue", "cyan", "green", "pink", "purple", "red"]
+        settings = QSettings()
+        settings.beginGroup("appearance")
+        currentTheme = settings.value("theme", type=str) or "dark"
+        currentColor = settings.value("color", type=str) or "blue"
+        settings.endGroup()
         viewMenu = QMenu("&View")
         themeMenu = QMenu("&Theme")
         themeGroup = QActionGroup(self)
-        darkAction = themeMenu.addAction("&Dark", self.disableLightMode)
-        darkAction.setCheckable(True)
-        _ = themeGroup.addAction(darkAction)
-        lightAction = themeMenu.addAction("&Light", self.enableLightMode)
-        lightAction.setCheckable(True)
-        _ = themeGroup.addAction(lightAction)
+        for theme in themes:
+            themeAction = QAction(theme.capitalize(), themeMenu, checkable=True)
+            themeAction.setData(theme)
+            _ = themeGroup.addAction(themeAction)
+            _ = themeMenu.addAction(themeAction)
+            if currentTheme == theme:
+                themeAction.setChecked(True)
         themeGroup.setExclusive(True)
+        _ = themeGroup.triggered.connect(self.changeTheme)
         _ = viewMenu.addMenu(themeMenu)
+        colorMenu = QMenu("&Color")
+        colorGroup = QActionGroup(self)
+        for color in colors:
+            colorAction = QAction(color.capitalize(), colorMenu, checkable=True)
+            colorAction.setData(color)
+            _ = colorGroup.addAction(colorAction)
+            _ = colorMenu.addAction(colorAction)
+            if currentColor == color:
+                colorAction.setChecked(True)
+        colorGroup.setExclusive(True)
+        _ = colorGroup.triggered.connect(self.changeColor)
+        _ = viewMenu.addMenu(colorMenu)
         _ = self.menuBar().addMenu(viewMenu)
-
-        if QSettings().value("lightMode", type=bool):
-            lightAction.setChecked(True)
-        else:
-            darkAction.setChecked(True)
 
         # About menu
         aboutMenu = QMenu("&About")
@@ -90,15 +109,19 @@ class MainWindow(QMainWindow):
         )
         print(name)
 
-    def enableLightMode(self) -> None:
-        QApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
+    def changeTheme(self, action: QAction):
         settings = QSettings()
-        settings.setValue("lightMode", True)
+        settings.beginGroup("appearance")
+        settings.setValue("theme", action.data())
+        settings.endGroup()
+        self.themeChanged.emit()
 
-    def disableLightMode(self) -> None:
-        QApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)
+    def changeColor(self, action: QAction):
         settings = QSettings()
-        settings.setValue("lightMode", False)
+        settings.beginGroup("appearance")
+        settings.setValue("color", action.data())
+        settings.endGroup()
+        self.themeChanged.emit()
 
     def showAbout(self) -> None:
         file = QFile(":templates/about.md")
@@ -111,7 +134,7 @@ class MainWindow(QMainWindow):
             "title": "About Tacty",
             "description": "Tacty is an open source integrated tactile interaction analysis toolkit.",
             "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-6147b5284/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
-            "icons": "Icons provided by [heroicons](https://heroicons.com/).",
+            "theme": "Stylesheets provided by [BreezeStyleSheets](https://github.com/Alexhuszagh/BreezeStyleSheets/).",
             "version": f"Current version: v{QCoreApplication.applicationVersion()}",
         }
         aboutText = template.format(**templateValues)

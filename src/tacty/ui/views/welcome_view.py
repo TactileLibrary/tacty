@@ -18,21 +18,14 @@ class WelcomeView(QWidget):
         self.setLayout(layout)
 
         title = QLabel(f"<h1>{QApplication.applicationDisplayName()}</h1>")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        new_button = QPushButton(
-            self.style().standardIcon(QStyle.StandardPixmap.SP_FileDialogNewFolder),
-            "New project",
-        )
+        new_button = QPushButton("New project")
         layout.addWidget(new_button)
 
-        open_button = QPushButton(
-            self.style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon),
-            "Open project",
-        )
+        open_button = QPushButton("Open project")
         layout.addWidget(open_button)
 
-        settings_button = QPushButton(
-            "Settings",
-        )
+        settings_button = QPushButton("Settings")
         layout.addWidget(settings_button)
