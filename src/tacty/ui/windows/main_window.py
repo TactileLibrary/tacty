@@ -5,13 +5,22 @@ from PySide6.QtCore import (
     QCoreApplication,
     QFile,
     QIODevice,
+    QIODeviceBase,
+    QJsonDocument,
+    QJsonValue,
     QSettings,
     QTextStream,
     Signal,
     qInfo,
 )
 from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QTextDocument
-from PySide6.QtWidgets import QFileDialog, QMainWindow, QMenu, QMessageBox
+from PySide6.QtWidgets import (
+    QErrorMessage,
+    QFileDialog,
+    QMainWindow,
+    QMenu,
+    QMessageBox,
+)
 
 from tacty.ui.views import WelcomeView
 
@@ -117,7 +126,24 @@ class MainWindow(QMainWindow):
         name, _ = QFileDialog.getSaveFileName(
             self, "New project", "", "Tacty Project (*.tproj)"
         )
-        qInfo(f"New project created: {name}")
+        if name:
+            json = QJsonDocument({"projectVersion": QJsonValue(1)})
+            file = QFile(name)
+            opened = file.open(
+                QIODeviceBase.OpenModeFlag.NewOnly
+                | QIODeviceBase.OpenModeFlag.WriteOnly
+            )
+            if not opened:
+                err = QErrorMessage(self)
+                err.showMessage("Open failed. Perhaps the file already exists?")
+                return
+            written = file.write(json.toJson())
+            if written == -1:
+                err = QErrorMessage(self)
+                err.showMessage("Write failed.")
+                return
+            file.close()
+            qInfo(f"New project created: {name}")
 
     def changeTheme(self, action: QAction):
         settings = QSettings()
