@@ -8,6 +8,7 @@ from PySide6.QtCore import (
     QSettings,
     QTextStream,
     Signal,
+    qInfo,
 )
 from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QTextDocument
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMenu, QMessageBox
@@ -41,7 +42,10 @@ class MainWindow(QMainWindow):
         self.initMenuBar()
 
         # Show the welcome screen.
-        self.setCentralWidget(WelcomeView())
+        welcomeView = WelcomeView()
+        _ = welcomeView.openProject.connect(self.openProject)
+        _ = welcomeView.newProject.connect(self.newProject)
+        self.setCentralWidget(welcomeView)
 
     @override
     def closeEvent(self, event: QCloseEvent):
@@ -57,7 +61,7 @@ class MainWindow(QMainWindow):
     def initMenuBar(self) -> None:
         # File menu
         fileMenu = QMenu("&File")
-        _ = fileMenu.addAction("&New", "Ctrl+N")
+        _ = fileMenu.addAction("&New", "Ctrl+N", self.newProject)
         _ = fileMenu.addAction("&Open", "Ctrl+O", self.openProject)
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
@@ -107,7 +111,13 @@ class MainWindow(QMainWindow):
         name, _ = QFileDialog.getOpenFileName(
             self, "Open project", "", "Tacty Project (*.tproj)"
         )
-        print(name)
+        qInfo(f"Project opened: {name}")
+
+    def newProject(self) -> None:
+        name, _ = QFileDialog.getSaveFileName(
+            self, "New project", "", "Tacty Project (*.tproj)"
+        )
+        qInfo(f"New project created: {name}")
 
     def changeTheme(self, action: QAction):
         settings = QSettings()

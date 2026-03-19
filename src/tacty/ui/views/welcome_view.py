@@ -1,15 +1,18 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
     QPushButton,
-    QStyle,
     QVBoxLayout,
     QWidget,
 )
 
 
 class WelcomeView(QWidget):
+    # Signals
+    openProject: Signal = Signal()
+    newProject: Signal = Signal()
+
     def __init__(self):
         super().__init__()
 
@@ -21,11 +24,10 @@ class WelcomeView(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
-        new_button = QPushButton("New project")
-        layout.addWidget(new_button)
+        newButton = QPushButton("New project")
+        _ = newButton.clicked.connect(self.newProject.emit)
+        layout.addWidget(newButton)
 
-        open_button = QPushButton("Open project")
-        layout.addWidget(open_button)
-
-        settings_button = QPushButton("Settings")
-        layout.addWidget(settings_button)
+        openButton = QPushButton("Open project")
+        _ = openButton.clicked.connect(self.openProject.emit)
+        layout.addWidget(openButton)
