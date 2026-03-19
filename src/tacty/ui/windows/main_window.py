@@ -15,6 +15,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QTextDocument
 from PySide6.QtWidgets import (
+    QDialog,
     QErrorMessage,
     QFileDialog,
     QMainWindow,
@@ -23,6 +24,7 @@ from PySide6.QtWidgets import (
 )
 
 from tacty.ui.views import WelcomeView
+from tacty.ui.windows.new_project_modal import NewProjectModal
 
 
 class MainWindow(QMainWindow):
@@ -123,27 +125,34 @@ class MainWindow(QMainWindow):
         qInfo(f"Project opened: {name}")
 
     def newProject(self) -> None:
-        name, _ = QFileDialog.getSaveFileName(
-            self, "New project", "", "Tacty Project (*.tproj)"
+        modal = NewProjectModal()
+        res = modal.exec()
+        if res == QDialog.DialogCode.Rejected:
+            return
+
+        projectPath, videoPath = modal.data()
+
+        json = QJsonDocument(
+            {
+                "projectVersion": QJsonValue(1),
+                "videoFile": QJsonValue(videoPath),
+            }
         )
-        if name:
-            json = QJsonDocument({"projectVersion": QJsonValue(1)})
-            file = QFile(name)
-            opened = file.open(
-                QIODeviceBase.OpenModeFlag.NewOnly
-                | QIODeviceBase.OpenModeFlag.WriteOnly
-            )
-            if not opened:
-                err = QErrorMessage(self)
-                err.showMessage("Open failed. Perhaps the file already exists?")
-                return
-            written = file.write(json.toJson())
-            if written == -1:
-                err = QErrorMessage(self)
-                err.showMessage("Write failed.")
-                return
-            file.close()
-            qInfo(f"New project created: {name}")
+        file = QFile(projectPath)
+        opened = file.open(
+            QIODeviceBase.OpenModeFlag.NewOnly | QIODeviceBase.OpenModeFlag.WriteOnly
+        )
+        if not opened:
+            err = QErrorMessage(self)
+            err.showMessage("Open failed. Perhaps the file already exists?")
+            return
+        written = file.write(json.toJson())
+        if written == -1:
+            err = QErrorMessage(self)
+            err.showMessage("Write failed.")
+            return
+        file.close()
+        qInfo(f"New project created: {projectPath}")
 
     def changeTheme(self, action: QAction):
         settings = QSettings()
