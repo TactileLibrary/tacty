@@ -31,6 +31,10 @@ class MainWindow(QMainWindow):
     # Signals
     themeChanged: Signal = Signal()
 
+    # Dynamic menus
+    saveAction: QAction
+    saveAsAction: QAction
+
     def __init__(self):
         super().__init__()
         settings = QSettings()
@@ -53,10 +57,7 @@ class MainWindow(QMainWindow):
         self.initMenuBar()
 
         # Show the welcome screen.
-        welcomeView = WelcomeView()
-        _ = welcomeView.openProject.connect(self.openProject)
-        _ = welcomeView.newProject.connect(self.newProject)
-        self.setCentralWidget(welcomeView)
+        self.showWelcome()
 
     @override
     def closeEvent(self, event: QCloseEvent):
@@ -69,11 +70,24 @@ class MainWindow(QMainWindow):
 
         super().closeEvent(event)
 
+    def showWelcome(self):
+        welcomeView = WelcomeView()
+        _ = welcomeView.openProject.connect(self.openProject)
+        _ = welcomeView.newProject.connect(self.newProject)
+        self.setCentralWidget(welcomeView)
+
+        self.saveAction.setEnabled(False)
+        self.saveAsAction.setEnabled(False)
+
     def initMenuBar(self) -> None:
         # File menu
         fileMenu = QMenu("&File")
         _ = fileMenu.addAction("&New", "Ctrl+N", self.newProject)
         _ = fileMenu.addAction("&Open", "Ctrl+O", self.openProject)
+        _ = fileMenu.addSeparator()
+        self.saveAction = fileMenu.addAction("&Save", "Ctrl+S")
+        self.saveAsAction = fileMenu.addAction("Save &as...", "Ctrl+Alt+S")
+        _ = fileMenu.addSeparator()
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
 
@@ -177,7 +191,7 @@ class MainWindow(QMainWindow):
         file.close()
         templateValues = {
             "title": "About Tacty",
-            "description": "Tacty is an open source integrated tactile interaction analysis toolkit.",
+            "description": "Tacty is an open source tactile interaction analysis toolkit.",
             "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-6147b5284/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
             "theme": "Stylesheets provided by [BreezeStyleSheets](https://github.com/Alexhuszagh/BreezeStyleSheets/).",
             "version": f"Current version: v{QCoreApplication.applicationVersion()}",
