@@ -4,4 +4,14 @@
 
 {developers}
 
-<small>{version}. <a href="https://github.com/TactileLibrary/tacty">GitHub</a>.</small>
+---
+
+{icons}
+
+---
+
+{version}
+
+[Github](https://github.com/TactileLibrary/tacty/)
+
+[Official website](https://tacty.tactilelibrary.net/)

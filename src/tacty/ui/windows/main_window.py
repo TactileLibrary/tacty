@@ -6,10 +6,13 @@ from PySide6.QtCore import (
     QFile,
     QIODevice,
     QSettings,
+    Qt,
     QTextStream,
 )
-from PySide6.QtGui import QCloseEvent, QTextDocument
-from PySide6.QtWidgets import QMainWindow, QMenu, QMessageBox
+from PySide6.QtGui import QActionGroup, QCloseEvent, QTextDocument
+from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QMessageBox
+
+from tacty.ui.views import WelcomeView
 
 
 class MainWindow(QMainWindow):
@@ -34,6 +37,9 @@ class MainWindow(QMainWindow):
         # Set the menu bar.
         self.initMenuBar()
 
+        # Show the welcome screen.
+        self.setCentralWidget(WelcomeView())
+
     @override
     def closeEvent(self, event: QCloseEvent):
         # Save window state.
@@ -46,14 +52,47 @@ class MainWindow(QMainWindow):
         super().closeEvent(event)
 
     def initMenuBar(self) -> None:
+        # File menu
         fileMenu = QMenu("&File")
         _ = fileMenu.addAction("&New", "Ctrl+N")
+        _ = fileMenu.addAction("&Open", "Ctrl+O")
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
+
+        # View menu
+        viewMenu = QMenu("&View")
+        themeMenu = QMenu("&Theme")
+        themeGroup = QActionGroup(self)
+        darkAction = themeMenu.addAction("&Dark", self.disableLightMode)
+        darkAction.setCheckable(True)
+        _ = themeGroup.addAction(darkAction)
+        lightAction = themeMenu.addAction("&Light", self.enableLightMode)
+        lightAction.setCheckable(True)
+        _ = themeGroup.addAction(lightAction)
+        themeGroup.setExclusive(True)
+        _ = viewMenu.addMenu(themeMenu)
+        _ = self.menuBar().addMenu(viewMenu)
+
+        if QSettings().value("lightMode", type=bool):
+            lightAction.setChecked(True)
+        else:
+            darkAction.setChecked(True)
+
+        # About menu
         aboutMenu = QMenu("&About")
         _ = aboutMenu.addAction("About &Tacty", self.showAbout)
         _ = aboutMenu.addAction("About &QT", self.showAboutQt)
         _ = self.menuBar().addMenu(aboutMenu)
+
+    def enableLightMode(self) -> None:
+        QApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
+        settings = QSettings()
+        settings.setValue("lightMode", True)
+
+    def disableLightMode(self) -> None:
+        QApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)
+        settings = QSettings()
+        settings.setValue("lightMode", False)
 
     def showAbout(self) -> None:
         file = QFile(":templates/about.md")
@@ -66,6 +105,7 @@ class MainWindow(QMainWindow):
             "title": "About Tacty",
             "description": "Tacty is an open source integrated tactile interaction analysis toolkit.",
             "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-6147b5284/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
+            "icons": "Icons provided by [heroicons](https://heroicons.com/).",
             "version": f"Current version: v{QCoreApplication.applicationVersion()}",
         }
         aboutText = template.format(**templateValues)

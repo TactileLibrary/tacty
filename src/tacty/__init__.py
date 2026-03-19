@@ -1,12 +1,13 @@
 import sys
 from importlib.metadata import PackageNotFoundError, version
 
+from PySide6.QtCore import QSettings, Qt
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QStyleFactory
 
 import tacty.resources.resources_rc  # pyright: ignore[reportUnusedImport, reportMissingTypeStubs] # noqa: F401
 
-from .ui.views.main_window import MainWindow
+from .ui.windows import MainWindow
 
 
 def main() -> None:
@@ -14,17 +15,24 @@ def main() -> None:
     try:
         app_version = version("tacty")
     except PackageNotFoundError:
-        app_version = "0.0.0-dev"
+        app_version = "0.0.0"
 
     # Set up the application details.
     app = QApplication(sys.argv)
     app.setApplicationName("tacty")
     app.setApplicationVersion(app_version)
     app.setDesktopFileName("net.tactilelibrary.tacty")
-    app.setApplicationDisplayName(f"Tacty v{app.applicationVersion()}")
+    app.setApplicationDisplayName("Tacty")
     app.setWindowIcon(QIcon(":icons/tl.svg"))
     app.setOrganizationDomain("tactilelibrary.net")
     app.setOrganizationName("TactileLibrary")
+
+    # Load the theme
+    app.setStyle(QStyleFactory.create("Fusion"))
+    if QSettings().value("lightMode", type=bool):
+        app.styleHints().setColorScheme(Qt.ColorScheme.Light)
+    else:
+        app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
 
     # Load the main window.
     main_window = MainWindow()
