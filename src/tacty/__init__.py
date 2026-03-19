@@ -5,7 +5,7 @@ from PySide6.QtCore import QSettings, Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QStyleFactory
 
-import tacty.resources.resources_rc  # pyright: ignore[reportUnusedImport, reportMissingTypeStubs] # noqa: F401
+import tacty.resources.resources_rc  # pyright: ignore[reportUnusedImport] # noqa: F401
 
 from .ui.windows import MainWindow
 

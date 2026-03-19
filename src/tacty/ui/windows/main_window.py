@@ -10,7 +10,7 @@ from PySide6.QtCore import (
     QTextStream,
 )
 from PySide6.QtGui import QActionGroup, QCloseEvent, QTextDocument
-from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QMessageBox
+from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMenu, QMessageBox
 
 from tacty.ui.views import WelcomeView
 
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         # File menu
         fileMenu = QMenu("&File")
         _ = fileMenu.addAction("&New", "Ctrl+N")
-        _ = fileMenu.addAction("&Open", "Ctrl+O")
+        _ = fileMenu.addAction("&Open", "Ctrl+O", self.openProject)
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
 
@@ -83,6 +83,12 @@ class MainWindow(QMainWindow):
         _ = aboutMenu.addAction("About &Tacty", self.showAbout)
         _ = aboutMenu.addAction("About &QT", self.showAboutQt)
         _ = self.menuBar().addMenu(aboutMenu)
+
+    def openProject(self) -> None:
+        name, _ = QFileDialog.getOpenFileName(
+            self, "Open project", "", "Tacty Project (*.tproj)"
+        )
+        print(name)
 
     def enableLightMode(self) -> None:
         QApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
