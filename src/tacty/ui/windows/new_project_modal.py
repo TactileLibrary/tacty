@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QFormLayout,
     QLabel,
+    QWidget,
 )
 
 from tacty.ui.components.path_input import PathInput
@@ -18,8 +19,8 @@ class NewProjectModal(QDialog):
 
     valid: bool = False
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent: QWidget | None = None):
+        super().__init__(parent)
 
         # Set properties.
         self.setModal(True)

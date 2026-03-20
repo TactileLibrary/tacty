@@ -141,7 +141,7 @@ class MainWindow(QMainWindow):
         qInfo(f"Project opened: {name}")
 
     def newProject(self) -> None:
-        modal = NewProjectModal()
+        modal = NewProjectModal(self)
         res = modal.exec()
         if res == QDialog.DialogCode.Rejected:
             return
