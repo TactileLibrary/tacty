@@ -77,7 +77,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(welcomeView)
 
         self.saveAction.setEnabled(False)
+        _ = self.saveAction.triggered.disconnect()
         self.saveAsAction.setEnabled(False)
+        _ = self.saveAsAction.triggered.disconnect()
 
     def initMenuBar(self) -> None:
         # File menu
