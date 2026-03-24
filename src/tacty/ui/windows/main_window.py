@@ -24,7 +24,9 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from tacty.ui.models.project import Project
 from tacty.ui.views import WelcomeView
+from tacty.ui.views.project_view import ProjectView
 from tacty.ui.windows.new_project_modal import NewProjectModal
 
 
@@ -35,6 +37,7 @@ class MainWindow(QMainWindow):
     # Dynamic menus
     saveAction: QAction
     saveAsAction: QAction
+    closeAction: QAction
 
     def __init__(self):
         super().__init__()
@@ -78,9 +81,17 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(welcomeView)
 
         self.saveAction.setEnabled(False)
-        _ = self.saveAction.triggered.disconnect()
         self.saveAsAction.setEnabled(False)
-        _ = self.saveAsAction.triggered.disconnect()
+        self.closeAction.setEnabled(False)
+
+    def showProject(self, project: Project):
+        projectView = ProjectView(project)
+
+        self.setCentralWidget(projectView)
+
+        self.saveAction.setEnabled(True)
+        self.saveAsAction.setEnabled(True)
+        self.closeAction.setEnabled(True)
 
     def initMenuBar(self) -> None:
         # File menu
@@ -88,8 +99,9 @@ class MainWindow(QMainWindow):
         _ = fileMenu.addAction("&New", "Ctrl+N", self.newProject)
         _ = fileMenu.addAction("&Open", "Ctrl+O", self.openProject)
         _ = fileMenu.addSeparator()
-        self.saveAction = fileMenu.addAction("&Save", "Ctrl+S")
-        self.saveAsAction = fileMenu.addAction("Save &as...", "Ctrl+Alt+S")
+        self.saveAction = fileMenu.addAction("&Save project", "Ctrl+S")
+        self.saveAsAction = fileMenu.addAction("Save project &as...", "Ctrl+Alt+S")
+        self.closeAction = fileMenu.addAction("&Close project")
         _ = fileMenu.addSeparator()
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
@@ -144,7 +156,7 @@ class MainWindow(QMainWindow):
             self, "Open project", url, "Tacty Project (*.tproj)"
         )
         if name:
-            qInfo(f"Project opened: {name}")
+            qInfo(f"Opening project: {name}")
             url = QFileInfo(name).canonicalPath()
             settings.setValue("lastPath", url)
 
