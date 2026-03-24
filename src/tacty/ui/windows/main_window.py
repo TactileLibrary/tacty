@@ -4,6 +4,7 @@ from PySide6.QtCore import (
     QByteArray,
     QCoreApplication,
     QFile,
+    QFileInfo,
     QIODevice,
     QIODeviceBase,
     QJsonDocument,
@@ -135,10 +136,17 @@ class MainWindow(QMainWindow):
         _ = self.menuBar().addMenu(aboutMenu)
 
     def openProject(self) -> None:
+        settings = QSettings()
+        url = settings.value("lastPath", type=str)
+        if not isinstance(url, str):
+            url = ""
         name, _ = QFileDialog.getOpenFileName(
-            self, "Open project", "", "Tacty Project (*.tproj)"
+            self, "Open project", url, "Tacty Project (*.tproj)"
         )
-        qInfo(f"Project opened: {name}")
+        if name:
+            qInfo(f"Project opened: {name}")
+            url = QFileInfo(name).canonicalPath()
+            settings.setValue("lastPath", url)
 
     def newProject(self) -> None:
         modal = NewProjectModal(self)

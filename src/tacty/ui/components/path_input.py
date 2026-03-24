@@ -1,5 +1,6 @@
 from enum import Enum
 
+from PySide6.QtCore import QFileInfo, QSettings
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 
@@ -51,6 +52,16 @@ class PathInput(QWidget):
         else:
             dialog.setMimeTypeFilters(self.filters)
 
+        settings = QSettings()
+        defaultPath = settings.value("lastPath", type=str)
+        if not isinstance(defaultPath, str):
+            defaultPath = ""
+
+        dialog.setDirectory(defaultPath)
+
         picked = dialog.exec()
         if picked:
-            self.text.setText(dialog.selectedFiles()[0])
+            fileName = dialog.selectedFiles()[0]
+            self.text.setText(fileName)
+            folder = QFileInfo(fileName).canonicalPath()
+            settings.setValue("lastPath", folder)
