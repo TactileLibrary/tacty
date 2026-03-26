@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 from tacty.ui.models.project import Project
-from tacty.ui.utils.conversions import cvToQScaled
+from tacty.ui.utils.conversions import cvToQ
 
 
 class VideoPlayer(QWidget):
@@ -67,16 +67,18 @@ class VideoPlayer(QWidget):
             cv2.CAP_PROP_POS_FRAMES, self.frame - 1
         )  # -1 because read grabs the NEXT frame
         _, cimg = self.video.read()
-        qimg = cvToQScaled(
-            cimg, self.display.size().height(), self.display.size().width()
-        )
+        # qimg = cvToQScaled(
+        #    cimg, self.display.size().height(), self.display.size().width()
+        # )
+        qimg = cvToQ(cimg)
         pixmap = QPixmap.fromImage(qimg)
         # very slow, resizing in OpenCV now
-        # pixmap = pixmap.scaled(
-        #    self.display.size(),
-        #    Qt.AspectRatioMode.KeepAspectRatio,
-        #    Qt.TransformationMode.SmoothTransformation,
-        # )
+        # maybe fine actually?
+        pixmap = pixmap.scaled(
+            self.display.size(),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
         self.display.setPixmap(pixmap)
 
     def updateTimelineBounds(self) -> None:
