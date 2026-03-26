@@ -32,13 +32,16 @@ class Corners(BaseModel):
 
 
 class CalibrationOptions(BaseModel):
-    trim: Duration
-    videoFps: int
-    videoCrop: Corners
-    pageSize: Size = Size(w=420, h=297)  # defaults to A3
+    videoTrim: Duration
+    videoFps: float
+    videoRotation: int = 0  # 0-3, increments of 90
+    videoCrop: Corners | None = None
+    pageSize: Size | None = None
     processingDpi: int = 92  # 92 DPI for A3 is around FHD
 
     def processingResolution(self) -> Size:
+        if self.pageSize is None:
+            raise Exception("Called processingResolution without checking isValid")
         w = int(mmToInch(self.pageSize.w) * self.processingDpi)
         h = int(mmToInch(self.pageSize.h) * self.processingDpi)
         return Size(w=w, h=h)

@@ -1,5 +1,6 @@
 from typing import override
 
+import cv2
 from PySide6.QtCore import (
     QByteArray,
     QCoreApplication,
@@ -7,8 +8,6 @@ from PySide6.QtCore import (
     QFileInfo,
     QIODevice,
     QIODeviceBase,
-    QJsonDocument,
-    QJsonValue,
     QSettings,
     QTextStream,
     Signal,
@@ -24,7 +23,8 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from tacty.ui.models.project import Project
+from tacty.ui.models.project import CalibrationOptions, Duration, Project
+from tacty.ui.utils.hash import getHashFromPath
 from tacty.ui.views import WelcomeView
 from tacty.ui.views.project_view import ProjectView
 from tacty.ui.windows.new_project_modal import NewProjectModal
@@ -168,21 +168,38 @@ class MainWindow(QMainWindow):
 
         projectPath, videoPath = modal.data()
 
-        json = QJsonDocument(
-            {
-                "projectVersion": QJsonValue(1),
-                "videoFile": QJsonValue(videoPath),
-            }
+        # hash the video
+        hash = getHashFromPath(videoPath)
+        if hash is None:
+            err = QErrorMessage(self)
+            err.showMessage("Open video failed.")
+            return
+
+        # try to open the video
+        vid = cv2.VideoCapture(videoPath, cv2.CAP_FFMPEG)
+        fps = vid.get(cv2.CAP_PROP_FPS)
+        length = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        vid.release()
+
+        project = Project(
+            projectVersion=1,
+            videoFile=videoPath,
+            videoHash=hash,
+            calibrationOptions=CalibrationOptions(
+                videoTrim=Duration(start=0, end=length), videoFps=fps
+            ),
         )
+
+        json = project.model_dump_json()
         file = QFile(projectPath)
         opened = file.open(
             QIODeviceBase.OpenModeFlag.NewOnly | QIODeviceBase.OpenModeFlag.WriteOnly
         )
         if not opened:
             err = QErrorMessage(self)
-            err.showMessage("Open failed. Perhaps the file already exists?")
+            err.showMessage("Open project failed. Perhaps the file already exists?")
             return
-        written = file.write(json.toJson())
+        written = file.write(json.encode("utf-8"))
         if written == -1:
             err = QErrorMessage(self)
             err.showMessage("Write failed.")
