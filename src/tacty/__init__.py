@@ -29,8 +29,8 @@ def main() -> None:
     app.setOrganizationName("TactileLibrary")
 
     # Load the theme
-    app.setStyle(QStyleFactory.create("Fusion"))
-    loadTheme(app)
+    # app.setStyle(QStyleFactory.create("Fusion"))
+    # loadTheme(app)
 
     # Load the main window.
     main_window = MainWindow()

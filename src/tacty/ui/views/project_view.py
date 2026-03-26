@@ -1,9 +1,7 @@
 import cv2
 from PySide6.QtWidgets import (
-    QFrame,
     QHBoxLayout,
     QLabel,
-    QSizePolicy,
     QToolBox,
     QWidget,
 )

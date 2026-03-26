@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
         _ = self.menuBar().addMenu(fileMenu)
 
         # View menu
+        """
         themes = ["light", "dark"]
         colors = ["blue", "cyan", "green", "pink", "purple", "red"]
         settings = QSettings()
@@ -140,6 +141,7 @@ class MainWindow(QMainWindow):
         _ = colorGroup.triggered.connect(self.changeColor)
         _ = viewMenu.addMenu(colorMenu)
         _ = self.menuBar().addMenu(viewMenu)
+        """
 
         # About menu
         aboutMenu = QMenu("&About")

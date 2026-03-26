@@ -6,10 +6,6 @@
 
 ---
 
-{theme}
-
----
-
 {version}
 
 [Github](https://github.com/TactileLibrary/tacty/)
