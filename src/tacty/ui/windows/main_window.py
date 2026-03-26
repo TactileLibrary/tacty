@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
         _ = fileMenu.addSeparator()
         self.saveAction = fileMenu.addAction("&Save project", "Ctrl+S")
         self.saveAsAction = fileMenu.addAction("Save project &as...", "Ctrl+Alt+S")
-        self.closeAction = fileMenu.addAction("&Close project")
+        self.closeAction = fileMenu.addAction("&Close project", self.closeProject)
         _ = fileMenu.addSeparator()
         _ = fileMenu.addAction("&Quit", "Ctrl+Q", self.close)
         _ = self.menuBar().addMenu(fileMenu)
@@ -155,10 +155,28 @@ class MainWindow(QMainWindow):
         name, _ = QFileDialog.getOpenFileName(
             self, "Open project", url, "Tacty Project (*.tproj)"
         )
-        if name:
-            qInfo(f"Opening project: {name}")
-            url = QFileInfo(name).canonicalPath()
-            settings.setValue("lastPath", url)
+        if not name:
+            err = QErrorMessage(self)
+            err.showMessage("Could not find file.")
+            return
+        qInfo(f"Opening project: {name}")
+        url = QFileInfo(name).canonicalPath()
+        settings.setValue("lastPath", url)
+        file = QFile(name)
+        opened = file.open(
+            QIODeviceBase.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text
+        )
+        if not opened:
+            err = QErrorMessage(self)
+            err.showMessage("Could not open project.")
+            return
+        json = bytes(file.readAll().data())
+        project = Project.model_validate_json(json)
+        self.showProject(project)
+
+    def closeProject(self) -> None:
+        # TODO: prompt to save if needed
+        self.showWelcome()
 
     def newProject(self) -> None:
         modal = NewProjectModal(self)
@@ -206,6 +224,7 @@ class MainWindow(QMainWindow):
             return
         file.close()
         qInfo(f"New project created: {projectPath}")
+        self.showProject(project)
 
     def changeTheme(self, action: QAction):
         settings = QSettings()
