@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
+from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.models.project import Project
 
 
@@ -13,4 +14,4 @@ class ProjectView(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        layout.addWidget(QLabel(self.project.videoFile))
+        layout.addWidget(VideoPlayer(project))
