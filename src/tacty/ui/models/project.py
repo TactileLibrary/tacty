@@ -32,8 +32,9 @@ class Corners(BaseModel):
 
 
 class CalibrationOptions(BaseModel):
-    trim: Duration | None = None
-    videoCrop: Corners | None = None
+    trim: Duration
+    videoFps: int
+    videoCrop: Corners
     pageSize: Size = Size(w=420, h=297)  # defaults to A3
     processingDpi: int = 92  # 92 DPI for A3 is around FHD
 
@@ -51,4 +52,5 @@ class CalibrationOptions(BaseModel):
 class Project(BaseModel):
     projectVersion: int
     videoFile: str
-    calibrationOptions: CalibrationOptions | None = None
+    videoHash: str
+    calibrationOptions: CalibrationOptions
