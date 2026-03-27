@@ -1,10 +1,12 @@
+import time
 from typing import override
 
 import cv2
 from cv2 import VideoCapture
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap, QResizeEvent
+from PySide6.QtGui import QFont, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
+    QFrame,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -16,6 +18,8 @@ from PySide6.QtWidgets import (
 from tacty.ui.models.project import Project
 from tacty.ui.utils.conversions import cvToQ
 
+MAX_FPS = 1000 // 30
+
 
 class VideoPlayer(QWidget):
     project: Project
@@ -24,9 +28,11 @@ class VideoPlayer(QWidget):
     slider: QSlider
     frameDisplay: QLabel
     video: VideoCapture
+    videoFrameCountDigits: int
 
     # throttle mechanism
     updateTimer: QTimer
+    processingTime: int
 
     def __init__(self, project: Project, video: VideoCapture):
         super().__init__()
@@ -34,6 +40,9 @@ class VideoPlayer(QWidget):
         mainLayout = QVBoxLayout()
         self.setLayout(mainLayout)
         self.video = video
+        self.videoFrameCountDigits = len(
+            str(int(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
+        )
 
         # video display
         self.display = QLabel()
@@ -51,12 +60,19 @@ class VideoPlayer(QWidget):
         self.slider = QSlider(Qt.Orientation.Horizontal)
         _ = self.slider.valueChanged.connect(self.updateFrame)
         timelineLayout.addWidget(self.slider)
+
+        monoFont = QFont()
+        monoFont.setStyleHint(QFont.StyleHint.Monospace)
         self.frameDisplay = QLabel()
+        self.frameDisplay.setFont(monoFont)
+        self.frameDisplay.setFrameShape(QFrame.Shape.StyledPanel)
         timelineLayout.addWidget(self.frameDisplay)
 
         self.updateTimer = QTimer()
         self.updateTimer.setSingleShot(True)
+        self.updateTimer.setTimerType(Qt.TimerType.PreciseTimer)
         _ = self.updateTimer.timeout.connect(self.updateDisplay)
+        self.processingTime = MAX_FPS
 
         self.updateProject(project)
 
@@ -66,14 +82,16 @@ class VideoPlayer(QWidget):
             max(self.project.calibrationOptions.videoTrim.start, frame),
         )
         self.frame = frame
-        self.frameDisplay.setText(str(frame))
+        frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
+        self.frameDisplay.setText(frameText)
         self.scheduleUpdateDisplay()
 
     def scheduleUpdateDisplay(self) -> None:
         if not self.updateTimer.isActive():
-            self.updateTimer.start(100)
+            self.updateTimer.start(max(self.processingTime * 2, MAX_FPS))
 
     def updateDisplay(self) -> None:
+        startTime = time.time()
         _ = self.video.set(
             cv2.CAP_PROP_POS_FRAMES, self.frame - 1
         )  # -1 because read grabs the NEXT frame
@@ -91,11 +109,13 @@ class VideoPlayer(QWidget):
             Qt.TransformationMode.SmoothTransformation,
         )
         self.display.setPixmap(pixmap)
+        endTime = time.time()
+        self.processingTime = int((endTime - startTime) * 1000)
 
     def updateTimelineBounds(self) -> None:
         self.slider.setMinimum(self.project.calibrationOptions.videoTrim.start)
         self.slider.setMaximum(self.project.calibrationOptions.videoTrim.end)
-        self.slider.setTickInterval(100)
+        self.slider.setTickInterval(int(self.project.calibrationOptions.videoFps))
         self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
 
     def updateProject(self, project: Project) -> None:
