@@ -2,7 +2,7 @@ from typing import override
 
 import cv2
 from cv2 import VideoCapture
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -24,6 +24,9 @@ class VideoPlayer(QWidget):
     slider: QSlider
     frameDisplay: QLabel
     video: VideoCapture
+
+    # throttle mechanism
+    updateTimer: QTimer
 
     def __init__(self, project: Project, video: VideoCapture):
         super().__init__()
@@ -51,6 +54,10 @@ class VideoPlayer(QWidget):
         self.frameDisplay = QLabel()
         timelineLayout.addWidget(self.frameDisplay)
 
+        self.updateTimer = QTimer()
+        self.updateTimer.setSingleShot(True)
+        _ = self.updateTimer.timeout.connect(self.updateDisplay)
+
         self.updateProject(project)
 
     def updateFrame(self, frame: int) -> None:
@@ -60,7 +67,11 @@ class VideoPlayer(QWidget):
         )
         self.frame = frame
         self.frameDisplay.setText(str(frame))
-        self.updateDisplay()
+        self.scheduleUpdateDisplay()
+
+    def scheduleUpdateDisplay(self) -> None:
+        if not self.updateTimer.isActive():
+            self.updateTimer.start(100)
 
     def updateDisplay(self) -> None:
         _ = self.video.set(
@@ -94,5 +105,5 @@ class VideoPlayer(QWidget):
 
     @override
     def resizeEvent(self, event: QResizeEvent, /) -> None:
-        self.updateDisplay()
+        self.scheduleUpdateDisplay()
         return super().resizeEvent(event)
