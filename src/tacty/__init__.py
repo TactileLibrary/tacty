@@ -10,6 +10,9 @@ import tacty.resources.themes.breeze_pyside6  # pyright: ignore[reportUnusedImpo
 
 from .ui.windows import MainWindow
 
+default_style: str
+main_window: MainWindow | None = None
+
 
 def main() -> None:
     # Get the version from pyproject.toml.
@@ -29,10 +32,12 @@ def main() -> None:
     app.setOrganizationName("TactileLibrary")
 
     # Load the theme
-    # app.setStyle(QStyleFactory.create("Fusion"))
-    # loadTheme(app)
+    global default_style
+    default_style = app.style().objectName()
+    loadTheme(app)
 
     # Load the main window.
+    global main_window
     main_window = MainWindow()
     main_window.show()
 
@@ -49,7 +54,17 @@ def loadTheme(app: QApplication):
     theme = settings.value("theme", type=str) or "dark"
     color = settings.value("color", type=str) or "blue"
     settings.endGroup()
+    global main_window
+    if theme == "native":
+        app.setStyle(QStyleFactory.create(default_style))
+        app.setStyleSheet("")
+        if main_window:
+            main_window.colorMenu.setEnabled(False)
+        return
+    app.setStyle(QStyleFactory.create("Fusion"))
     file = QFile(f":/{theme}-{color}/stylesheet.qss")
     _ = file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text)
     stream = QTextStream(file)
     app.setStyleSheet(stream.readAll())
+    if main_window:
+        main_window.colorMenu.setEnabled(True)

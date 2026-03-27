@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
     saveAction: QAction
     saveAsAction: QAction
     closeAction: QAction
+    colorMenu: QMenu
 
     def __init__(self):
         super().__init__()
@@ -107,8 +108,11 @@ class MainWindow(QMainWindow):
         _ = self.menuBar().addMenu(fileMenu)
 
         # View menu
-        """
-        themes = ["light", "dark"]
+        themes = [
+            ("native", "Native"),
+            ("light", "Breeze Light"),
+            ("dark", "Breeze Dark"),
+        ]
         colors = ["blue", "cyan", "green", "pink", "purple", "red"]
         settings = QSettings()
         settings.beginGroup("appearance")
@@ -119,29 +123,30 @@ class MainWindow(QMainWindow):
         themeMenu = QMenu("&Theme")
         themeGroup = QActionGroup(self)
         for theme in themes:
-            themeAction = QAction(theme.capitalize(), themeMenu, checkable=True)
-            themeAction.setData(theme)
+            themeAction = QAction(theme[1], themeMenu, checkable=True)
+            themeAction.setData(theme[0])
             _ = themeGroup.addAction(themeAction)
             _ = themeMenu.addAction(themeAction)
-            if currentTheme == theme:
+            if currentTheme == theme[0]:
                 themeAction.setChecked(True)
         themeGroup.setExclusive(True)
         _ = themeGroup.triggered.connect(self.changeTheme)
         _ = viewMenu.addMenu(themeMenu)
-        colorMenu = QMenu("&Color")
+        self.colorMenu = QMenu("&Color")
+        if currentTheme == "native":
+            self.colorMenu.setEnabled(False)
         colorGroup = QActionGroup(self)
         for color in colors:
-            colorAction = QAction(color.capitalize(), colorMenu, checkable=True)
+            colorAction = QAction(color.capitalize(), self.colorMenu, checkable=True)
             colorAction.setData(color)
             _ = colorGroup.addAction(colorAction)
-            _ = colorMenu.addAction(colorAction)
+            _ = self.colorMenu.addAction(colorAction)
             if currentColor == color:
                 colorAction.setChecked(True)
         colorGroup.setExclusive(True)
         _ = colorGroup.triggered.connect(self.changeColor)
-        _ = viewMenu.addMenu(colorMenu)
+        _ = viewMenu.addMenu(self.colorMenu)
         _ = self.menuBar().addMenu(viewMenu)
-        """
 
         # About menu
         aboutMenu = QMenu("&About")

@@ -1,4 +1,3 @@
-from PySide6.QtCore import QMimeDatabase, QMimeType
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
