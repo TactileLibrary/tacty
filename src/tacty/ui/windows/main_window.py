@@ -116,7 +116,7 @@ class MainWindow(QMainWindow):
         colors = ["blue", "cyan", "green", "pink", "purple", "red"]
         settings = QSettings()
         settings.beginGroup("appearance")
-        currentTheme = settings.value("theme", type=str) or "dark"
+        currentTheme = settings.value("theme", type=str) or "native"
         currentColor = settings.value("color", type=str) or "blue"
         settings.endGroup()
         viewMenu = QMenu("&View")
