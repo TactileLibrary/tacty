@@ -169,8 +169,6 @@ class MainWindow(QMainWindow):
             self, "Open project", url, "Tacty Project (*.tproj)"
         )
         if not name:
-            err = QErrorMessage(self)
-            err.showMessage("Could not find file.")
             return
         qInfo(f"Opening project: {name}")
         url = QFileInfo(name).canonicalPath()
