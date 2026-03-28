@@ -41,7 +41,7 @@ class VideoPlayer(QWidget):
         self.setLayout(mainLayout)
         self.video = video
         self.videoFrameCountDigits = len(
-            str(int(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
+            str(project.calibrationOptions.videoFrameCount)
         )
 
         # video display
@@ -115,7 +115,7 @@ class VideoPlayer(QWidget):
     def updateTimelineBounds(self) -> None:
         self.slider.setMinimum(self.project.calibrationOptions.videoTrim.start)
         self.slider.setMaximum(self.project.calibrationOptions.videoTrim.end)
-        self.slider.setTickInterval(int(self.project.calibrationOptions.videoFps))
+        self.slider.setTickInterval(round(self.project.calibrationOptions.videoFps))
         self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
 
     def updateProject(self, project: Project) -> None:

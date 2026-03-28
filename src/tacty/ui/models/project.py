@@ -34,6 +34,7 @@ class Corners(BaseModel):
 class CalibrationOptions(BaseModel):
     videoTrim: Duration
     videoFps: float
+    videoFrameCount: int
     videoRotation: int = 0  # 0-3, increments of 90
     videoCrop: Corners | None = None
     pageSize: Size | None = None

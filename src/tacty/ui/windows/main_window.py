@@ -25,8 +25,7 @@ from PySide6.QtWidgets import (
 
 from tacty.ui.models.project import CalibrationOptions, Duration, Project
 from tacty.ui.utils.hash import getHashFromPath
-from tacty.ui.views import WelcomeView
-from tacty.ui.views.project_view import ProjectView
+from tacty.ui.views import ProjectView, WelcomeView
 from tacty.ui.windows.new_project_modal import NewProjectModal
 
 
@@ -203,6 +202,7 @@ class MainWindow(QMainWindow):
         # try to open the video
         vid = cv2.VideoCapture(videoPath, cv2.CAP_FFMPEG)
         fps = vid.get(cv2.CAP_PROP_FPS)
+        count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         length = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         vid.release()
 
@@ -211,7 +211,9 @@ class MainWindow(QMainWindow):
             videoFile=videoPath,
             videoHash=hash,
             calibrationOptions=CalibrationOptions(
-                videoTrim=Duration(start=0, end=length), videoFps=fps
+                videoTrim=Duration(start=0, end=length),
+                videoFps=fps,
+                videoFrameCount=count,
             ),
         )
 

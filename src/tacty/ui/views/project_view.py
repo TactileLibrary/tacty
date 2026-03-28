@@ -7,16 +7,20 @@ from PySide6.QtWidgets import (
 )
 
 from tacty.ui.components.video_player import VideoPlayer
-from tacty.ui.models.project import Project
+from tacty.ui.forms.calibration_form import CalibrationForm
+from tacty.ui.models.project import CalibrationOptions, Project
 
 
 class ProjectView(QWidget):
+    # project data
     project: Project
     video: cv2.VideoCapture
 
+    # widgets
     player: VideoPlayer
     sidebar: QToolBox
     calibrationIdx: int
+    calibration: QWidget
     imageProcessingIdx: int
     trackingIdx: int
     dataProcessingIdx: int
@@ -36,7 +40,11 @@ class ProjectView(QWidget):
         self.sidebar.setMinimumWidth(300)
         self.sidebar.setMaximumWidth(600)
         layout.addWidget(self.sidebar)
-        self.calibrationIdx = self.sidebar.addItem(QLabel("1"), "1. Calibration")
+
+        self.calibration = CalibrationForm(self.project.calibrationOptions)
+        self.calibrationIdx = self.sidebar.addItem(self.calibration, "1. Calibration")
+        _ = self.calibration.dataChanged.connect(self.updateCalibrationOptions)
+
         self.imageProcessingIdx = self.sidebar.addItem(
             QLabel("2"), "2. Image processing"
         )
@@ -47,3 +55,7 @@ class ProjectView(QWidget):
         # video player
         self.player = VideoPlayer(project, self.video)
         layout.addWidget(self.player)
+
+    def updateCalibrationOptions(self, data: CalibrationOptions):
+        self.project.calibrationOptions = data
+        self.player.updateProject(self.project)
