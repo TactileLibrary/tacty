@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
+    <width>528</width>
     <height>500</height>
    </rect>
   </property>
@@ -27,71 +27,158 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="startFrameLabel">
      <property name="text">
       <string>Start frame</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="endFrameLabel">
      <property name="text">
       <string>End frame</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="startFrame">
-     <property name="frame">
-      <bool>true</bool>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
-     </property>
-     <property name="specialValueText">
-      <string/>
-     </property>
-     <property name="accelerated">
-      <bool>false</bool>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="endFrame">
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="frameRateLabel">
      <property name="text">
       <string>Framerate</string>
      </property>
     </widget>
    </item>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QSpinBox" name="startFrame">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
+       </property>
+       <property name="specialValueText">
+        <string/>
+       </property>
+       <property name="accelerated">
+        <bool>false</bool>
+       </property>
+       <property name="showGroupSeparator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="suffix">
+        <string/>
+       </property>
+       <property name="maximum">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="startFrameReset">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>↺</string>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="frameRate">
-     <property name="suffix">
-      <string> FPS</string>
-     </property>
-     <property name="maximum">
-      <double>999.990000000000009</double>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QSpinBox" name="endFrame">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
+       </property>
+       <property name="maximum">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="endFrameReset">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>↺</string>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QDoubleSpinBox" name="frameRate">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="suffix">
+        <string> FPS</string>
+       </property>
+       <property name="maximum">
+        <double>999.990000000000009</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="frameRateReset">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>↺</string>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
