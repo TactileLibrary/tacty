@@ -30,24 +30,24 @@ class CalibrationForm(QWidget):
         self.data = data
 
         self.ui.startFrame.setMaximum(data.videoFrameCount)
-        self.ui.startFrame.setValue(data.videoTrim.start)
+        self.ui.startFrame.setValue(data.videoTrim.start.value)
         self.ui.endFrame.setMaximum(data.videoFrameCount)
-        self.ui.endFrame.setValue(data.videoTrim.end)
-        self.ui.frameRate.setValue(data.videoFps)
+        self.ui.endFrame.setValue(data.videoTrim.end.value)
+        self.ui.frameRate.setValue(data.videoFps.value)
 
     def updateStartFrame(self):
         frame = self.ui.startFrame.value()
         self.ui.endFrame.setValue(max(frame, self.ui.endFrame.value()))
-        self.data.videoTrim.start = frame
+        self.data.videoTrim.start.value = frame
         self.dataChanged.emit(self.data)
 
     def updateEndFrame(self):
         frame = self.ui.endFrame.value()
         self.ui.startFrame.setValue(min(frame, self.ui.startFrame.value()))
-        self.data.videoTrim.end = frame
+        self.data.videoTrim.end.value = frame
         self.dataChanged.emit(self.data)
 
     def updateFrameRate(self):
         fps = self.ui.frameRate.value()
-        self.data.videoFps = fps
+        self.data.videoFps.value = fps
         self.dataChanged.emit(self.data)

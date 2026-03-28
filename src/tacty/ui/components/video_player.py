@@ -78,8 +78,8 @@ class VideoPlayer(QWidget):
 
     def updateFrame(self, frame: int) -> None:
         frame = min(
-            self.project.calibrationOptions.videoTrim.end,
-            max(self.project.calibrationOptions.videoTrim.start, frame),
+            self.project.calibrationOptions.videoTrim.end.value,
+            max(self.project.calibrationOptions.videoTrim.start.value, frame),
         )
         self.frame = frame
         frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
@@ -113,9 +113,11 @@ class VideoPlayer(QWidget):
         self.processingTime = int((endTime - startTime) * 1000)
 
     def updateTimelineBounds(self) -> None:
-        self.slider.setMinimum(self.project.calibrationOptions.videoTrim.start)
-        self.slider.setMaximum(self.project.calibrationOptions.videoTrim.end)
-        self.slider.setTickInterval(round(self.project.calibrationOptions.videoFps))
+        self.slider.setMinimum(self.project.calibrationOptions.videoTrim.start.value)
+        self.slider.setMaximum(self.project.calibrationOptions.videoTrim.end.value)
+        self.slider.setTickInterval(
+            round(self.project.calibrationOptions.videoFps.value)
+        )
         self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
 
     def updateProject(self, project: Project) -> None:

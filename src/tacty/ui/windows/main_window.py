@@ -23,7 +23,14 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from tacty.ui.models.project import CalibrationOptions, Duration, Project
+from tacty.ui.models.project import (
+    CalibrationOptions,
+    Corners,
+    Duration,
+    Point,
+    Project,
+    Value,
+)
 from tacty.ui.utils.hash import getHashFromPath
 from tacty.ui.views import ProjectView, WelcomeView
 from tacty.ui.windows.new_project_modal import NewProjectModal
@@ -204,16 +211,33 @@ class MainWindow(QMainWindow):
         fps = vid.get(cv2.CAP_PROP_FPS)
         count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         length = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         vid.release()
 
         project = Project(
             projectVersion=1,
             videoFile=videoPath,
-            videoHash=hash,
+            videoHash=hash,  # TODO: verify this on load
             calibrationOptions=CalibrationOptions(
-                videoTrim=Duration(start=0, end=length),
-                videoFps=fps,
+                videoTrim=Duration(
+                    start=Value[int](value=0, default=0),
+                    end=Value[int](value=length, default=length),
+                ),
+                videoFps=Value[float](value=fps, default=fps),
                 videoFrameCount=count,
+                videoCrop=Corners(
+                    tl=Value[Point](value=Point(x=0, y=0), default=Point(x=0, y=0)),
+                    tr=Value[Point](
+                        value=Point(x=width, y=0), default=Point(x=width, y=0)
+                    ),
+                    bl=Value[Point](
+                        value=Point(x=0, y=height), default=Point(x=0, y=height)
+                    ),
+                    br=Value[Point](
+                        value=Point(x=width, y=height), default=Point(x=width, y=height)
+                    ),
+                ),
             ),
         )
 

@@ -1,11 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from tacty.ui.utils.conversions import mmToInch
 
 
+class Value[T](BaseModel):
+    value: T
+    default: T
+
+
 class Duration(BaseModel):
-    start: int
-    end: int
+    start: Value[int]
+    end: Value[int]
 
 
 class Size(BaseModel):
@@ -22,21 +27,18 @@ class Point(BaseModel):
 
 
 class Corners(BaseModel):
-    tl: Point | None = None
-    tr: Point | None = None
-    bl: Point | None = None
-    br: Point | None = None
-
-    def isValid(self):
-        return self.tl and self.tr and self.bl and self.br
+    tl: Value[Point]
+    tr: Value[Point]
+    bl: Value[Point]
+    br: Value[Point]
 
 
 class CalibrationOptions(BaseModel):
     videoTrim: Duration
-    videoFps: float
+    videoFps: Value[float]
     videoFrameCount: int
     videoRotation: int = 0  # 0-3, increments of 90
-    videoCrop: Corners | None = None
+    videoCrop: Corners
     pageSize: Size | None = None
     processingDpi: int = 92  # 92 DPI for A3 is around FHD
 
@@ -48,7 +50,7 @@ class CalibrationOptions(BaseModel):
         return Size(w=w, h=h)
 
     def isValid(self) -> bool:
-        if not self.videoCrop or not self.videoCrop.isValid():
+        if not self.pageSize:
             return False
         return True
 
