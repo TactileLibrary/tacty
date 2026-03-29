@@ -12,9 +12,10 @@ class CalibrationPipeline:
         self.options = options
 
     def process(self, img: MatLike) -> MatLike:
-        height: int
-        width: int
-        height, width = img.shape[:2]  # pyright: ignore [reportAny] have to do thiss due to C bindings
+        resolution = self.options.processingResolution()
+
+        height = resolution.h
+        width = resolution.w
 
         srcPoints = np.array(
             [

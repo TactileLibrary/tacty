@@ -17,6 +17,9 @@ class Size(BaseModel):
     w: int
     h: int
 
+    def toString(self) -> str:
+        return f"{self.w}x{self.h}"
+
 
 class Point(BaseModel):
     x: int
@@ -39,20 +42,13 @@ class CalibrationOptions(BaseModel):
     videoFrameCount: int
     videoRotation: int = 0  # 0-3, increments of 90
     videoCrop: Corners
-    pageSize: Size | None = None
+    pageSize: Size = Size(w=420, h=297)
     processingDpi: int = 92  # 92 DPI for A3 is around FHD
 
     def processingResolution(self) -> Size:
-        if self.pageSize is None:
-            raise Exception("Called processingResolution without checking isValid")
         w = int(mmToInch(self.pageSize.w) * self.processingDpi)
         h = int(mmToInch(self.pageSize.h) * self.processingDpi)
         return Size(w=w, h=h)
-
-    def isValid(self) -> bool:
-        if not self.pageSize:
-            return False
-        return True
 
 
 class Project(BaseModel):

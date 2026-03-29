@@ -25,7 +25,6 @@ MAX_FPS = 1000 // 30
 
 class VideoPlayer(QWidget):
     project: Project
-    frame: int
     display: QLabel
     slider: QSlider
     frameDisplay: QLabel
@@ -49,7 +48,6 @@ class VideoPlayer(QWidget):
         self.videoFrameCountDigits = len(
             str(project.calibrationOptions.videoFrameCount)
         )
-        self.frame = project.frame
         self.calibrationPipeline = CalibrationPipeline(project.calibrationOptions)
 
         # video display
@@ -82,14 +80,15 @@ class VideoPlayer(QWidget):
         _ = self.updateTimer.timeout.connect(self.updateDisplay)
         self.processingTime = MAX_FPS
 
-        self.updateProject(project)
+        self.project = project
+        self.updateProject()
 
     def updateFrame(self, frame: int) -> None:
         frame = min(
             self.project.calibrationOptions.videoTrim.end.value,
             max(self.project.calibrationOptions.videoTrim.start.value, frame),
         )
-        self.frame = frame
+        self.project.frame = frame
         self.slider.setValue(frame)
         frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
         self.frameDisplay.setText(frameText)
@@ -102,7 +101,7 @@ class VideoPlayer(QWidget):
     def updateDisplay(self) -> None:
         startTime = time.time()
         _ = self.video.set(
-            cv2.CAP_PROP_POS_FRAMES, self.frame - 1
+            cv2.CAP_PROP_POS_FRAMES, self.project.frame - 1
         )  # -1 because read grabs the NEXT frame
         _, self.img = self.video.read()
 
@@ -127,8 +126,7 @@ class VideoPlayer(QWidget):
         )
         self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
 
-    def updateProject(self, project: Project) -> None:
-        self.project = project
+    def updateProject(self) -> None:
         self.updateTimelineBounds()
         self.updateFrame(self.project.frame)
 

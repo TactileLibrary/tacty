@@ -15,9 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QDoubleSpinBox, QFormLayout,
-    QHBoxLayout, QLabel, QPushButton, QSizePolicy,
-    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
+    QFormLayout, QHBoxLayout, QLabel, QPushButton,
+    QSizePolicy, QSpacerItem, QSpinBox, QVBoxLayout,
+    QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -275,6 +276,95 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.cornerSelect)
 
+        self.resizeLabel = QLabel(Form)
+        self.resizeLabel.setObjectName(u"resizeLabel")
+        self.resizeLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.resizeLabel)
+
+        self.resizeForm = QFormLayout()
+        self.resizeForm.setObjectName(u"resizeForm")
+        self.pageTemplateLabel = QLabel(Form)
+        self.pageTemplateLabel.setObjectName(u"pageTemplateLabel")
+
+        self.resizeForm.setWidget(0, QFormLayout.ItemRole.LabelRole, self.pageTemplateLabel)
+
+        self.pageTemplate = QComboBox(Form)
+        self.pageTemplate.addItem("")
+        self.pageTemplate.setObjectName(u"pageTemplate")
+
+        self.resizeForm.setWidget(0, QFormLayout.ItemRole.FieldRole, self.pageTemplate)
+
+        self.pageWidthLabel = QLabel(Form)
+        self.pageWidthLabel.setObjectName(u"pageWidthLabel")
+
+        self.resizeForm.setWidget(1, QFormLayout.ItemRole.LabelRole, self.pageWidthLabel)
+
+        self.pageWidth = QSpinBox(Form)
+        self.pageWidth.setObjectName(u"pageWidth")
+        sizePolicy1.setHeightForWidth(self.pageWidth.sizePolicy().hasHeightForWidth())
+        self.pageWidth.setSizePolicy(sizePolicy1)
+        self.pageWidth.setFrame(True)
+        self.pageWidth.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.PlusMinus)
+        self.pageWidth.setAccelerated(False)
+        self.pageWidth.setProperty(u"showGroupSeparator", False)
+        self.pageWidth.setMinimum(0)
+        self.pageWidth.setMaximum(2000)
+        self.pageWidth.setValue(0)
+
+        self.resizeForm.setWidget(1, QFormLayout.ItemRole.FieldRole, self.pageWidth)
+
+        self.pageHeightLabel = QLabel(Form)
+        self.pageHeightLabel.setObjectName(u"pageHeightLabel")
+
+        self.resizeForm.setWidget(2, QFormLayout.ItemRole.LabelRole, self.pageHeightLabel)
+
+        self.pageHeight = QSpinBox(Form)
+        self.pageHeight.setObjectName(u"pageHeight")
+        sizePolicy1.setHeightForWidth(self.pageHeight.sizePolicy().hasHeightForWidth())
+        self.pageHeight.setSizePolicy(sizePolicy1)
+        self.pageHeight.setFrame(True)
+        self.pageHeight.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.PlusMinus)
+        self.pageHeight.setAccelerated(False)
+        self.pageHeight.setProperty(u"showGroupSeparator", False)
+        self.pageHeight.setMaximum(2000)
+
+        self.resizeForm.setWidget(2, QFormLayout.ItemRole.FieldRole, self.pageHeight)
+
+        self.resolutionLabel = QLabel(Form)
+        self.resolutionLabel.setObjectName(u"resolutionLabel")
+
+        self.resizeForm.setWidget(3, QFormLayout.ItemRole.LabelRole, self.resolutionLabel)
+
+        self.resolution = QSpinBox(Form)
+        self.resolution.setObjectName(u"resolution")
+        self.resolution.setMaximum(300)
+
+        self.resizeForm.setWidget(3, QFormLayout.ItemRole.FieldRole, self.resolution)
+
+
+        self.verticalLayout.addLayout(self.resizeForm)
+
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.resultingSizeLabel = QLabel(Form)
+        self.resultingSizeLabel.setObjectName(u"resultingSizeLabel")
+
+        self.horizontalLayout_8.addWidget(self.resultingSizeLabel)
+
+        self.resultingSize = QLabel(Form)
+        self.resultingSize.setObjectName(u"resultingSize")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.resultingSize.sizePolicy().hasHeightForWidth())
+        self.resultingSize.setSizePolicy(sizePolicy3)
+
+        self.horizontalLayout_8.addWidget(self.resultingSize)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_8)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -308,13 +398,43 @@ class Ui_Form(object):
         self.frameRateReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.perspectiveControlLabel.setText(QCoreApplication.translate("Form", u"### Crop video", None))
         self.topLeftLabel.setText(QCoreApplication.translate("Form", u"Top left", None))
+        self.topLeftX.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.topLeftX.setPrefix(QCoreApplication.translate("Form", u"x: ", None))
+        self.topLeftY.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.topLeftY.setPrefix(QCoreApplication.translate("Form", u"y: ", None))
         self.topLeftReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.topRightLabel.setText(QCoreApplication.translate("Form", u"Top right", None))
         self.bottomLeftLabel.setText(QCoreApplication.translate("Form", u"Bottom left", None))
         self.bottomRightLabel.setText(QCoreApplication.translate("Form", u"Bottom right", None))
+        self.topRightX.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.topRightX.setPrefix(QCoreApplication.translate("Form", u"x: ", None))
+        self.topRightY.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.topRightY.setPrefix(QCoreApplication.translate("Form", u"y: ", None))
         self.topRightReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
+        self.bottomLeftX.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.bottomLeftX.setPrefix(QCoreApplication.translate("Form", u"x: ", None))
+        self.bottomLeftY.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.bottomLeftY.setPrefix(QCoreApplication.translate("Form", u"y: ", None))
         self.bottomLeftReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
+        self.bottomRightX.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.bottomRightX.setPrefix(QCoreApplication.translate("Form", u"x: ", None))
+        self.bottomRightY.setSuffix(QCoreApplication.translate("Form", u"px", None))
+        self.bottomRightY.setPrefix(QCoreApplication.translate("Form", u"y: ", None))
         self.bottomRightReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.cornerSelect.setText(QCoreApplication.translate("Form", u"Interactive selection", None))
+        self.resizeLabel.setText(QCoreApplication.translate("Form", u"### Resize", None))
+        self.pageTemplateLabel.setText(QCoreApplication.translate("Form", u"Template", None))
+        self.pageTemplate.setItemText(0, QCoreApplication.translate("Form", u"Custom", None))
+
+        self.pageWidthLabel.setText(QCoreApplication.translate("Form", u"Page width", None))
+        self.pageWidth.setSpecialValueText("")
+        self.pageWidth.setSuffix(QCoreApplication.translate("Form", u"mm", None))
+        self.pageHeightLabel.setText(QCoreApplication.translate("Form", u"Page height", None))
+        self.pageHeight.setSpecialValueText("")
+        self.pageHeight.setSuffix(QCoreApplication.translate("Form", u"mm", None))
+        self.resolutionLabel.setText(QCoreApplication.translate("Form", u"Resolution", None))
+        self.resolution.setSuffix(QCoreApplication.translate("Form", u" dpi", None))
+        self.resultingSizeLabel.setText(QCoreApplication.translate("Form", u"Resulting video size: ", None))
+        self.resultingSize.setText(QCoreApplication.translate("Form", u"0x0", None))
     # retranslateUi
 

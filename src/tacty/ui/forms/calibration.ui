@@ -216,6 +216,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>x: </string>
+         </property>
         </widget>
        </item>
        <item>
@@ -225,6 +231,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>y: </string>
          </property>
         </widget>
        </item>
@@ -280,6 +292,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>x: </string>
+         </property>
         </widget>
        </item>
        <item>
@@ -289,6 +307,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>y: </string>
          </property>
         </widget>
        </item>
@@ -323,6 +347,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>x: </string>
+         </property>
         </widget>
        </item>
        <item>
@@ -332,6 +362,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>y: </string>
          </property>
         </widget>
        </item>
@@ -366,6 +402,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>x: </string>
+         </property>
         </widget>
        </item>
        <item>
@@ -375,6 +417,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="suffix">
+          <string>px</string>
+         </property>
+         <property name="prefix">
+          <string>y: </string>
          </property>
         </widget>
        </item>
@@ -407,6 +455,159 @@
       <string>Interactive selection</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="resizeLabel">
+     <property name="text">
+      <string>### Resize</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::MarkdownText</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="resizeForm">
+     <item row="0" column="0">
+      <widget class="QLabel" name="pageTemplateLabel">
+       <property name="text">
+        <string>Template</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="pageTemplate">
+       <item>
+        <property name="text">
+         <string extracomment="custom">Custom</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="pageWidthLabel">
+       <property name="text">
+        <string>Page width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="pageWidth">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
+       </property>
+       <property name="specialValueText">
+        <string/>
+       </property>
+       <property name="accelerated">
+        <bool>false</bool>
+       </property>
+       <property name="showGroupSeparator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="suffix">
+        <string>mm</string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>2000</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="pageHeightLabel">
+       <property name="text">
+        <string>Page height</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="pageHeight">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::ButtonSymbols::PlusMinus</enum>
+       </property>
+       <property name="specialValueText">
+        <string/>
+       </property>
+       <property name="accelerated">
+        <bool>false</bool>
+       </property>
+       <property name="showGroupSeparator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="suffix">
+        <string>mm</string>
+       </property>
+       <property name="maximum">
+        <number>2000</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="resolutionLabel">
+       <property name="text">
+        <string>Resolution</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="resolution">
+       <property name="suffix">
+        <string> dpi</string>
+       </property>
+       <property name="maximum">
+        <number>300</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QLabel" name="resultingSizeLabel">
+       <property name="text">
+        <string>Resulting video size: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="resultingSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>0x0</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <spacer name="verticalSpacer">

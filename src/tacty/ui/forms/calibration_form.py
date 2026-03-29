@@ -2,7 +2,26 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
 from tacty.ui.forms.calibration_ui import Ui_Form
-from tacty.ui.models.project import CalibrationOptions
+from tacty.ui.models.project import CalibrationOptions, Size
+
+
+class PageTemplate:
+    name: str
+    size: Size
+    dpi: int
+
+    def __init__(self, name: str, width: int, height: int, dpi: int):
+        self.name = name
+        self.size = Size(w=width, h=height)
+        self.dpi = dpi
+
+
+PAGE_TEMPLATES = [
+    PageTemplate("A3 [Landscape]", 420, 297, 92),
+    PageTemplate("A3 [Portrait]", 297, 497, 92),
+    PageTemplate("A4 [Landscape]", 297, 210, 130),
+    PageTemplate("A4 [Portrait]", 210, 297, 130),
+]
 
 
 class CalibrationForm(QWidget):
@@ -45,6 +64,14 @@ class CalibrationForm(QWidget):
         _ = self.ui.bottomRightReset.clicked.connect(self.resetBottomRight)
         _ = self.ui.cornerSelect.clicked.connect(self.requestInteractiveCornerPicking)
 
+        _ = self.ui.pageTemplate.currentIndexChanged.connect(self.applyPageTemplate)
+        _ = self.ui.pageHeight.valueChanged.connect(self.updatePageSize)
+        _ = self.ui.pageWidth.valueChanged.connect(self.updatePageSize)
+        _ = self.ui.resolution.valueChanged.connect(self.updatePageSize)
+
+        self.setupPageTemplates()
+        self.updatePageSize()
+
     def updateData(self):
         # time controls
         self.ui.startFrame.setMaximum(self.data.videoFrameCount)
@@ -81,6 +108,46 @@ class CalibrationForm(QWidget):
         self.ui.bottomRightY.setMinimum(0)
         self.ui.bottomRightY.setMaximum(self.data.videoCrop.br.default.y)
         self.ui.bottomRightY.setValue(self.data.videoCrop.br.value.y)
+
+        # retime controls
+        self.ui.pageWidth.setValue(self.data.pageSize.w)
+        self.ui.pageHeight.setValue(self.data.pageSize.h)
+        self.ui.resolution.setValue(self.data.processingDpi)
+
+    def setupPageTemplates(self):
+        for template in PAGE_TEMPLATES:
+            self.ui.pageTemplate.addItem(template.name, [template.size, template.dpi])
+
+    def applyPageTemplate(self):
+        data = self.ui.pageTemplate.currentData()  # pyright: ignore [reportAny] - we check isinstance anyway
+        if data is None:
+            return
+        size, dpi = data  # pyright: ignore [reportAny] - we check isinstance anyway
+        if not (isinstance(size, Size) and isinstance(dpi, int)):
+            return
+
+        self.ui.pageWidth.setValue(size.w)
+        self.ui.pageHeight.setValue(size.h)
+        self.ui.resolution.setValue(dpi)
+
+    def updatePageSize(self):
+        self.data.pageSize.w = self.ui.pageWidth.value()
+        self.data.pageSize.h = self.ui.pageHeight.value()
+        self.data.processingDpi = self.ui.resolution.value()
+        self.ui.resultingSize.setText(self.data.processingResolution().toString())
+        self.dataChanged.emit()
+        self.updatePageTemplate()
+
+    def updatePageTemplate(self):
+        # check if it matches a template
+        for idx, template in enumerate(PAGE_TEMPLATES):
+            if (
+                template.size == self.data.pageSize
+                and template.dpi == self.data.processingDpi
+            ):
+                self.ui.pageTemplate.setCurrentIndex(idx + 1)
+                return
+        self.ui.pageTemplate.setCurrentIndex(0)
 
     def updateStartFrame(self, frame: int | None = None):
         if frame is None:

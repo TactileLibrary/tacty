@@ -62,7 +62,7 @@ class ProjectView(QWidget):
         layout.addWidget(self.player)
 
     def updateProject(self):
-        self.player.updateProject(self.project)
+        self.player.updateProject()
         self.calibration.updateData()
 
     def openInteractivePicker(self):
