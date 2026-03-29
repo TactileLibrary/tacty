@@ -195,6 +195,13 @@ class MainWindow(QMainWindow):
             return
         json = bytes(file.readAll().data())
         project = Project.model_validate_json(json)
+        hash = getHashFromPath(project.videoFile)
+        if project.videoHash != hash:
+            err = QErrorMessage(self)
+            err.showMessage(
+                "Video file changed. Please restore the original file, or create a new project."
+            )
+            return
         self.openedFile = name
         self.showProject(project)
 
@@ -261,7 +268,7 @@ class MainWindow(QMainWindow):
         project = Project(
             projectVersion=1,
             videoFile=videoPath,
-            videoHash=hash,  # TODO: verify this on load
+            videoHash=hash,
             calibrationOptions=CalibrationOptions(
                 videoTrim=Duration(
                     start=Value[int](value=0, default=0),

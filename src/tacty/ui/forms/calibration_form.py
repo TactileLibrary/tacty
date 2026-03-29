@@ -21,6 +21,8 @@ PAGE_TEMPLATES = [
     PageTemplate("A3 [Portrait]", 297, 497, 92),
     PageTemplate("A4 [Landscape]", 297, 210, 130),
     PageTemplate("A4 [Portrait]", 210, 297, 130),
+    PageTemplate("Letter [Landdscape]", 279, 216, 120),
+    PageTemplate("Letter [Portrait]", 216, 279, 120),
 ]
 
 
