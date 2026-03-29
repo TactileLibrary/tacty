@@ -9,7 +9,7 @@ class CalibrationForm(QWidget):
     ui: Ui_Form
     data: CalibrationOptions
 
-    dataChanged: Signal = Signal(CalibrationOptions)
+    dataChanged: Signal = Signal()
 
     def __init__(self, data: CalibrationOptions):
         super().__init__()
@@ -45,7 +45,7 @@ class CalibrationForm(QWidget):
             self.ui.startFrame.setValue(frame)
         self.ui.endFrame.setValue(max(frame, self.ui.endFrame.value()))
         self.data.videoTrim.start.value = frame
-        self.dataChanged.emit(self.data)
+        self.dataChanged.emit()
 
     def resetStartFrame(self):
         frame = self.data.videoTrim.start.default
@@ -58,7 +58,7 @@ class CalibrationForm(QWidget):
             self.ui.endFrame.setValue(frame)
         self.ui.startFrame.setValue(min(frame, self.ui.startFrame.value()))
         self.data.videoTrim.end.value = frame
-        self.dataChanged.emit(self.data)
+        self.dataChanged.emit()
 
     def resetEndFrame(self):
         frame = self.data.videoTrim.end.default
@@ -70,7 +70,7 @@ class CalibrationForm(QWidget):
         else:
             self.ui.frameRate.setValue(fps)
         self.data.videoFps.value = fps
-        self.dataChanged.emit(self.data)
+        self.dataChanged.emit()
 
     def resetFrameRate(self):
         fps = self.data.videoFps.default

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel
 
 from tacty.ui.utils.conversions import mmToInch
 
