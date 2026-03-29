@@ -37,7 +37,7 @@ class ProjectView(QWidget):
 
         # sidebar
         self.sidebar = QToolBox()
-        self.sidebar.setMinimumWidth(300)
+        self.sidebar.setMinimumWidth(400)
         self.sidebar.setMaximumWidth(600)
         layout.addWidget(self.sidebar)
 
@@ -54,8 +54,12 @@ class ProjectView(QWidget):
 
         # video player
         self.player = VideoPlayer(project, self.video)
+        _ = self.player.frameChanged.connect(self.updateFrame)
         layout.addWidget(self.player)
 
     def updateCalibrationOptions(self, data: CalibrationOptions):
         self.project.calibrationOptions = data
         self.player.updateProject(self.project)
+
+    def updateFrame(self, frame: int):
+        self.project.frame = frame

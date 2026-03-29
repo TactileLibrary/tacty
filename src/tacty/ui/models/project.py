@@ -59,4 +59,5 @@ class Project(BaseModel):
     projectVersion: int
     videoFile: str
     videoHash: str
+    frame: int = 0
     calibrationOptions: CalibrationOptions

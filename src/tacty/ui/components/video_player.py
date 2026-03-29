@@ -3,7 +3,7 @@ from typing import override
 
 import cv2
 from cv2 import VideoCapture
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QFont, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QFrame,
@@ -23,7 +23,7 @@ MAX_FPS = 1000 // 30
 
 class VideoPlayer(QWidget):
     project: Project
-    frame: int = 0
+    frame: int
     display: QLabel
     slider: QSlider
     frameDisplay: QLabel
@@ -34,6 +34,9 @@ class VideoPlayer(QWidget):
     updateTimer: QTimer
     processingTime: int
 
+    # signals
+    frameChanged: Signal = Signal(int)
+
     def __init__(self, project: Project, video: VideoCapture):
         super().__init__()
 
@@ -43,6 +46,7 @@ class VideoPlayer(QWidget):
         self.videoFrameCountDigits = len(
             str(project.calibrationOptions.videoFrameCount)
         )
+        self.frame = project.frame
 
         # video display
         self.display = QLabel()
@@ -82,6 +86,8 @@ class VideoPlayer(QWidget):
             max(self.project.calibrationOptions.videoTrim.start.value, frame),
         )
         self.frame = frame
+        self.slider.setValue(frame)
+        self.frameChanged.emit(frame)
         frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
         self.frameDisplay.setText(frameText)
         self.scheduleUpdateDisplay()
@@ -123,7 +129,7 @@ class VideoPlayer(QWidget):
     def updateProject(self, project: Project) -> None:
         self.project = project
         self.updateTimelineBounds()
-        self.updateFrame(self.frame)
+        self.updateFrame(self.project.frame)
 
     @override
     def resizeEvent(self, event: QResizeEvent, /) -> None:

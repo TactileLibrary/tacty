@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
+    QWidget,
 )
 
 from tacty.ui.models.project import (
@@ -45,6 +46,10 @@ class MainWindow(QMainWindow):
     saveAsAction: QAction
     closeAction: QAction
     colorMenu: QMenu
+
+    # Data
+    currentWidget: QWidget
+    openedFile: str | None
 
     def __init__(self):
         super().__init__()
@@ -87,6 +92,9 @@ class MainWindow(QMainWindow):
         _ = welcomeView.newProject.connect(self.newProject)
         self.setCentralWidget(welcomeView)
 
+        self.openedFile = None
+        self.currentWidget = welcomeView
+
         self.saveAction.setEnabled(False)
         self.saveAsAction.setEnabled(False)
         self.closeAction.setEnabled(False)
@@ -95,6 +103,8 @@ class MainWindow(QMainWindow):
         projectView = ProjectView(project)
 
         self.setCentralWidget(projectView)
+
+        self.currentWidget = projectView
 
         self.saveAction.setEnabled(True)
         self.saveAsAction.setEnabled(True)
@@ -106,7 +116,9 @@ class MainWindow(QMainWindow):
         _ = fileMenu.addAction("&New", "Ctrl+N", self.newProject)
         _ = fileMenu.addAction("&Open", "Ctrl+O", self.openProject)
         _ = fileMenu.addSeparator()
-        self.saveAction = fileMenu.addAction("&Save project", "Ctrl+S")
+        self.saveAction = fileMenu.addAction(
+            "&Save project", "Ctrl+S", self.saveProject
+        )
         self.saveAsAction = fileMenu.addAction("Save project &as...", "Ctrl+Alt+S")
         self.closeAction = fileMenu.addAction("&Close project", self.closeProject)
         _ = fileMenu.addSeparator()
@@ -183,11 +195,44 @@ class MainWindow(QMainWindow):
             return
         json = bytes(file.readAll().data())
         project = Project.model_validate_json(json)
+        self.openedFile = name
         self.showProject(project)
 
-    def closeProject(self) -> None:
-        # TODO: prompt to save if needed
-        self.showWelcome()
+    def closeProject(self) -> bool:
+        confirm = QMessageBox.warning(
+            self,
+            "Close project?",
+            "Any unsaved changes will be lost.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if confirm == QMessageBox.StandardButton.Yes:
+            self.showWelcome()
+            return True
+        return False
+
+    def saveProject(self) -> None:
+        if not isinstance(self.currentWidget, ProjectView) or self.openedFile is None:
+            err = QErrorMessage(self)
+            err.showMessage("Cannot save, no project open.")
+            return
+
+        project = self.currentWidget.project
+
+        json = project.model_dump_json()
+        file = QFile(self.openedFile)
+        opened = file.open(QIODeviceBase.OpenModeFlag.WriteOnly)
+        if not opened:
+            err = QErrorMessage(self)
+            err.showMessage("Save project failed, cannot open file.")
+            return
+        written = file.write(json.encode("utf-8"))
+        if written == -1:
+            err = QErrorMessage(self)
+            err.showMessage("Write failed.")
+            return
+        file.close()
+        qInfo(f"Project saved: {self.openedFile}")
 
     def newProject(self) -> None:
         modal = NewProjectModal(self)
