@@ -190,7 +190,7 @@
    <item>
     <widget class="QLabel" name="perspectiveControlLabel">
      <property name="text">
-      <string>### Time control</string>
+      <string>### Crop video</string>
      </property>
      <property name="textFormat">
       <enum>Qt::TextFormat::MarkdownText</enum>
@@ -400,6 +400,13 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="cornerSelect">
+     <property name="text">
+      <string>Interactive selection</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">

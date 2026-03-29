@@ -3,7 +3,8 @@ from typing import override
 
 import cv2
 from cv2 import VideoCapture
-from PySide6.QtCore import Qt, QTimer, Signal
+from cv2.typing import MatLike
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QFrame,
@@ -16,7 +17,8 @@ from PySide6.QtWidgets import (
 )
 
 from tacty.ui.models.project import Project
-from tacty.ui.utils.conversions import cvToQ
+from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.ui.utils.cvConversions import cvToQ
 
 MAX_FPS = 1000 // 30
 
@@ -29,13 +31,14 @@ class VideoPlayer(QWidget):
     frameDisplay: QLabel
     video: VideoCapture
     videoFrameCountDigits: int
+    img: MatLike | None = None
+
+    # pipelines
+    calibrationPipeline: CalibrationPipeline
 
     # throttle mechanism
     updateTimer: QTimer
     processingTime: int
-
-    # signals
-    frameChanged: Signal = Signal(int)
 
     def __init__(self, project: Project, video: VideoCapture):
         super().__init__()
@@ -47,6 +50,7 @@ class VideoPlayer(QWidget):
             str(project.calibrationOptions.videoFrameCount)
         )
         self.frame = project.frame
+        self.calibrationPipeline = CalibrationPipeline(project.calibrationOptions)
 
         # video display
         self.display = QLabel()
@@ -87,7 +91,6 @@ class VideoPlayer(QWidget):
         )
         self.frame = frame
         self.slider.setValue(frame)
-        self.frameChanged.emit(frame)
         frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
         self.frameDisplay.setText(frameText)
         self.scheduleUpdateDisplay()
@@ -101,14 +104,12 @@ class VideoPlayer(QWidget):
         _ = self.video.set(
             cv2.CAP_PROP_POS_FRAMES, self.frame - 1
         )  # -1 because read grabs the NEXT frame
-        _, cimg = self.video.read()
-        # qimg = cvToQScaled(
-        #    cimg, self.display.size().height(), self.display.size().width()
-        # )
-        qimg = cvToQ(cimg)
+        _, self.img = self.video.read()
+
+        img = self.calibrationPipeline.process(self.img)
+
+        qimg = cvToQ(img)
         pixmap = QPixmap.fromImage(qimg)
-        # very slow, resizing in OpenCV now
-        # maybe fine actually?
         pixmap = pixmap.scaled(
             self.display.size(),
             Qt.AspectRatioMode.KeepAspectRatio,

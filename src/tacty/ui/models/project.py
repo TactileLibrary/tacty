@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from tacty.ui.utils.conversions import mmToInch
+from tacty.ui.utils.unitConversions import mmToInch
 
 
 class Value[T](BaseModel):

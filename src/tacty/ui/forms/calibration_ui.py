@@ -270,6 +270,11 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.perspectiveControlForm)
 
+        self.cornerSelect = QPushButton(Form)
+        self.cornerSelect.setObjectName(u"cornerSelect")
+
+        self.verticalLayout.addWidget(self.cornerSelect)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -301,7 +306,7 @@ class Ui_Form(object):
         self.frameRateLabel.setText(QCoreApplication.translate("Form", u"Framerate", None))
         self.frameRate.setSuffix(QCoreApplication.translate("Form", u" FPS", None))
         self.frameRateReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
-        self.perspectiveControlLabel.setText(QCoreApplication.translate("Form", u"### Time control", None))
+        self.perspectiveControlLabel.setText(QCoreApplication.translate("Form", u"### Crop video", None))
         self.topLeftLabel.setText(QCoreApplication.translate("Form", u"Top left", None))
         self.topLeftReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.topRightLabel.setText(QCoreApplication.translate("Form", u"Top right", None))
@@ -310,5 +315,6 @@ class Ui_Form(object):
         self.topRightReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.bottomLeftReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
         self.bottomRightReset.setText(QCoreApplication.translate("Form", u"\u21ba", None))
+        self.cornerSelect.setText(QCoreApplication.translate("Form", u"Interactive selection", None))
     # retranslateUi
 
