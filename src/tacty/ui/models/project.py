@@ -50,6 +50,21 @@ class CalibrationOptions(BaseModel):
         h = int(mmToInch(self.pageSize.h) * self.processingDpi)
         return Size(w=w, h=h)
 
+    def maxDpi(self) -> int:
+        # phsyical size - inch
+        pw = mmToInch(self.pageSize.w)
+        ph = mmToInch(self.pageSize.h)
+
+        # video size - px
+        vw = self.videoCrop.tr.default.x
+        vh = self.videoCrop.bl.default.y
+
+        # max dpi per axis
+        mrw = int(vw / pw)
+        mrh = int(vh / ph)
+
+        return min(mrw, mrh)
+
 
 class Project(BaseModel):
     projectVersion: int

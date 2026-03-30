@@ -69,7 +69,7 @@ class CalibrationForm(QWidget):
         _ = self.ui.pageTemplate.currentIndexChanged.connect(self.applyPageTemplate)
         _ = self.ui.pageHeight.valueChanged.connect(self.updatePageSize)
         _ = self.ui.pageWidth.valueChanged.connect(self.updatePageSize)
-        _ = self.ui.resolution.valueChanged.connect(self.updatePageSize)
+        _ = self.ui.resolution.valueChanged.connect(self.updateResolution)
 
         self.setupPageTemplates()
         self.updatePageSize()
@@ -132,11 +132,17 @@ class CalibrationForm(QWidget):
         self.ui.pageHeight.setValue(size.h)
         self.ui.resolution.setValue(dpi)
 
+    def updateResolution(self):
+        self.data.processingDpi = self.ui.resolution.value()
+        self.ui.resultingSize.setText(self.data.processingResolution().toString())
+        self.dataChanged.emit()
+        self.updatePageTemplate()
+
     def updatePageSize(self):
         self.data.pageSize.w = self.ui.pageWidth.value()
         self.data.pageSize.h = self.ui.pageHeight.value()
-        self.data.processingDpi = self.ui.resolution.value()
         self.ui.resultingSize.setText(self.data.processingResolution().toString())
+        self.ui.resolution.setMaximum(self.data.maxDpi())
         self.dataChanged.emit()
         self.updatePageTemplate()
 
