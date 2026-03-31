@@ -307,6 +307,7 @@ class MainWindow(QMainWindow):
             return
         file.close()
         qInfo(f"New project created: {projectPath}")
+        self.openedFile = projectPath
         self.showProject(project)
 
     def changeTheme(self, action: QAction):
