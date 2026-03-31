@@ -28,6 +28,9 @@ class Point(BaseModel):
     def toString(self) -> str:
         return f"({self.x}, {self.y})"
 
+    def toCv(self) -> tuple[int, int]:
+        return (self.x, self.y)
+
 
 class Corners(BaseModel):
     tl: Value[Point]
@@ -66,9 +69,20 @@ class CalibrationOptions(BaseModel):
         return min(mrw, mrh)
 
 
+class BoundingBox(BaseModel):
+    tl: Point
+    br: Point
+
+
+class TrackedMarker(BaseModel):
+    centroid: Point
+    bounds: BoundingBox
+
+
 class Project(BaseModel):
     projectVersion: int
     videoFile: str
     videoHash: str
     frame: int = 0
     calibrationOptions: CalibrationOptions
+    trackingData: dict[int, dict[str, TrackedMarker]] = {}

@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 
 from tacty.ui.models.project import Project
 from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.ui.opencv.tracking_display_pipeline import TrackingDisplayPipeline
 from tacty.ui.utils.cvConversions import cvToQ
 
 MAX_FPS = 1000 // 30
@@ -34,6 +35,7 @@ class VideoPlayer(QWidget):
 
     # pipelines
     calibrationPipeline: CalibrationPipeline
+    trackingPipeline: TrackingDisplayPipeline
 
     # throttle mechanism
     updateTimer: QTimer
@@ -49,6 +51,7 @@ class VideoPlayer(QWidget):
             str(project.calibrationOptions.videoFrameCount)
         )
         self.calibrationPipeline = CalibrationPipeline(project.calibrationOptions)
+        self.trackingPipeline = TrackingDisplayPipeline(project)
 
         # video display
         self.display = QLabel()
@@ -104,6 +107,7 @@ class VideoPlayer(QWidget):
         _, self.img = self.video.read()
 
         img = self.calibrationPipeline.process(self.img)
+        img = self.trackingPipeline.process(img)
 
         qimg = cvToQ(img)
         pixmap = QPixmap.fromImage(qimg)
