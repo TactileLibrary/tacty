@@ -100,9 +100,7 @@ class VideoPlayer(QWidget):
 
     def updateDisplay(self) -> None:
         startTime = time.time()
-        _ = self.video.set(
-            cv2.CAP_PROP_POS_FRAMES, self.project.frame - 1
-        )  # -1 because read grabs the NEXT frame
+        _ = self.video.set(cv2.CAP_PROP_POS_FRAMES, self.project.frame)
         _, self.img = self.video.read()
 
         img = self.calibrationPipeline.process(self.img)

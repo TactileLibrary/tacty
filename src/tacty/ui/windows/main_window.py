@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
         vid = cv2.VideoCapture(videoPath, cv2.CAP_FFMPEG)
         fps = vid.get(cv2.CAP_PROP_FPS)
         count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
-        length = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+        length = int(vid.get(cv2.CAP_PROP_FRAME_COUNT)) - 1  # frames are 0-indexed
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         vid.release()
