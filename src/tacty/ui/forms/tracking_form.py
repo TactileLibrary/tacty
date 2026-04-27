@@ -1,7 +1,9 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QSlider, QSpinBox, QWidget
 
+from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.models.project import TrackingOptions
+from tacty.ui.windows.hue_pick_modal import HuePickModal
 
 from .tracking_ui import Ui_Form
 
@@ -11,10 +13,14 @@ class TrackingForm(QWidget):
     data: TrackingOptions
     trackingData: bool
 
+    videoPlayer: VideoPlayer
+
     startProcessing: Signal = Signal()
     resetTrackingData: Signal = Signal()
 
-    def __init__(self, data: TrackingOptions, trackingData: bool):
+    def __init__(
+        self, data: TrackingOptions, trackingData: bool, videoPlayer: VideoPlayer
+    ):
         super().__init__()
 
         # load the ui
@@ -24,10 +30,39 @@ class TrackingForm(QWidget):
         # update the data
         self.trackingData = trackingData
         self.data = data
+        self.videoPlayer = videoPlayer
 
         # connectors
         _ = self.ui.track.clicked.connect(self.startProcessing.emit)
         _ = self.ui.reset.clicked.connect(self.resetTrackingData.emit)
+
+        hue_pairs = {
+            "r": self.ui.redHue,
+            "y": self.ui.yellowHue,
+            "g": self.ui.greenHue,
+            "c": self.ui.cyanHue,
+            "b": self.ui.blueHue,
+            "m": self.ui.magentaHue,
+        }
+
+        for key in hue_pairs:
+            _ = hue_pairs[key].valueChanged.connect(
+                lambda _, h=key, e=hue_pairs[key]: self.syncHue(h, e)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
+            )
+
+        hue_button_pairs = {
+            self.ui.redHuePick: self.ui.redHue,
+            self.ui.yellowHuePick: self.ui.yellowHue,
+            self.ui.greenHuePick: self.ui.greenHue,
+            self.ui.cyanHuePick: self.ui.cyanHue,
+            self.ui.blueHuePick: self.ui.blueHue,
+            self.ui.magentaHuePick: self.ui.magentaHue,
+        }
+
+        for button in hue_button_pairs:
+            _ = button.clicked.connect(
+                lambda _, t=hue_button_pairs[button]: self.pickHue(t)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
+            )
 
         tolerance_pairs = [
             ("r", self.ui.redTolerance, self.ui.redToleranceSlider),
@@ -49,6 +84,17 @@ class TrackingForm(QWidget):
             )
 
         self.updateData()
+
+    def syncHue(self, key: str, element: QSpinBox):
+        setattr(self.data.hues, key, element.value())
+
+    def pickHue(self, target: QSpinBox):
+        img = self.videoPlayer.getPixmap()
+        if img is None:
+            return
+        hue = HuePickModal.pickHue(img)
+        if hue:
+            target.setValue(hue)
 
     def updateData(self):
         # hues

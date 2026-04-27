@@ -44,6 +44,8 @@ class ProjectView(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
+        self.player = VideoPlayer(project, self.video)
+
         # sidebar
         self.sidebar = QToolBox()
         self.sidebar.setMinimumWidth(400)
@@ -62,7 +64,9 @@ class ProjectView(QWidget):
         )
 
         self.tracking = TrackingForm(
-            self.project.trackingOptions, len(self.project.trackingData.keys()) > 0
+            self.project.trackingOptions,
+            len(self.project.trackingData.keys()) > 0,
+            self.player,
         )
         self.trackingIdx = self.sidebar.addItem(self.tracking, "3. Tracking")
         _ = self.tracking.startProcessing.connect(self.startTracking)
@@ -73,7 +77,6 @@ class ProjectView(QWidget):
         self.exportIdx = self.sidebar.addItem(QLabel("5"), "5. Export")
 
         # video player
-        self.player = VideoPlayer(project, self.video)
         layout.addWidget(self.player)
 
     def startTracking(self):

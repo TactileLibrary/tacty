@@ -134,6 +134,14 @@ class VideoPlayer(QWidget):
         self.updateTimelineBounds()
         self.updateFrame(self.project.frame)
 
+    def getPixmap(self) -> QPixmap | None:
+        if self.img is None:
+            return
+        img = self.calibrationPipeline.process(self.img)
+        qimg = cvToQ(img)
+        pixmap = QPixmap.fromImage(qimg)
+        return pixmap
+
     @override
     def resizeEvent(self, event: QResizeEvent, /) -> None:
         self.scheduleUpdateDisplay()
