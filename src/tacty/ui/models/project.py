@@ -79,10 +79,25 @@ class TrackedMarker(BaseModel):
     bounds: BoundingBox
 
 
+class ColorOptions[T](BaseModel):
+    r: T
+    y: T
+    g: T
+    c: T
+    b: T
+    m: T
+
+
+class TrackingOptions(BaseModel):
+    hues: ColorOptions[int] = ColorOptions(r=0, y=30, g=60, c=90, b=120, m=150)
+    tolerences: ColorOptions[int] = ColorOptions(r=25, y=25, g=25, c=25, b=25, m=25)
+
+
 class Project(BaseModel):
     projectVersion: int
     videoFile: str
     videoHash: str
     frame: int = 0
     calibrationOptions: CalibrationOptions
+    trackingOptions: TrackingOptions = TrackingOptions()
     trackingData: dict[int, dict[str, TrackedMarker]] = {}
