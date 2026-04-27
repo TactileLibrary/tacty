@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Trinity projects (not ideally portable)
+*.tproj
