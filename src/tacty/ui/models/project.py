@@ -90,7 +90,9 @@ class ColorOptions[T](BaseModel):
 
 class TrackingOptions(BaseModel):
     hues: ColorOptions[int] = ColorOptions(r=0, y=30, g=60, c=90, b=120, m=150)
-    tolerences: ColorOptions[int] = ColorOptions(r=25, y=25, g=25, c=25, b=25, m=25)
+    tolerances: ColorOptions[float] = ColorOptions(
+        r=0.25, y=0.25, g=0.25, c=0.25, b=0.25, m=0.25
+    )
 
 
 class Project(BaseModel):

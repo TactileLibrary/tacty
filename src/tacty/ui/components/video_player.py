@@ -121,12 +121,14 @@ class VideoPlayer(QWidget):
         self.processingTime = int((endTime - startTime) * 1000)
 
     def updateTimelineBounds(self) -> None:
+        _ = self.slider.blockSignals(True)
         self.slider.setMinimum(self.project.calibrationOptions.videoTrim.start.value)
         self.slider.setMaximum(self.project.calibrationOptions.videoTrim.end.value)
         self.slider.setTickInterval(
             round(self.project.calibrationOptions.videoFps.value)
         )
         self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
+        _ = self.slider.blockSignals(False)
 
     def updateProject(self) -> None:
         self.updateTimelineBounds()

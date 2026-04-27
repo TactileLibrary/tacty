@@ -61,9 +61,12 @@ class ProjectView(QWidget):
             QLabel("2"), "2. Image processing"
         )
 
-        self.tracking = TrackingForm()
+        self.tracking = TrackingForm(
+            self.project.trackingOptions, len(self.project.trackingData.keys()) > 0
+        )
         self.trackingIdx = self.sidebar.addItem(self.tracking, "3. Tracking")
         _ = self.tracking.startProcessing.connect(self.startTracking)
+        _ = self.tracking.resetTrackingData.connect(self.resetTracking)
 
         self.dataProcessingIdx = self.sidebar.addItem(QLabel("4"), "4. Data processing")
 
@@ -87,10 +90,24 @@ class ProjectView(QWidget):
         self.tracker = TrackingPipeline(self.project)
 
         _ = self.tracker.progress.connect(self.modal.setValue)
-        _ = self.tracker.finished.connect(self.modal.close)
+        _ = self.tracker.finished.connect(self.trackingFinished)
         _ = self.modal.canceled.connect(self.tracker.requestInterruption)
 
         self.tracker.start()
+
+    def trackingFinished(self):
+        if self.modal:
+            _ = self.modal.close()
+
+        self.tracking.trackingData = len(self.project.trackingData.keys()) > 0
+        self.tracking.updateData()
+        self.player.updateDisplay()
+
+    def resetTracking(self):
+        self.project.trackingData = {}
+        self.tracking.trackingData = False
+        self.tracking.updateData()
+        self.player.updateDisplay()
 
     def updateProject(self):
         self.player.updateProject()
