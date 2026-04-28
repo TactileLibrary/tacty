@@ -64,31 +64,42 @@ class TrackingPipeline(QThread):
     ) -> None:
         idx1, idx2 = indices[0], indices[1]
 
-        mask1 = cast(np.ndarray, (labels == idx1).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
-        mask2 = cast(np.ndarray, (labels == idx2).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
+        x1, y1 = stats[idx1, cv2.CC_STAT_LEFT], stats[idx1, cv2.CC_STAT_TOP]
+        w1, h1 = stats[idx1, cv2.CC_STAT_WIDTH], stats[idx1, cv2.CC_STAT_HEIGHT]
+        cropped_labels1 = labels[y1 : y1 + h1, x1 : x1 + w1]
+        target_label1 = np.array([idx1], dtype=np.int32)
+
+        mask1 = cv2.inRange(cropped_labels1, target_label1, target_label1)
+
+        x2, y2 = stats[idx2, cv2.CC_STAT_LEFT], stats[idx2, cv2.CC_STAT_TOP]
+        w2, h2 = stats[idx2, cv2.CC_STAT_WIDTH], stats[idx2, cv2.CC_STAT_HEIGHT]
+        cropped_labels = labels[y2 : y2 + h2, x2 : x2 + w2]
+        target_label = np.array([idx2], dtype=np.int32)
+
+        mask2 = cv2.inRange(cropped_labels, target_label, target_label)
 
         # find contours
-        countour1 = cv2.findContours(mask1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
+        countour1 = cv2.findContours(mask1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
             0
         ][0]
-        countour2 = cv2.findContours(mask2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
+        countour2 = cv2.findContours(mask2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
             0
         ][0]
 
         # match to shapes
         circleScore1 = cv2.matchShapes(
-            countour1, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+            countour1, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
         )
         squareScore1 = cv2.matchShapes(
-            countour1, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+            countour1, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
         )
         circleness1 = circleScore1 - squareScore1
 
         circleScore2 = cv2.matchShapes(
-            countour2, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+            countour2, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
         )
         squareScore2 = cv2.matchShapes(
-            countour2, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+            countour2, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
         )
         circleness2 = circleScore2 - squareScore2
 
@@ -165,19 +176,24 @@ class TrackingPipeline(QThread):
         markers: dict[str, TrackedMarker],
         index: int,
     ) -> None:
-        mask = cast(np.ndarray, (labels == index).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
+        x, y = stats[index, cv2.CC_STAT_LEFT], stats[index, cv2.CC_STAT_TOP]
+        w, h = stats[index, cv2.CC_STAT_WIDTH], stats[index, cv2.CC_STAT_HEIGHT]
+        cropped_labels = labels[y : y + h, x : x + w]
+        target_label = np.array([index], dtype=np.int32)
+
+        mask = cv2.inRange(cropped_labels, target_label, target_label)
 
         # find contours
-        countour = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[0][
+        countour = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
             0
-        ]
+        ][0]
 
         # match to reference shapes
         circleScore = cv2.matchShapes(
-            countour, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+            countour, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
         )
         squareScore = cv2.matchShapes(
-            countour, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+            countour, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
         )
 
         if circleScore < squareScore:
@@ -239,18 +255,13 @@ class TrackingPipeline(QThread):
             )
             return
 
-    def getColorMap(
-        self, h: MatLike, s: MatLike, v: MatLike, target_hue: int, width: int = 15
-    ):
+    def getColorMap(self, h: MatLike, sv: MatLike, target_hue: int, width: int = 15):
         diff = np.abs(h - target_hue)
         dist = np.minimum(diff, 180 - diff)
 
         hue_score = np.maximum(0, 1 - (dist / width))
 
-        color_map = hue_score * (s / 255.0) * (v / 255.0)
-
-        color_map[s < 50] = 0
-        color_map[v < 50] = 0
+        color_map = hue_score * sv
 
         return (color_map * 255).astype(np.uint8)
 
@@ -261,12 +272,15 @@ class TrackingPipeline(QThread):
         hsv_img_float = hsv_img.astype(np.float32)
         h, s, v = cv2.split(hsv_img_float)
 
-        r_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.r)
-        g_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.g)
-        b_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.b)
-        c_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.c)
-        y_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.y)
-        m_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.m)
+        sv = cast(MatLike, (s / 255.0) * (v / 255.0).astype(np.float32))
+        sv[(s < 50) | (v < 50)] = 0
+
+        r_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.r)
+        g_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.g)
+        b_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.b)
+        c_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.c)
+        y_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.y)
+        m_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.m)
 
         self.debugImages["Red map"] = r_map
         self.debugImages["Green map"] = g_map
@@ -316,12 +330,15 @@ class TrackingPipeline(QThread):
             hsv_img_float = hsv_img.astype(np.float32)
             h, s, v = cv2.split(hsv_img_float)
 
-            r_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.r)
-            g_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.g)
-            b_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.b)
-            c_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.c)
-            y_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.y)
-            m_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.m)
+            sv = cast(MatLike, (s / 255.0) * (v / 255.0).astype(np.float32))
+            sv[(s < 50) | (v < 50)] = 0
+
+            r_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.r)
+            g_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.g)
+            b_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.b)
+            c_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.c)
+            y_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.y)
+            m_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.m)
 
             r_mask = self.mapToMask(r_map, self.project.trackingOptions.tolerances.r)
             g_mask = self.mapToMask(g_map, self.project.trackingOptions.tolerances.g)
