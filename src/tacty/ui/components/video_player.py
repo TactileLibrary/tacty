@@ -4,7 +4,7 @@ from typing import override
 import cv2
 from cv2 import VideoCapture
 from cv2.typing import MatLike
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QFont, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QFrame,
@@ -41,7 +41,15 @@ class VideoPlayer(QWidget):
     updateTimer: QTimer
     processingTime: int
 
-    def __init__(self, project: Project, video: VideoCapture):
+    # signals
+    frameChanged: Signal = Signal()
+
+    # debug
+    debugImages: dict[str, MatLike]
+
+    def __init__(
+        self, project: Project, video: VideoCapture, debugImages: dict[str, MatLike]
+    ):
         super().__init__()
 
         mainLayout = QVBoxLayout()
@@ -52,6 +60,7 @@ class VideoPlayer(QWidget):
         )
         self.calibrationPipeline = CalibrationPipeline(project.calibrationOptions)
         self.trackingPipeline = TrackingDisplayPipeline(project)
+        self.debugImages = debugImages
 
         # video display
         self.display = QLabel()
@@ -96,6 +105,7 @@ class VideoPlayer(QWidget):
         frameText = str(frame).rjust(self.videoFrameCountDigits, "0")
         self.frameDisplay.setText(frameText)
         self.scheduleUpdateDisplay()
+        self.frameChanged.emit()
 
     def scheduleUpdateDisplay(self) -> None:
         if not self.updateTimer.isActive():
@@ -134,6 +144,12 @@ class VideoPlayer(QWidget):
         self.updateTimelineBounds()
         self.updateFrame(self.project.frame)
 
+    def getImage(self) -> MatLike | None:
+        if self.img is None:
+            return
+        img = self.calibrationPipeline.process(self.img)
+        return img
+
     def getPixmap(self) -> QPixmap | None:
         if self.img is None:
             return
@@ -141,6 +157,10 @@ class VideoPlayer(QWidget):
         qimg = cvToQ(img)
         pixmap = QPixmap.fromImage(qimg)
         return pixmap
+
+    def addDebugImages(self) -> None:
+        if self.img is not None:
+            self.debugImages["Original"] = self.img
 
     @override
     def resizeEvent(self, event: QResizeEvent, /) -> None:

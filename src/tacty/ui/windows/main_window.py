@@ -1,6 +1,7 @@
 from typing import override
 
 import cv2
+from cv2.typing import MatLike
 from PySide6.QtCore import (
     QByteArray,
     QCoreApplication,
@@ -34,6 +35,7 @@ from tacty.ui.models.project import (
 )
 from tacty.ui.utils.hash import getHashFromPath
 from tacty.ui.views import ProjectView, WelcomeView
+from tacty.ui.windows.image_viewer_popup import ImageViewerPopup
 from tacty.ui.windows.new_project_modal import NewProjectModal
 
 
@@ -46,6 +48,11 @@ class MainWindow(QMainWindow):
     saveAsAction: QAction
     closeAction: QAction
     colorMenu: QMenu
+    debugImagesMenu: QMenu
+    debugEnabled: QAction
+
+    # Debug
+    debugImages: dict[str, MatLike] = {}
 
     # Data
     currentWidget: QWidget
@@ -100,9 +107,10 @@ class MainWindow(QMainWindow):
         self.closeAction.setEnabled(False)
 
     def showProject(self, project: Project):
-        projectView = ProjectView(project)
+        projectView = ProjectView(project, self.debugImages)
 
         self.setCentralWidget(projectView)
+        _ = projectView.debugChanged.connect(self.updateDebugImages)
 
         self.currentWidget = projectView
 
@@ -166,11 +174,42 @@ class MainWindow(QMainWindow):
         _ = viewMenu.addMenu(self.colorMenu)
         _ = self.menuBar().addMenu(viewMenu)
 
+        # Debug menu
+        debugMenu = QMenu("&Debug")
+        self.debugEnabled = QAction(text="Enable", checkable=True)
+        _ = self.debugEnabled.toggled.connect(self.toggleDebug)
+        debugMenu.addAction(self.debugEnabled)
+        self.debugImagesMenu = QMenu("&Images")
+        self.debugImagesMenu.setDisabled(True)
+        _ = debugMenu.addMenu(self.debugImagesMenu)
+        _ = self.menuBar().addMenu(debugMenu)
+
         # About menu
         aboutMenu = QMenu("&About")
         _ = aboutMenu.addAction("About &Tacty", self.showAbout)
         _ = aboutMenu.addAction("About &QT", self.showAboutQt)
         _ = self.menuBar().addMenu(aboutMenu)
+
+    def updateDebugImages(self) -> None:
+        self.debugImagesMenu.clear()
+
+        for name in self.debugImages:
+            _ = self.debugImagesMenu.addAction(
+                name, lambda n=name: self.displayImg(n, self.debugImages[n])
+            )
+
+    def toggleDebug(self, enabled: bool) -> None:
+        if isinstance(self.currentWidget, ProjectView):
+            self.currentWidget.debugMode = enabled
+
+        if enabled:
+            self.debugImagesMenu.setDisabled(False)
+            return
+        self.debugImagesMenu.setDisabled(True)
+
+    def displayImg(self, name: str, image: MatLike) -> None:
+        dialog = ImageViewerPopup(name, image)
+        _ = dialog.exec()
 
     def openProject(self) -> None:
         settings = QSettings()

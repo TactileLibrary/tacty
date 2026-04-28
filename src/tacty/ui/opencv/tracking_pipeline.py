@@ -13,23 +13,24 @@ from tacty.ui.utils.cvConversions import toSpace
 class TrackingPipeline(QThread):
     project: Project
 
+    debugImages: dict[str, MatLike]
+
     progress: Signal = Signal(int)
 
-    def __init__(self, project: Project):
+    def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
+        self.debugImages = debugImages
 
-    def mapToMask(self, img: MatLike, tolerance: int = 25) -> MatLike | None:
+    def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
 
-        tolerance = int(max_val * tolerance / 100)
+        tolerance = int(max_val * tolerance)
 
         lower_bound = np.array([max_val - tolerance])
         upper_bound = np.array([max_val])
 
-        if max_val > 30:
-            return cv2.inRange(img, lower_bound, upper_bound)
-        return None
+        return cv2.inRange(img, lower_bound, upper_bound)
 
     def classifyTwoMarkers(
         self,
@@ -225,6 +226,56 @@ class TrackingPipeline(QThread):
             )
             return
 
+    def getColorMap(
+        self, h: MatLike, s: MatLike, v: MatLike, target_hue: int, width: int = 15
+    ):
+        diff = np.abs(h - target_hue)
+        dist = np.minimum(diff, 180 - diff)
+
+        hue_score = np.maximum(0, 1 - (dist / width))
+
+        color_map = hue_score * (s / 255.0) * (v / 255.0)
+
+        color_map[s < 50] = 0
+        color_map[v < 50] = 0
+
+        return (color_map * 255).astype(np.uint8)
+
+    def updateDebugImages(self, image: MatLike):
+        # image is already calibrated
+
+        hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        hsv_img_float = hsv_img.astype(np.float32)
+        h, s, v = cv2.split(hsv_img_float)
+
+        r_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.r)
+        g_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.g)
+        b_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.b)
+        c_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.c)
+        y_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.y)
+        m_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.m)
+
+        self.debugImages["Red map"] = r_map
+        self.debugImages["Green map"] = g_map
+        self.debugImages["Blue map"] = b_map
+        self.debugImages["Cyan map"] = c_map
+        self.debugImages["Yellow map"] = y_map
+        self.debugImages["Magenta map"] = m_map
+
+        r_mask = self.mapToMask(r_map, self.project.trackingOptions.tolerances.r)
+        g_mask = self.mapToMask(g_map, self.project.trackingOptions.tolerances.g)
+        b_mask = self.mapToMask(b_map, self.project.trackingOptions.tolerances.b)
+        c_mask = self.mapToMask(c_map, self.project.trackingOptions.tolerances.c)
+        y_mask = self.mapToMask(y_map, self.project.trackingOptions.tolerances.y)
+        m_mask = self.mapToMask(m_map, self.project.trackingOptions.tolerances.m)
+
+        self.debugImages["Red mask"] = r_mask
+        self.debugImages["Green mask"] = g_mask
+        self.debugImages["Blue mask"] = b_mask
+        self.debugImages["Cyan mask"] = c_mask
+        self.debugImages["Yellow mask"] = y_mask
+        self.debugImages["Magenta mask"] = m_mask
+
     @override
     def run(self):
         # open the video
@@ -248,22 +299,23 @@ class TrackingPipeline(QThread):
 
             calibrated_img = calibration.process(img)
 
-            b, g, r = cv2.split(calibrated_img)
+            hsv_img = cv2.cvtColor(calibrated_img, cv2.COLOR_BGR2HSV)
+            hsv_img_float = hsv_img.astype(np.float32)
+            h, s, v = cv2.split(hsv_img_float)
 
-            r_map = cv2.subtract(cv2.subtract(r, g), b)  # r - g - b
-            g_map = cv2.subtract(cv2.subtract(g, b), r)  # g - b - r
-            b_map = cv2.subtract(cv2.subtract(b, r), g)  # b - r - g
+            r_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.r)
+            g_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.g)
+            b_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.b)
+            c_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.c)
+            y_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.y)
+            m_map = self.getColorMap(h, s, v, self.project.trackingOptions.hues.m)
 
-            c_map = cv2.subtract(cv2.min(b, g), r)  # min(b,g) - r
-            y_map = cv2.subtract(cv2.min(g, r), b)  # min(g,r) - b
-            m_map = cv2.subtract(cv2.min(b, r), g)  # min(b,r) - g
-
-            r_mask = self.mapToMask(r_map)
-            g_mask = self.mapToMask(g_map)
-            b_mask = self.mapToMask(b_map)
-            c_mask = self.mapToMask(c_map)
-            y_mask = self.mapToMask(y_map)
-            m_mask = self.mapToMask(m_map)
+            r_mask = self.mapToMask(r_map, self.project.trackingOptions.tolerances.r)
+            g_mask = self.mapToMask(g_map, self.project.trackingOptions.tolerances.g)
+            b_mask = self.mapToMask(b_map, self.project.trackingOptions.tolerances.b)
+            c_mask = self.mapToMask(c_map, self.project.trackingOptions.tolerances.c)
+            y_mask = self.mapToMask(y_map, self.project.trackingOptions.tolerances.y)
+            m_mask = self.mapToMask(m_map, self.project.trackingOptions.tolerances.m)
 
             markers: dict[str, TrackedMarker] = {}
 

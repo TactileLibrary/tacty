@@ -1,4 +1,6 @@
 import cv2
+from cv2.typing import MatLike
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
@@ -32,19 +34,29 @@ class ProjectView(QWidget):
     dataProcessingIdx: int
     exportIdx: int
 
+    # debug
+    debugImages: dict[str, MatLike]
+    debugTracker: TrackingPipeline
+    debugMode: bool = False
+
+    # signals
+    debugChanged: Signal = Signal()
+
     # tracking
     modal: QProgressDialog | None = None
     tracker: TrackingPipeline | None = None
 
-    def __init__(self, project: Project):
+    def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
+        self.debugImages = debugImages
         self.video = cv2.VideoCapture(project.videoFile, cv2.CAP_FFMPEG)
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.player = VideoPlayer(project, self.video)
+        self.player = VideoPlayer(project, self.video, debugImages)
+        self.debugTracker = TrackingPipeline(self.project, self.debugImages)
 
         # sidebar
         self.sidebar = QToolBox()
@@ -78,6 +90,23 @@ class ProjectView(QWidget):
 
         # video player
         layout.addWidget(self.player)
+        _ = self.player.frameChanged.connect(self.updateDebugImages)
+
+    def updateDebugImages(self):
+        if not self.debugMode:
+            return
+
+        # reset images
+        self.debugImages.clear()
+
+        # tell components to add images
+        self.player.addDebugImages()
+        img = self.player.getImage()
+        if img is not None:
+            self.debugTracker.updateDebugImages(img)
+
+        # tell window to update menu
+        self.debugChanged.emit()
 
     def startTracking(self):
         self.modal = QProgressDialog(
@@ -90,7 +119,7 @@ class ProjectView(QWidget):
         self.modal.setModal(True)
         self.modal.setMinimumDuration(0)
 
-        self.tracker = TrackingPipeline(self.project)
+        self.tracker = TrackingPipeline(self.project, self.debugImages)
 
         _ = self.tracker.progress.connect(self.modal.setValue)
         _ = self.tracker.finished.connect(self.trackingFinished)
