@@ -17,10 +17,31 @@ class TrackingPipeline(QThread):
 
     progress: Signal = Signal(int)
 
+    circleContour: MatLike
+    squareContour: MatLike
+
     def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
         self.debugImages = debugImages
+        self.generateReferenceShapes()
+
+    def generateReferenceShapes(self) -> None:
+        circleCanvas = np.zeros((100, 100), dtype=np.uint8)
+        squareCanvas = np.zeros((100, 100), dtype=np.uint8)
+
+        _ = cv2.circle(circleCanvas, (50, 50), 40, 255, -1)
+        _ = cv2.rectangle(squareCanvas, (10, 10), (90, 90), 255, -1)
+
+        circleCountours, _ = cv2.findContours(
+            circleCanvas, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+        squareContours, _ = cv2.findContours(
+            squareCanvas, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+
+        self.circleContour = circleCountours[0]
+        self.squareContour = squareContours[0]
 
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
@@ -54,30 +75,24 @@ class TrackingPipeline(QThread):
             0
         ][0]
 
-        # get the area
-        area1 = cv2.contourArea(countour1)
-        area2 = cv2.contourArea(countour2)
+        # match to shapes
+        circleScore1 = cv2.matchShapes(
+            countour1, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+        )
+        squareScore1 = cv2.matchShapes(
+            countour1, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+        )
+        circleness1 = circleScore1 - squareScore1
 
-        # fitting elipse
-        _, axes1, _ = cv2.fitEllipse(countour1)
-        _, axes2, _ = cv2.fitEllipse(countour2)
-        area_e1 = (np.pi * axes1[0] * axes1[1]) / 4
-        area_e2 = (np.pi * axes2[0] * axes2[1]) / 4
-        ratio_e1 = area1 / area_e1
-        ratio_e2 = area2 / area_e2
+        circleScore2 = cv2.matchShapes(
+            countour2, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+        )
+        squareScore2 = cv2.matchShapes(
+            countour2, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+        )
+        circleness2 = circleScore2 - squareScore2
 
-        # fitting rectangle
-        rect1 = cv2.minAreaRect(countour1)
-        rect2 = cv2.minAreaRect(countour2)
-        area_r1 = rect1[1][0] * rect1[1][1]
-        area_r2 = rect2[1][0] * rect2[1][1]
-        ratio_r1 = area1 / area_r1
-        ratio_r2 = area2 / area_r2
-
-        circleness_1 = ratio_e1 - ratio_r1
-        circleness_2 = ratio_e2 - ratio_r2
-
-        if circleness_1 > circleness_2:
+        if circleness1 < circleness2:
             label1 = "Circle"
             label2 = "Square"
         else:
@@ -157,19 +172,15 @@ class TrackingPipeline(QThread):
             0
         ]
 
-        # get the area
-        area = cv2.contourArea(countour)
+        # match to reference shapes
+        circleScore = cv2.matchShapes(
+            countour, self.circleContour, cv2.CONTOURS_MATCH_I1, 0
+        )
+        squareScore = cv2.matchShapes(
+            countour, self.squareContour, cv2.CONTOURS_MATCH_I1, 0
+        )
 
-        # circularity calculation
-        peri = cv2.arcLength(countour, True)
-        circularity = (4 * np.pi * area) / (peri**2)
-
-        # fitting rectangle
-        rect = cv2.minAreaRect(countour)
-        area_r = rect[1][0] * rect[1][1]
-        ratio_r = area / area_r
-
-        if circularity > ratio_r:
+        if circleScore < squareScore:
             label = "Circle"
         else:
             label = "Square"
