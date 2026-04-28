@@ -88,11 +88,27 @@ class ColorOptions[T](BaseModel):
     m: T
 
 
+class FingerMapping(BaseModel):
+    leftThumb: str = "cyanCircle"
+    leftIndex: str = "yellowCircle"
+    leftMiddle: str = "blueCircle"
+    leftRing: str = "greenCircle"
+    leftPinky: str = "redCircle"
+    leftPalm: str = "magentaCircle"
+    rightThumb: str = "cyanSquare"
+    rightIndex: str = "yellowSquare"
+    rightMiddle: str = "blueSquare"
+    rightRing: str = "greenSquare"
+    rightPinky: str = "redSquare"
+    rightPalm: str = "magentaSquare"
+
+
 class TrackingOptions(BaseModel):
     hues: ColorOptions[int] = ColorOptions(r=0, y=30, g=60, c=90, b=120, m=150)
     tolerances: ColorOptions[float] = ColorOptions(
         r=0.25, y=0.25, g=0.25, c=0.25, b=0.25, m=0.25
     )
+    fingerMapping: FingerMapping = FingerMapping()
 
 
 class Project(BaseModel):

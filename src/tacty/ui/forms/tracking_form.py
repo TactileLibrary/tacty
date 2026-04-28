@@ -1,6 +1,7 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QSlider, QSpinBox, QWidget
+from PySide6.QtWidgets import QComboBox, QSlider, QSpinBox, QWidget
 
+from tacty.ui.components.shape_icon import getShapeIcon
 from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.models.project import TrackingOptions
 from tacty.ui.windows.hue_pick_modal import HuePickModal
@@ -83,7 +84,66 @@ class TrackingForm(QWidget):
                 lambda _, a=color, s=slider, t=spin: self.syncTolerance(a, s, t)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
             )
 
+        self.initComboBoxes()
+
         self.updateData()
+
+    def initComboBoxes(self) -> None:
+        boxes = [
+            (self.ui.leftThumb, "leftThumb"),
+            (self.ui.leftIndex, "leftIndex"),
+            (self.ui.leftMiddle, "leftMiddle"),
+            (self.ui.leftRing, "leftRing"),
+            (self.ui.leftPinky, "leftPinky"),
+            (self.ui.leftPalm, "leftPalm"),
+            (self.ui.rightThumb, "rightThumb"),
+            (self.ui.rightIndex, "rightIndex"),
+            (self.ui.rightMiddle, "rightMiddle"),
+            (self.ui.rightRing, "rightRing"),
+            (self.ui.rightPinky, "rightPinky"),
+            (self.ui.rightPalm, "rightPalm"),
+        ]
+
+        for box, finger in boxes:
+            self.addBoxOptions(box, finger)
+
+    def addBoxOptions(self, box: QComboBox, finger: str):
+        colors = ["red", "yellow", "green", "cyan", "blue", "magenta"]
+        shapes = ["circle", "square"]
+
+        combinations = [(c, s) for c in colors for s in shapes]
+
+        for color, shape in combinations:
+            name = color.capitalize() + " " + shape
+            value = color + shape.capitalize()
+            icon = getShapeIcon(color=color, shape=shape)
+
+            box.addItem(icon, name, value)
+
+        _ = box.currentIndexChanged.connect(
+            lambda _, b=box, f=finger: self.saveComboBox(b, f)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
+        )
+
+    def setComboBoxToData(self, box: QComboBox, data: str):
+        index = box.findData(data)
+        box.setCurrentIndex(index)
+
+    def updateComboBoxes(self):
+        self.setComboBoxToData(self.ui.leftThumb, self.data.fingerMapping.leftThumb)
+        self.setComboBoxToData(self.ui.leftIndex, self.data.fingerMapping.leftIndex)
+        self.setComboBoxToData(self.ui.leftMiddle, self.data.fingerMapping.leftMiddle)
+        self.setComboBoxToData(self.ui.leftRing, self.data.fingerMapping.leftRing)
+        self.setComboBoxToData(self.ui.leftPinky, self.data.fingerMapping.leftPinky)
+        self.setComboBoxToData(self.ui.leftPalm, self.data.fingerMapping.leftPalm)
+        self.setComboBoxToData(self.ui.rightThumb, self.data.fingerMapping.rightThumb)
+        self.setComboBoxToData(self.ui.rightIndex, self.data.fingerMapping.rightIndex)
+        self.setComboBoxToData(self.ui.rightMiddle, self.data.fingerMapping.rightMiddle)
+        self.setComboBoxToData(self.ui.rightRing, self.data.fingerMapping.rightRing)
+        self.setComboBoxToData(self.ui.rightPinky, self.data.fingerMapping.rightPinky)
+        self.setComboBoxToData(self.ui.rightPalm, self.data.fingerMapping.rightPalm)
+
+    def saveComboBox(self, box: QComboBox, finger: str):
+        setattr(self.data.fingerMapping, finger, box.currentData())
 
     def syncHue(self, key: str, element: QSpinBox):
         setattr(self.data.hues, key, element.value())
@@ -117,6 +177,9 @@ class TrackingForm(QWidget):
         self.ui.reset.setDisabled(True)
         if self.trackingData:
             self.ui.reset.setDisabled(False)
+
+        # combo boxes
+        self.updateComboBoxes()
 
     def syncTolerance(
         self, color: str, source: QSpinBox | QSlider, target: QSpinBox | QSlider

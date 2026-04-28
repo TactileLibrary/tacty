@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>703</height>
+    <width>501</width>
+    <height>814</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,6 +20,176 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="trackerMappingLabel">
+     <property name="text">
+      <string>### Tracker mapping</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::MarkdownText</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_13">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="leftHandLabel">
+         <property name="text">
+          <string>Left hand</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::PlainText</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="leftThumb"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="leftIndexLabel">
+           <property name="text">
+            <string>Index</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="leftIndex"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="leftMiddleLabel">
+           <property name="text">
+            <string>Middle</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="leftMiddle"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="leftRingLabel">
+           <property name="text">
+            <string>Ring</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="leftRing"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="leftPinkyLabel">
+           <property name="text">
+            <string>Pinky</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="leftPinky"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="leftPalmLabel">
+           <property name="text">
+            <string>Palm</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="leftPalm"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="leftThumbLabel">
+           <property name="text">
+            <string>Thumb</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="rightHandLabel">
+         <property name="text">
+          <string>Right hand</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::TextFormat::PlainText</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="rightThumb"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="rightIndexLabel">
+           <property name="text">
+            <string>Index</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="rightIndex"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="rightMiddleLabel">
+           <property name="text">
+            <string>Middle</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="rightMiddle"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="rightRingLabel">
+           <property name="text">
+            <string>Ring</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="rightRing"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="rightPinkyLabel">
+           <property name="text">
+            <string>Pinky</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="rightPinky"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="rightPalmLabel">
+           <property name="text">
+            <string>Palm</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QComboBox" name="rightPalm"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="rightThumbLabel">
+           <property name="text">
+            <string>Thumb</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QLabel" name="colorHuesLabel">
      <property name="text">
@@ -239,7 +409,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="colorHuesLabel_2">
+    <widget class="QLabel" name="colorTolerancesLabel">
      <property name="text">
       <string>### Color tolerances</string>
      </property>

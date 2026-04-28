@@ -41,8 +41,10 @@ class TrackingPipeline(QThread):
         markers: dict[str, TrackedMarker],
         indices: np.ndarray,
     ) -> None:
-        mask1 = cast(np.ndarray, (labels == indices[0]).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
-        mask2 = cast(np.ndarray, (labels == indices[1]).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
+        idx1, idx2 = indices[0], indices[1]
+
+        mask1 = cast(np.ndarray, (labels == idx1).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
+        mask2 = cast(np.ndarray, (labels == idx2).astype(np.uint8) * 255)  # pyright: ignore [reportAny]
 
         # find contours
         countour1 = cv2.findContours(mask1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
@@ -83,21 +85,21 @@ class TrackingPipeline(QThread):
             label2 = "Circle"
 
         # get data in physical space
-        c1 = Point(x=round(centroids[1][0]), y=round(centroids[1][0]))  # pyright: ignore [reportAny]
+        c1 = Point(x=round(centroids[idx1][0]), y=round(centroids[idx1][1]))  # pyright: ignore [reportAny]
         c1s = toSpace(
             c1,
             self.project.calibrationOptions.processingResolution(),
             self.project.calibrationOptions.pageSize,
         )
-        c2 = Point(x=round(centroids[2][0]), y=round(centroids[2][0]))  # pyright: ignore [reportAny]
+        c2 = Point(x=round(centroids[idx2][0]), y=round(centroids[idx2][1]))  # pyright: ignore [reportAny]
         c2s = toSpace(
             c2,
             self.project.calibrationOptions.processingResolution(),
             self.project.calibrationOptions.pageSize,
         )
         tl1 = Point(
-            x=round(stats[1][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
-            y=round(stats[1][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
+            x=round(stats[idx1][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
+            y=round(stats[idx1][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
         )
         tl1s = toSpace(
             tl1,
@@ -105,8 +107,8 @@ class TrackingPipeline(QThread):
             self.project.calibrationOptions.pageSize,
         )
         br1 = Point(
-            x=tl1.x + round(stats[1][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
-            y=tl1.y + round(stats[1][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
+            x=tl1.x + round(stats[idx1][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
+            y=tl1.y + round(stats[idx1][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
         )
         br1s = toSpace(
             br1,
@@ -114,8 +116,8 @@ class TrackingPipeline(QThread):
             self.project.calibrationOptions.pageSize,
         )
         tl2 = Point(
-            x=round(stats[2][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
-            y=round(stats[2][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
+            x=round(stats[idx2][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
+            y=round(stats[idx2][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
         )
         tl2s = toSpace(
             tl2,
@@ -123,8 +125,8 @@ class TrackingPipeline(QThread):
             self.project.calibrationOptions.pageSize,
         )
         br2 = Point(
-            x=tl2.x + round(stats[2][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
-            y=tl2.y + round(stats[2][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
+            x=tl2.x + round(stats[idx2][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
+            y=tl2.y + round(stats[idx2][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
         )
         br2s = toSpace(
             br2,
@@ -173,7 +175,7 @@ class TrackingPipeline(QThread):
             label = "Square"
 
         # get data in physical space
-        c = Point(x=round(centroids[1][0]), y=round(centroids[1][0]))  # pyright: ignore [reportAny]
+        c = Point(x=round(centroids[1][0]), y=round(centroids[1][1]))  # pyright: ignore [reportAny]
         cs = toSpace(
             c,
             self.project.calibrationOptions.processingResolution(),

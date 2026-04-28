@@ -19,6 +19,11 @@ class TrackingDisplayPipeline:
 
         canvas = img.copy()
 
+        fingerToMarker: dict[str, str] = (
+            self.data.trackingOptions.fingerMapping.model_dump()
+        )
+        markerToFinger: dict[str, str] = {m: f for f, m in fingerToMarker.items()}
+
         for key in markers:
             marker = markers[key]
 
@@ -44,5 +49,65 @@ class TrackingDisplayPipeline:
             _ = cv2.putText(
                 canvas, key, tl.toCv(), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255)
             )
+
+            associated_finger = markerToFinger[key]
+
+            if associated_finger.startswith("left"):
+                associated_palm = fingerToMarker.get("leftPalm")
+                if not associated_palm:
+                    continue
+                if associated_palm:
+                    palmMarker = markers.get(associated_palm)
+                    if not palmMarker:
+                        continue
+
+                    fingerCenter = toSpace(
+                        marker.centroid,
+                        self.data.calibrationOptions.pageSize,
+                        self.data.calibrationOptions.processingResolution(),
+                    )
+
+                    palmCenter = toSpace(
+                        palmMarker.centroid,
+                        self.data.calibrationOptions.pageSize,
+                        self.data.calibrationOptions.processingResolution(),
+                    )
+
+                    _ = cv2.line(
+                        canvas,
+                        fingerCenter.toCv(),
+                        palmCenter.toCv(),
+                        (255, 255, 255),
+                        1,
+                    )
+
+            if associated_finger.startswith("right"):
+                associated_palm = fingerToMarker.get("rightPalm")
+                if not associated_palm:
+                    continue
+                if associated_palm:
+                    palmMarker = markers.get(associated_palm)
+                    if not palmMarker:
+                        continue
+
+                    fingerCenter = toSpace(
+                        marker.centroid,
+                        self.data.calibrationOptions.pageSize,
+                        self.data.calibrationOptions.processingResolution(),
+                    )
+
+                    palmCenter = toSpace(
+                        palmMarker.centroid,
+                        self.data.calibrationOptions.pageSize,
+                        self.data.calibrationOptions.processingResolution(),
+                    )
+
+                    _ = cv2.line(
+                        canvas,
+                        fingerCenter.toCv(),
+                        palmCenter.toCv(),
+                        (255, 255, 255),
+                        1,
+                    )
 
         return canvas

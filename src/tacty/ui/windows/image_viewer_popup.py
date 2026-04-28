@@ -18,7 +18,7 @@ class ImageViewerPopup(QDialog):
         self.name = name
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)  # Remove borders for a cleaner look
+        layout.setContentsMargins(0, 0, 0, 0)
 
         self.viewer = ImageViewer(image)
         layout.addWidget(self.viewer)

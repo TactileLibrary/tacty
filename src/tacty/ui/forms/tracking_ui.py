@@ -15,15 +15,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFormLayout, QHBoxLayout, QLabel,
-    QPushButton, QSizePolicy, QSlider, QSpacerItem,
-    QSpinBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QHBoxLayout,
+    QLabel, QPushButton, QSizePolicy, QSlider,
+    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(528, 703)
+        Form.resize(501, 814)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -31,6 +31,169 @@ class Ui_Form(object):
         Form.setSizePolicy(sizePolicy)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.trackerMappingLabel = QLabel(Form)
+        self.trackerMappingLabel.setObjectName(u"trackerMappingLabel")
+        self.trackerMappingLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.trackerMappingLabel)
+
+        self.horizontalLayout_13 = QHBoxLayout()
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.leftHandLabel = QLabel(Form)
+        self.leftHandLabel.setObjectName(u"leftHandLabel")
+        self.leftHandLabel.setTextFormat(Qt.TextFormat.PlainText)
+
+        self.verticalLayout_3.addWidget(self.leftHandLabel)
+
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(u"formLayout")
+        self.leftThumb = QComboBox(Form)
+        self.leftThumb.setObjectName(u"leftThumb")
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.leftThumb)
+
+        self.leftIndexLabel = QLabel(Form)
+        self.leftIndexLabel.setObjectName(u"leftIndexLabel")
+
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.leftIndexLabel)
+
+        self.leftIndex = QComboBox(Form)
+        self.leftIndex.setObjectName(u"leftIndex")
+
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.leftIndex)
+
+        self.leftMiddleLabel = QLabel(Form)
+        self.leftMiddleLabel.setObjectName(u"leftMiddleLabel")
+
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.LabelRole, self.leftMiddleLabel)
+
+        self.leftMiddle = QComboBox(Form)
+        self.leftMiddle.setObjectName(u"leftMiddle")
+
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.leftMiddle)
+
+        self.leftRingLabel = QLabel(Form)
+        self.leftRingLabel.setObjectName(u"leftRingLabel")
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.LabelRole, self.leftRingLabel)
+
+        self.leftRing = QComboBox(Form)
+        self.leftRing.setObjectName(u"leftRing")
+
+        self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.leftRing)
+
+        self.leftPinkyLabel = QLabel(Form)
+        self.leftPinkyLabel.setObjectName(u"leftPinkyLabel")
+
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.LabelRole, self.leftPinkyLabel)
+
+        self.leftPinky = QComboBox(Form)
+        self.leftPinky.setObjectName(u"leftPinky")
+
+        self.formLayout.setWidget(4, QFormLayout.ItemRole.FieldRole, self.leftPinky)
+
+        self.leftPalmLabel = QLabel(Form)
+        self.leftPalmLabel.setObjectName(u"leftPalmLabel")
+
+        self.formLayout.setWidget(5, QFormLayout.ItemRole.LabelRole, self.leftPalmLabel)
+
+        self.leftPalm = QComboBox(Form)
+        self.leftPalm.setObjectName(u"leftPalm")
+
+        self.formLayout.setWidget(5, QFormLayout.ItemRole.FieldRole, self.leftPalm)
+
+        self.leftThumbLabel = QLabel(Form)
+        self.leftThumbLabel.setObjectName(u"leftThumbLabel")
+
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.leftThumbLabel)
+
+
+        self.verticalLayout_3.addLayout(self.formLayout)
+
+
+        self.horizontalLayout_13.addLayout(self.verticalLayout_3)
+
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.rightHandLabel = QLabel(Form)
+        self.rightHandLabel.setObjectName(u"rightHandLabel")
+        self.rightHandLabel.setTextFormat(Qt.TextFormat.PlainText)
+
+        self.verticalLayout_2.addWidget(self.rightHandLabel)
+
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.rightThumb = QComboBox(Form)
+        self.rightThumb.setObjectName(u"rightThumb")
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.FieldRole, self.rightThumb)
+
+        self.rightIndexLabel = QLabel(Form)
+        self.rightIndexLabel.setObjectName(u"rightIndexLabel")
+
+        self.formLayout_3.setWidget(1, QFormLayout.ItemRole.LabelRole, self.rightIndexLabel)
+
+        self.rightIndex = QComboBox(Form)
+        self.rightIndex.setObjectName(u"rightIndex")
+
+        self.formLayout_3.setWidget(1, QFormLayout.ItemRole.FieldRole, self.rightIndex)
+
+        self.rightMiddleLabel = QLabel(Form)
+        self.rightMiddleLabel.setObjectName(u"rightMiddleLabel")
+
+        self.formLayout_3.setWidget(2, QFormLayout.ItemRole.LabelRole, self.rightMiddleLabel)
+
+        self.rightMiddle = QComboBox(Form)
+        self.rightMiddle.setObjectName(u"rightMiddle")
+
+        self.formLayout_3.setWidget(2, QFormLayout.ItemRole.FieldRole, self.rightMiddle)
+
+        self.rightRingLabel = QLabel(Form)
+        self.rightRingLabel.setObjectName(u"rightRingLabel")
+
+        self.formLayout_3.setWidget(3, QFormLayout.ItemRole.LabelRole, self.rightRingLabel)
+
+        self.rightRing = QComboBox(Form)
+        self.rightRing.setObjectName(u"rightRing")
+
+        self.formLayout_3.setWidget(3, QFormLayout.ItemRole.FieldRole, self.rightRing)
+
+        self.rightPinkyLabel = QLabel(Form)
+        self.rightPinkyLabel.setObjectName(u"rightPinkyLabel")
+
+        self.formLayout_3.setWidget(4, QFormLayout.ItemRole.LabelRole, self.rightPinkyLabel)
+
+        self.rightPinky = QComboBox(Form)
+        self.rightPinky.setObjectName(u"rightPinky")
+
+        self.formLayout_3.setWidget(4, QFormLayout.ItemRole.FieldRole, self.rightPinky)
+
+        self.rightPalmLabel = QLabel(Form)
+        self.rightPalmLabel.setObjectName(u"rightPalmLabel")
+
+        self.formLayout_3.setWidget(5, QFormLayout.ItemRole.LabelRole, self.rightPalmLabel)
+
+        self.rightPalm = QComboBox(Form)
+        self.rightPalm.setObjectName(u"rightPalm")
+
+        self.formLayout_3.setWidget(5, QFormLayout.ItemRole.FieldRole, self.rightPalm)
+
+        self.rightThumbLabel = QLabel(Form)
+        self.rightThumbLabel.setObjectName(u"rightThumbLabel")
+
+        self.formLayout_3.setWidget(0, QFormLayout.ItemRole.LabelRole, self.rightThumbLabel)
+
+
+        self.verticalLayout_2.addLayout(self.formLayout_3)
+
+
+        self.horizontalLayout_13.addLayout(self.verticalLayout_2)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_13)
+
         self.colorHuesLabel = QLabel(Form)
         self.colorHuesLabel.setObjectName(u"colorHuesLabel")
         self.colorHuesLabel.setTextFormat(Qt.TextFormat.MarkdownText)
@@ -183,11 +346,11 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.colorForm)
 
-        self.colorHuesLabel_2 = QLabel(Form)
-        self.colorHuesLabel_2.setObjectName(u"colorHuesLabel_2")
-        self.colorHuesLabel_2.setTextFormat(Qt.TextFormat.MarkdownText)
+        self.colorTolerancesLabel = QLabel(Form)
+        self.colorTolerancesLabel.setObjectName(u"colorTolerancesLabel")
+        self.colorTolerancesLabel.setTextFormat(Qt.TextFormat.MarkdownText)
 
-        self.verticalLayout.addWidget(self.colorHuesLabel_2)
+        self.verticalLayout.addWidget(self.colorTolerancesLabel)
 
         self.colorForm_2 = QFormLayout()
         self.colorForm_2.setObjectName(u"colorForm_2")
@@ -366,6 +529,21 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.trackerMappingLabel.setText(QCoreApplication.translate("Form", u"### Tracker mapping", None))
+        self.leftHandLabel.setText(QCoreApplication.translate("Form", u"Left hand", None))
+        self.leftIndexLabel.setText(QCoreApplication.translate("Form", u"Index", None))
+        self.leftMiddleLabel.setText(QCoreApplication.translate("Form", u"Middle", None))
+        self.leftRingLabel.setText(QCoreApplication.translate("Form", u"Ring", None))
+        self.leftPinkyLabel.setText(QCoreApplication.translate("Form", u"Pinky", None))
+        self.leftPalmLabel.setText(QCoreApplication.translate("Form", u"Palm", None))
+        self.leftThumbLabel.setText(QCoreApplication.translate("Form", u"Thumb", None))
+        self.rightHandLabel.setText(QCoreApplication.translate("Form", u"Right hand", None))
+        self.rightIndexLabel.setText(QCoreApplication.translate("Form", u"Index", None))
+        self.rightMiddleLabel.setText(QCoreApplication.translate("Form", u"Middle", None))
+        self.rightRingLabel.setText(QCoreApplication.translate("Form", u"Ring", None))
+        self.rightPinkyLabel.setText(QCoreApplication.translate("Form", u"Pinky", None))
+        self.rightPalmLabel.setText(QCoreApplication.translate("Form", u"Palm", None))
+        self.rightThumbLabel.setText(QCoreApplication.translate("Form", u"Thumb", None))
         self.colorHuesLabel.setText(QCoreApplication.translate("Form", u"### Color hue values", None))
         self.redHueLabel.setText(QCoreApplication.translate("Form", u"Red", None))
         self.redHue.setSuffix(QCoreApplication.translate("Form", u"\u00b0", None))
@@ -385,7 +563,7 @@ class Ui_Form(object):
         self.magentaHueLabel.setText(QCoreApplication.translate("Form", u"Magenta", None))
         self.magentaHue.setSuffix(QCoreApplication.translate("Form", u"\u00b0", None))
         self.magentaHuePick.setText(QCoreApplication.translate("Form", u"Pick", None))
-        self.colorHuesLabel_2.setText(QCoreApplication.translate("Form", u"### Color tolerances", None))
+        self.colorTolerancesLabel.setText(QCoreApplication.translate("Form", u"### Color tolerances", None))
         self.redToleranceLabel.setText(QCoreApplication.translate("Form", u"Red", None))
         self.redTolerance.setSuffix(QCoreApplication.translate("Form", u"%", None))
         self.yellowToleranceLabel.setText(QCoreApplication.translate("Form", u"Yellow", None))
