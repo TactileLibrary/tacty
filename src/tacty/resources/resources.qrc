@@ -6,7 +6,8 @@
     <file>templates/about.md</file>
 </qresource>
 <qresource prefix="/">
-    <file>onnx/tacty-ai-classifier-v1-0-circle-1-square.onnx</file>
+    <file>onnx/tacty-ai-classifier-v1-20x-0-circle-1-square.onnx</file>
     <file>onnx/tacty-ai-classifier-v2-32x-0-circle-1-square.onnx</file>
+    <file>onnx/tacty-ai-classifier-v3-32x-0-circle-1-square.onnx</file>
 </qresource>
 </RCC>

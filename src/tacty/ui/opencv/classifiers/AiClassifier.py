@@ -16,7 +16,7 @@ class AiClassifier(BaseClassifier):
     session: InferenceSession
 
     def __init__(self):
-        model_file = QFile(":/onnx/tacty-ai-classifier-v2-32x-0-circle-1-square.onnx")
+        model_file = QFile(":/onnx/tacty-ai-classifier-v3-32x-0-circle-1-square.onnx")
 
         if not model_file.open(QIODeviceBase.OpenModeFlag.ReadOnly):
             raise FileNotFoundError("Could not find the model file in Qt resources.")
@@ -32,12 +32,12 @@ class AiClassifier(BaseClassifier):
         w: int
         h, w = image.shape[:2]  # pyright: ignore [reportAny]
 
-        if h > 30 or w > 30:
+        if h > 28 or w > 28:
             # scale down the image
-            processed = cv2.resize(image, (30, 30), interpolation=cv2.INTER_AREA)
+            processed = cv2.resize(image, (28, 28), interpolation=cv2.INTER_AREA)
 
             processed = cv2.copyMakeBorder(
-                processed, 1, 1, 1, 1, borderType=cv2.BORDER_CONSTANT, value=0
+                processed, 2, 2, 2, 2, borderType=cv2.BORDER_CONSTANT, value=0
             )
         else:
             processed = np.zeros((32, 32), dtype=np.uint8)
