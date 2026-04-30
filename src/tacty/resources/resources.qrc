@@ -5,4 +5,7 @@
 <qresource prefix="/">
     <file>templates/about.md</file>
 </qresource>
+<qresource prefix="/">
+    <file>onnx/tacty-ai-classifier-v1-0-circle-1-square.onnx</file>
+</qresource>
 </RCC>

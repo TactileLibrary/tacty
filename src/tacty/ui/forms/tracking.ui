@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>501</width>
-    <height>814</height>
+    <height>873</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -646,18 +646,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QComboBox" name="classifier">
-       <item>
-        <property name="text">
-         <string>Hu Moments</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>AI Classifier</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="classifier"/>
      </item>
     </layout>
    </item>

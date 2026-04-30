@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(501, 814)
+        Form.resize(501, 873)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -515,8 +515,6 @@ class Ui_Form(object):
         self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.classifierLabel)
 
         self.classifier = QComboBox(Form)
-        self.classifier.addItem("")
-        self.classifier.addItem("")
         self.classifier.setObjectName(u"classifier")
 
         self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.classifier)
@@ -601,9 +599,6 @@ class Ui_Form(object):
         self.magentaTolerance.setSuffix(QCoreApplication.translate("Form", u"%", None))
         self.shapeDetectionLabel.setText(QCoreApplication.translate("Form", u"### Shape detection", None))
         self.classifierLabel.setText(QCoreApplication.translate("Form", u"Classifier", None))
-        self.classifier.setItemText(0, QCoreApplication.translate("Form", u"Hu Moments", None))
-        self.classifier.setItemText(1, QCoreApplication.translate("Form", u"AI Classifier", None))
-
         self.trackingLabel.setText(QCoreApplication.translate("Form", u"### Run", None))
         self.track.setText(QCoreApplication.translate("Form", u"Start tracking", None))
         self.reset.setText(QCoreApplication.translate("Form", u"Reset tracking", None))

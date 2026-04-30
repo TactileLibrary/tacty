@@ -109,6 +109,7 @@ class TrackingOptions(BaseModel):
         r=0.25, y=0.25, g=0.25, c=0.25, b=0.25, m=0.25
     )
     fingerMapping: FingerMapping = FingerMapping()
+    classifier: str = "hu"
 
 
 class Project(BaseModel):

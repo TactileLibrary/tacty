@@ -7,6 +7,7 @@ from PySide6.QtCore import QThread, Signal
 
 from tacty.ui.models.project import BoundingBox, Point, Project, TrackedMarker
 from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.ui.opencv.classifiers.AiClassifier import AiClassifier
 from tacty.ui.opencv.classifiers.BaseClassifier import BaseClassifier
 from tacty.ui.opencv.classifiers.HuMomentsClassifier import HuMomentsClassifier
 from tacty.ui.utils.cvConversions import toSpace
@@ -19,15 +20,12 @@ class TrackingPipeline(QThread):
 
     progress: Signal = Signal(int)
 
-    classifier: BaseClassifier
+    classifier: BaseClassifier | None = None
 
     def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
         self.debugImages = debugImages
-
-        # hard coded for now
-        self.classifier = HuMomentsClassifier()
 
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
@@ -48,6 +46,9 @@ class TrackingPipeline(QThread):
         markers: dict[str, TrackedMarker],
         indices: np.ndarray,
     ) -> None:
+        if self.classifier is None:
+            return
+
         idx1, idx2 = indices[0], indices[1]
 
         x1, y1 = stats[idx1, cv2.CC_STAT_LEFT], stats[idx1, cv2.CC_STAT_TOP]
@@ -148,6 +149,9 @@ class TrackingPipeline(QThread):
         markers: dict[str, TrackedMarker],
         index: int,
     ) -> None:
+        if self.classifier is None:
+            return
+
         x, y = stats[index, cv2.CC_STAT_LEFT], stats[index, cv2.CC_STAT_TOP]
         w, h = stats[index, cv2.CC_STAT_WIDTH], stats[index, cv2.CC_STAT_HEIGHT]
         cropped_labels = labels[y : y + h, x : x + w]
@@ -268,6 +272,16 @@ class TrackingPipeline(QThread):
         # prepare a calibrationPipeline
         calibration = CalibrationPipeline(self.project.calibrationOptions)
 
+        # prepare a classifier
+        if self.project.trackingOptions.classifier == "hu":
+            self.classifier = HuMomentsClassifier()
+        if self.project.trackingOptions.classifier == "ai":
+            self.classifier = AiClassifier()
+
+        if self.classifier is None:
+            return
+        print(f"Starting tracking using the {self.classifier.getName()} classifier.")
+
         # seek to start frame
         frame = self.project.calibrationOptions.videoTrim.start.value
         _ = video.set(cv2.CAP_PROP_POS_FRAMES, frame)
@@ -326,5 +340,8 @@ class TrackingPipeline(QThread):
 
         # close the video
         video.release()
+
+        # release memory
+        self.classifier = None
 
         self.finished.emit()

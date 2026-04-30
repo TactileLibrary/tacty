@@ -86,7 +86,18 @@ class TrackingForm(QWidget):
 
         self.initComboBoxes()
 
+        classifier_pairs = [("hu", "Hu Moments"), ("ai", "AI Classifier")]
+
+        for value, text in classifier_pairs:
+            self.ui.classifier.addItem(text, value)
+
+        _ = self.ui.classifier.currentIndexChanged.connect(self.updateClassifier)
+
         self.updateData()
+
+    def updateClassifier(self) -> None:
+        data: str = self.ui.classifier.currentData()  # pyright: ignore [reportAny]
+        self.data.classifier = data
 
     def initComboBoxes(self) -> None:
         boxes = [
@@ -180,6 +191,10 @@ class TrackingForm(QWidget):
 
         # combo boxes
         self.updateComboBoxes()
+
+        # classifier
+        index = self.ui.classifier.findData(self.data.classifier)
+        self.ui.classifier.setCurrentIndex(index)
 
     def syncTolerance(
         self, color: str, source: QSpinBox | QSlider, target: QSpinBox | QSlider

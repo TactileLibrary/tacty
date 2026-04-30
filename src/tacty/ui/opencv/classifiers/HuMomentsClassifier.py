@@ -30,6 +30,10 @@ class HuMomentsClassifier(BaseClassifier):
         self.squareContour = squareContours[0]
 
     @override
+    def getName(self) -> str:
+        return "Hu Moments"
+
+    @override
     def pred(self, image: MatLike) -> tuple[str, float]:
         # find contour
         countour = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
