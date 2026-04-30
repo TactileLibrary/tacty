@@ -7,6 +7,8 @@ from PySide6.QtCore import QThread, Signal
 
 from tacty.ui.models.project import BoundingBox, Point, Project, TrackedMarker
 from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.ui.opencv.classifiers.BaseClassifier import BaseClassifier
+from tacty.ui.opencv.classifiers.HuMomentsClassifier import HuMomentsClassifier
 from tacty.ui.utils.cvConversions import toSpace
 
 
@@ -17,31 +19,15 @@ class TrackingPipeline(QThread):
 
     progress: Signal = Signal(int)
 
-    circleContour: MatLike
-    squareContour: MatLike
+    classifier: BaseClassifier
 
     def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
         self.debugImages = debugImages
-        self.generateReferenceShapes()
 
-    def generateReferenceShapes(self) -> None:
-        circleCanvas = np.zeros((100, 100), dtype=np.uint8)
-        squareCanvas = np.zeros((100, 100), dtype=np.uint8)
-
-        _ = cv2.circle(circleCanvas, (50, 50), 40, 255, -1)
-        _ = cv2.rectangle(squareCanvas, (10, 10), (90, 90), 255, -1)
-
-        circleCountours, _ = cv2.findContours(
-            circleCanvas, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-        squareContours, _ = cv2.findContours(
-            squareCanvas, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-
-        self.circleContour = circleCountours[0]
-        self.squareContour = squareContours[0]
+        # hard coded for now
+        self.classifier = HuMomentsClassifier()
 
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
@@ -78,37 +64,23 @@ class TrackingPipeline(QThread):
 
         mask2 = cv2.inRange(cropped_labels, target_label, target_label)
 
-        # find contours
-        countour1 = cv2.findContours(mask1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
-            0
-        ][0]
-        countour2 = cv2.findContours(mask2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
-            0
-        ][0]
+        label1, conf1 = self.classifier.pred(mask1)
 
-        # match to shapes
-        circleScore1 = cv2.matchShapes(
-            countour1, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-        squareScore1 = cv2.matchShapes(
-            countour1, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-        circleness1 = circleScore1 - squareScore1
+        label2, conf2 = self.classifier.pred(mask2)
 
-        circleScore2 = cv2.matchShapes(
-            countour2, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-        squareScore2 = cv2.matchShapes(
-            countour2, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-        circleness2 = circleScore2 - squareScore2
-
-        if circleness1 < circleness2:
-            label1 = "Circle"
-            label2 = "Square"
-        else:
-            label1 = "Square"
-            label2 = "Circle"
+        if label1 == label2:
+            if conf1 > conf2:
+                # flip label 2
+                if label2 == "Square":
+                    label2 = "Circle"
+                else:
+                    label2 = "Square"
+            else:
+                # flip label 1
+                if label1 == "Square":
+                    label1 = "Circle"
+                else:
+                    label1 = "Square"
 
         # get data in physical space
         c1 = Point(x=round(centroids[idx1][0]), y=round(centroids[idx1][1]))  # pyright: ignore [reportAny]
@@ -183,23 +155,7 @@ class TrackingPipeline(QThread):
 
         mask = cv2.inRange(cropped_labels, target_label, target_label)
 
-        # find contours
-        countour = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[
-            0
-        ][0]
-
-        # match to reference shapes
-        circleScore = cv2.matchShapes(
-            countour, self.circleContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-        squareScore = cv2.matchShapes(
-            countour, self.squareContour, cv2.CONTOURS_MATCH_I2, 0
-        )
-
-        if circleScore < squareScore:
-            label = "Circle"
-        else:
-            label = "Square"
+        label, _ = self.classifier.pred(mask)
 
         # get data in physical space
         c = Point(x=round(centroids[1][0]), y=round(centroids[1][1]))  # pyright: ignore [reportAny]

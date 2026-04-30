@@ -501,6 +501,29 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.colorForm_2)
 
+        self.shapeDetectionLabel = QLabel(Form)
+        self.shapeDetectionLabel.setObjectName(u"shapeDetectionLabel")
+        self.shapeDetectionLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.shapeDetectionLabel)
+
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.classifierLabel = QLabel(Form)
+        self.classifierLabel.setObjectName(u"classifierLabel")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.classifierLabel)
+
+        self.classifier = QComboBox(Form)
+        self.classifier.addItem("")
+        self.classifier.addItem("")
+        self.classifier.setObjectName(u"classifier")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.classifier)
+
+
+        self.verticalLayout.addLayout(self.formLayout_2)
+
         self.trackingLabel = QLabel(Form)
         self.trackingLabel.setObjectName(u"trackingLabel")
         self.trackingLabel.setTextFormat(Qt.TextFormat.MarkdownText)
@@ -576,6 +599,11 @@ class Ui_Form(object):
         self.blueTolerance.setSuffix(QCoreApplication.translate("Form", u"%", None))
         self.magentaToleranceLabel.setText(QCoreApplication.translate("Form", u"Magenta", None))
         self.magentaTolerance.setSuffix(QCoreApplication.translate("Form", u"%", None))
+        self.shapeDetectionLabel.setText(QCoreApplication.translate("Form", u"### Shape detection", None))
+        self.classifierLabel.setText(QCoreApplication.translate("Form", u"Classifier", None))
+        self.classifier.setItemText(0, QCoreApplication.translate("Form", u"Hu Moments", None))
+        self.classifier.setItemText(1, QCoreApplication.translate("Form", u"AI Classifier", None))
+
         self.trackingLabel.setText(QCoreApplication.translate("Form", u"### Run", None))
         self.track.setText(QCoreApplication.translate("Form", u"Start tracking", None))
         self.reset.setText(QCoreApplication.translate("Form", u"Reset tracking", None))
