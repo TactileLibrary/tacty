@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 
 from tacty.models.project import Project
 from tacty.opencv.tracking_pipeline import TrackingPipeline
+from tacty.pandas.post_pipeline import PostProcessingPipeline
 from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.forms.calibration_form import CalibrationForm
 from tacty.ui.forms.tracking_form import TrackingForm
@@ -46,11 +47,15 @@ class ProjectView(QWidget):
     modal: QProgressDialog | None = None
     tracker: TrackingPipeline | None = None
 
+    # post processing
+    dataProcessor: PostProcessingPipeline
+
     def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
         self.debugImages = debugImages
         self.video = cv2.VideoCapture(project.videoFile, cv2.CAP_FFMPEG)
+        self.dataProcessor = PostProcessingPipeline(self.project)
 
         layout = QHBoxLayout()
         self.setLayout(layout)
@@ -92,6 +97,8 @@ class ProjectView(QWidget):
         layout.addWidget(self.player)
         _ = self.player.frameChanged.connect(self.updateDebugImages)
 
+        self.processData()
+
     def updateDebugImages(self):
         if not self.debugMode:
             return
@@ -126,6 +133,10 @@ class ProjectView(QWidget):
         _ = self.modal.canceled.connect(self.tracker.requestInterruption)
 
         self.tracker.start()
+
+    def processData(self):
+        if len(self.project.trackingData.keys()) > 0:
+            self.dataProcessor.processs()
 
     def trackingFinished(self):
         if self.modal:

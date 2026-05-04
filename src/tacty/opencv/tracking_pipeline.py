@@ -32,7 +32,9 @@ class TrackingPipeline(QThread):
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
 
-        tolerance = int(max(max_val, 5) * tolerance)
+        max_val = max(max_val, 10)
+
+        tolerance = int(max_val * tolerance)
 
         lower_bound = np.array([max_val - tolerance])
         upper_bound = np.array([max_val])

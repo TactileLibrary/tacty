@@ -102,6 +102,14 @@ class FingerMapping(BaseModel):
     rightPinky: str = "redSquare"
     rightPalm: str = "magentaSquare"
 
+    def toDict(self) -> dict[str, str]:
+        return self.model_dump()
+
+    def toInverseDict(self) -> dict[str, str]:
+        dict = self.toDict()
+        inverse = {v: k for k, v in dict.items()}
+        return inverse
+
 
 class TrackingOptions(BaseModel):
     hues: ColorOptions[int] = ColorOptions(r=0, y=30, g=60, c=90, b=120, m=150)
