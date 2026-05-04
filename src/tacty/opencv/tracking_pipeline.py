@@ -382,18 +382,12 @@ class TrackingPipeline(QThread):
 
             markers: dict[str, TrackedMarker] = {}
 
-            if r_mask is not None:
-                self.findMarkers(r_mask, "red", markers)
-            if g_mask is not None:
-                self.findMarkers(g_mask, "green", markers)
-            if b_mask is not None:
-                self.findMarkers(b_mask, "blue", markers)
-            if c_mask is not None:
-                self.findMarkers(c_mask, "cyan", markers)
-            if y_mask is not None:
-                self.findMarkers(y_mask, "yellow", markers)
-            if m_mask is not None:
-                self.findMarkers(m_mask, "magenta", markers)
+            self.findMarkers(r_mask, "red", markers)
+            self.findMarkers(g_mask, "green", markers)
+            self.findMarkers(b_mask, "blue", markers)
+            self.findMarkers(c_mask, "cyan", markers)
+            self.findMarkers(y_mask, "yellow", markers)
+            self.findMarkers(m_mask, "magenta", markers)
             t7 = time()
             timeTrack += t7 - t6
 
