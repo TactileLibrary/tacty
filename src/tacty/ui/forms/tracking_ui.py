@@ -363,7 +363,7 @@ class Ui_Form(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.redToleranceSlider = QSlider(Form)
         self.redToleranceSlider.setObjectName(u"redToleranceSlider")
-        self.redToleranceSlider.setMaximum(100)
+        self.redToleranceSlider.setMaximum(75)
         self.redToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.redToleranceSlider.setTickInterval(10)
 
@@ -371,7 +371,7 @@ class Ui_Form(object):
 
         self.redTolerance = QSpinBox(Form)
         self.redTolerance.setObjectName(u"redTolerance")
-        self.redTolerance.setMaximum(100)
+        self.redTolerance.setMaximum(75)
 
         self.horizontalLayout_7.addWidget(self.redTolerance)
 
@@ -387,7 +387,7 @@ class Ui_Form(object):
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.yellowToleranceSlider = QSlider(Form)
         self.yellowToleranceSlider.setObjectName(u"yellowToleranceSlider")
-        self.yellowToleranceSlider.setMaximum(100)
+        self.yellowToleranceSlider.setMaximum(75)
         self.yellowToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.yellowToleranceSlider.setTickInterval(10)
 
@@ -395,7 +395,7 @@ class Ui_Form(object):
 
         self.yellowTolerance = QSpinBox(Form)
         self.yellowTolerance.setObjectName(u"yellowTolerance")
-        self.yellowTolerance.setMaximum(100)
+        self.yellowTolerance.setMaximum(75)
 
         self.horizontalLayout_8.addWidget(self.yellowTolerance)
 
@@ -411,7 +411,7 @@ class Ui_Form(object):
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.greenToleranceSlider = QSlider(Form)
         self.greenToleranceSlider.setObjectName(u"greenToleranceSlider")
-        self.greenToleranceSlider.setMaximum(100)
+        self.greenToleranceSlider.setMaximum(75)
         self.greenToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.greenToleranceSlider.setTickInterval(10)
 
@@ -419,7 +419,7 @@ class Ui_Form(object):
 
         self.greenTolerance = QSpinBox(Form)
         self.greenTolerance.setObjectName(u"greenTolerance")
-        self.greenTolerance.setMaximum(100)
+        self.greenTolerance.setMaximum(75)
 
         self.horizontalLayout_9.addWidget(self.greenTolerance)
 
@@ -435,7 +435,7 @@ class Ui_Form(object):
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.cyanToleranceSlider = QSlider(Form)
         self.cyanToleranceSlider.setObjectName(u"cyanToleranceSlider")
-        self.cyanToleranceSlider.setMaximum(100)
+        self.cyanToleranceSlider.setMaximum(75)
         self.cyanToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.cyanToleranceSlider.setTickInterval(10)
 
@@ -443,7 +443,7 @@ class Ui_Form(object):
 
         self.cyanTolerance = QSpinBox(Form)
         self.cyanTolerance.setObjectName(u"cyanTolerance")
-        self.cyanTolerance.setMaximum(100)
+        self.cyanTolerance.setMaximum(75)
 
         self.horizontalLayout_10.addWidget(self.cyanTolerance)
 
@@ -459,7 +459,7 @@ class Ui_Form(object):
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.blueToleranceSlider = QSlider(Form)
         self.blueToleranceSlider.setObjectName(u"blueToleranceSlider")
-        self.blueToleranceSlider.setMaximum(100)
+        self.blueToleranceSlider.setMaximum(75)
         self.blueToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.blueToleranceSlider.setTickInterval(10)
 
@@ -467,7 +467,7 @@ class Ui_Form(object):
 
         self.blueTolerance = QSpinBox(Form)
         self.blueTolerance.setObjectName(u"blueTolerance")
-        self.blueTolerance.setMaximum(100)
+        self.blueTolerance.setMaximum(75)
 
         self.horizontalLayout_11.addWidget(self.blueTolerance)
 
@@ -483,7 +483,7 @@ class Ui_Form(object):
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.magentaToleranceSlider = QSlider(Form)
         self.magentaToleranceSlider.setObjectName(u"magentaToleranceSlider")
-        self.magentaToleranceSlider.setMaximum(100)
+        self.magentaToleranceSlider.setMaximum(75)
         self.magentaToleranceSlider.setOrientation(Qt.Orientation.Horizontal)
         self.magentaToleranceSlider.setTickInterval(10)
 
@@ -491,7 +491,7 @@ class Ui_Form(object):
 
         self.magentaTolerance = QSpinBox(Form)
         self.magentaTolerance.setObjectName(u"magentaTolerance")
-        self.magentaTolerance.setMaximum(100)
+        self.magentaTolerance.setMaximum(75)
 
         self.horizontalLayout_12.addWidget(self.magentaTolerance)
 

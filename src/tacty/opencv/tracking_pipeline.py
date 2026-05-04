@@ -1,4 +1,6 @@
+from time import time
 from typing import cast, override
+from warnings import deprecated
 
 import cv2
 import numpy as np
@@ -30,7 +32,7 @@ class TrackingPipeline(QThread):
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         _, max_val, _, _ = cv2.minMaxLoc(img)
 
-        tolerance = int(max_val * tolerance)
+        tolerance = int(max(max_val, 5) * tolerance)
 
         lower_bound = np.array([max_val - tolerance])
         upper_bound = np.array([max_val])
@@ -215,6 +217,9 @@ class TrackingPipeline(QThread):
             )
             return
 
+    @deprecated(
+        "Extremely slow due to repeated arithmetics. Use getFastColorMap() and precomputeLuts() instead."
+    )
     def getColorMap(self, h: MatLike, sv: MatLike, target_hue: int, width: int = 15):
         diff = np.abs(h - target_hue)
         dist = np.minimum(diff, 180 - diff)
@@ -225,22 +230,55 @@ class TrackingPipeline(QThread):
 
         return (color_map * 255).astype(np.uint8)
 
+    def getFastColorMap(self, h: MatLike, sv: MatLike, lut: np.ndarray):
+        hue_score = cv2.LUT(h, lut)
+        return cv2.multiply(hue_score, sv, scale=1.0 / 255.0, dtype=cv2.CV_8U)
+
+    def precomputeLuts(self, width: int = 15) -> dict[str, np.ndarray]:
+        luts: dict[str, np.ndarray] = {}
+
+        targets = {
+            "r": self.project.trackingOptions.hues.r,
+            "g": self.project.trackingOptions.hues.g,
+            "b": self.project.trackingOptions.hues.b,
+            "c": self.project.trackingOptions.hues.c,
+            "y": self.project.trackingOptions.hues.y,
+            "m": self.project.trackingOptions.hues.m,
+        }
+
+        for key, target_hue in targets.items():
+            lut = np.zeros((256, 1), dtype=np.uint8)
+            hue_values = np.arange(180)
+
+            diff = np.abs(hue_values - target_hue)
+            dist = np.minimum(diff, 180 - diff)
+            hue_score = (np.maximum(0, 1 - (dist / width)) * 255).astype(np.uint8)
+
+            lut[:180, 0] = hue_score
+            luts[key] = lut
+
+        return luts
+
     def updateDebugImages(self, image: MatLike):
         # image is already calibrated
 
         hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        hsv_img_float = hsv_img.astype(np.float32)
-        h, s, v = cv2.split(hsv_img_float)
+        h, s, v = cv2.split(hsv_img)
 
-        sv = cast(MatLike, (s / 255.0) * (v / 255.0).astype(np.float32))
-        sv[(s < 50) | (v < 50)] = 0
+        lower_hsv = np.array([0, 50, 50], dtype=np.uint8)
+        upper_hsv = np.array([180, 255, 255], dtype=np.uint8)
+        sv_mask = cv2.inRange(hsv_img, lower_hsv, upper_hsv)
+        sv_base = cv2.multiply(s, v, scale=1.0 / 255.0)
+        sv = cv2.bitwise_and(sv_base, sv_mask)
 
-        r_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.r)
-        g_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.g)
-        b_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.b)
-        c_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.c)
-        y_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.y)
-        m_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.m)
+        luts = self.precomputeLuts()
+
+        r_map = self.getFastColorMap(h, sv, luts["r"])
+        g_map = self.getFastColorMap(h, sv, luts["g"])
+        b_map = self.getFastColorMap(h, sv, luts["b"])
+        c_map = self.getFastColorMap(h, sv, luts["c"])
+        y_map = self.getFastColorMap(h, sv, luts["y"])
+        m_map = self.getFastColorMap(h, sv, luts["m"])
 
         self.debugImages["Red map"] = r_map
         self.debugImages["Green map"] = g_map
@@ -286,29 +324,50 @@ class TrackingPipeline(QThread):
         frame = self.project.calibrationOptions.videoTrim.start.value
         _ = video.set(cv2.CAP_PROP_POS_FRAMES, frame)
 
+        timeDecoding: float = 0
+        timeCalibration: float = 0
+        timeHSV: float = 0
+        timeMap: float = 0
+        timeMask: float = 0
+        timeTrack: float = 0
+
+        luts = self.precomputeLuts()
+
         while frame <= self.project.calibrationOptions.videoTrim.end.value:
             if self.isInterruptionRequested():
                 break  # if the user clicks cancel
 
+            t1 = time()
             success, img = video.read()
             if not success:
                 continue
+            t2 = time()
+            timeDecoding += t2 - t1
 
             calibrated_img = calibration.process(img)
+            t3 = time()
+            timeCalibration += t3 - t2
 
             hsv_img = cv2.cvtColor(calibrated_img, cv2.COLOR_BGR2HSV)
-            hsv_img_float = hsv_img.astype(np.float32)
-            h, s, v = cv2.split(hsv_img_float)
+            h, s, v = cv2.split(hsv_img)
+            t4 = time()
+            timeHSV = t4 - t3
 
-            sv = cast(MatLike, (s / 255.0) * (v / 255.0).astype(np.float32))
-            sv[(s < 50) | (v < 50)] = 0
+            # changed this to CV math for better performance
+            lower_hsv = np.array([0, 50, 50], dtype=np.uint8)
+            upper_hsv = np.array([180, 255, 255], dtype=np.uint8)
+            sv_mask = cv2.inRange(hsv_img, lower_hsv, upper_hsv)
+            sv_base = cv2.multiply(s, v, scale=1.0 / 255.0)
+            sv = cv2.bitwise_and(sv_base, sv_mask)
 
-            r_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.r)
-            g_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.g)
-            b_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.b)
-            c_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.c)
-            y_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.y)
-            m_map = self.getColorMap(h, sv, self.project.trackingOptions.hues.m)
+            r_map = self.getFastColorMap(h, sv, luts["r"])
+            g_map = self.getFastColorMap(h, sv, luts["g"])
+            b_map = self.getFastColorMap(h, sv, luts["b"])
+            c_map = self.getFastColorMap(h, sv, luts["c"])
+            y_map = self.getFastColorMap(h, sv, luts["y"])
+            m_map = self.getFastColorMap(h, sv, luts["m"])
+            t5 = time()
+            timeMap += t5 - t4
 
             r_mask = self.mapToMask(r_map, self.project.trackingOptions.tolerances.r)
             g_mask = self.mapToMask(g_map, self.project.trackingOptions.tolerances.g)
@@ -316,6 +375,8 @@ class TrackingPipeline(QThread):
             c_mask = self.mapToMask(c_map, self.project.trackingOptions.tolerances.c)
             y_mask = self.mapToMask(y_map, self.project.trackingOptions.tolerances.y)
             m_mask = self.mapToMask(m_map, self.project.trackingOptions.tolerances.m)
+            t6 = time()
+            timeMask += t6 - t5
 
             markers: dict[str, TrackedMarker] = {}
 
@@ -331,6 +392,8 @@ class TrackingPipeline(QThread):
                 self.findMarkers(y_mask, "yellow", markers)
             if m_mask is not None:
                 self.findMarkers(m_mask, "magenta", markers)
+            t7 = time()
+            timeTrack += t7 - t6
 
             self.project.trackingData[frame] = markers
 
@@ -343,5 +406,10 @@ class TrackingPipeline(QThread):
 
         # release memory
         self.classifier = None
+
+        # print profiler
+        print(
+            f"Time spent: decoding {timeDecoding}s, calibrating {timeCalibration}s, transforming to HSV {timeHSV}s, extracting color maps {timeMap}s, computing masks {timeMask}s and tracking the fingers {timeTrack}s."
+        )
 
         self.finished.emit()
