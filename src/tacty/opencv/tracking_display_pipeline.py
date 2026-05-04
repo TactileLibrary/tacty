@@ -70,7 +70,7 @@ class TrackingDisplayPipeline:
             start_frame = max(idx_min, frame - window)
             end_frame = min(idx_max, frame + window)
             window_data = self.data.loc[start_frame:end_frame, (side + finger)]
-            coordinates = window_data[["x", "y"]].dropna().values
+            coordinates = window_data[["x", "y"]].dropna().values.astype(float)
 
             if len(coordinates) > 1:
                 # vectorized toSpace logic - should move to a differenf file later

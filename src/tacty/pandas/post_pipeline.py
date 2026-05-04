@@ -1,5 +1,6 @@
 from typing import cast
 
+import numpy as np
 import pandas as pd
 
 from tacty.models.project import Project
@@ -13,7 +14,76 @@ class PostProcessingPipeline:
 
     def processs(self) -> pd.DataFrame:
         df = self.loadDataframe()
-        return df
+        self.removeAnatomyOutliers(df)
+        self.removeSpeedOutliers(df)
+        df = df.interpolate(
+            method="linear",
+            limit=round(self.project.calibrationOptions.videoFps.value / 4),
+        )
+        df = df.round()  # need ints
+
+        return df.astype("Int32")
+
+    def removeSpeedOutliers(self, df: pd.DataFrame) -> None:
+        for marker in df.columns.get_level_values(0).unique():
+            # compute speed
+            dx = df.loc[:, (marker, "x")].diff()
+            dy = df.loc[:, (marker, "y")].diff()
+            speed = np.sqrt(dx**2 + dy**2)
+
+            # rolling IQR
+            Q1 = speed.rolling(
+                window=round(self.project.calibrationOptions.videoFps.value / 2.0),
+                center=True,
+            ).quantile(0.25)
+            Q3 = speed.rolling(
+                window=round(self.project.calibrationOptions.videoFps.value / 2.0),
+                center=True,
+            ).quantile(0.75)
+            IQR = Q3 - Q1
+            upper_bound = Q3 + 1.5 * IQR
+
+            is_outlier = speed > upper_bound
+            df.loc[is_outlier, (marker, slice(None))] = np.nan
+
+    def removeAnatomyOutliers(self, df: pd.DataFrame) -> None:
+        markers = df.columns.get_level_values(0).unique()
+
+        palms = [m for m in markers if "Palm" in m]
+        if not palms:
+            return
+
+        for marker in markers:
+            if "Palm" in marker:
+                continue
+
+            prefix = (
+                "left"
+                if marker.startswith("left")
+                else "right"
+                if marker.startswith("right")
+                else None
+            )
+            anchor = f"{prefix}Palm"
+            if anchor in markers:
+                palm_missing = df[(anchor, "x")].isna()
+                df.loc[palm_missing, (marker, slice(None))] = np.nan
+            if anchor not in palms:
+                continue
+
+            dx = df.loc[:, (marker, "x")] - df.loc[:, (anchor, "x")]
+            dy = df.loc[:, (marker, "y")] - df.loc[:, (anchor, "y")]
+            dist_to_palm = np.sqrt(dx**2 + dy**2)
+
+            Q1 = dist_to_palm.quantile(0.25)
+            Q3 = dist_to_palm.quantile(0.75)
+            IQR = Q3 - Q1
+
+            upper_limit = Q3 + 1.5 * IQR
+            lower_limit = Q1 - 1.5 * IQR
+
+            is_outlier = (dist_to_palm > upper_limit) | (dist_to_palm < lower_limit)
+            df.loc[is_outlier, (marker, slice(None))] = np.nan
 
     def loadDataframe(self) -> pd.DataFrame:
         # transforming the TrackingData into a dict that contains another dict, with a tuple as key
