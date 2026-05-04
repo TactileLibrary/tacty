@@ -79,15 +79,26 @@ class TrackingDisplayPipeline:
                 scales = np.array([to.w / og.w, to.h / og.h])
                 scaled_pts = np.round(coordinates * scales).astype(np.int32)
 
-                # draw a poliline
-                _ = cv2.polylines(
-                    canvas,
-                    [scaled_pts],
-                    isClosed=False,
-                    color=(255, 255, 255),
-                    thickness=1,
-                    lineType=cv2.LINE_AA,  # Optional: anti-aliased for better looks
-                )
+                # draw line by line to have a color gradient
+                pts = len(scaled_pts)
+                for i in range(pts - 1):
+                    pt1 = tuple(scaled_pts[i])
+                    pt2 = tuple(scaled_pts[i + 1])
+
+                    color_progress = i / (pts - 1)
+                    blue = int(255 * color_progress)
+                    green = 0
+                    red = int(255 * (1.0 - color_progress))
+                    segment_color = (blue, green, red)
+
+                    _ = cv2.line(
+                        canvas,
+                        pt1,
+                        pt2,
+                        segment_color,
+                        thickness=1,
+                        lineType=cv2.LINE_AA,
+                    )
 
             # finger - palm line rendering
             if finger != "Palm":
