@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from tacty.ui.models.project import (
+from tacty.models.project import (
     CalibrationOptions,
     Corners,
     Duration,
@@ -33,10 +33,10 @@ from tacty.ui.models.project import (
     Project,
     Value,
 )
-from tacty.ui.utils.hash import getHashFromPath
 from tacty.ui.views import ProjectView, WelcomeView
 from tacty.ui.windows.image_viewer_popup import ImageViewerPopup
 from tacty.ui.windows.new_project_modal import NewProjectModal
+from tacty.utils.hash import getHashFromPath
 
 
 class MainWindow(QMainWindow):

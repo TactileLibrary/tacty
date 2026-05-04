@@ -1,9 +1,9 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QSlider, QSpinBox, QWidget
 
+from tacty.models.project import TrackingOptions
 from tacty.ui.components.shape_icon import getShapeIcon
 from tacty.ui.components.video_player import VideoPlayer
-from tacty.ui.models.project import TrackingOptions
 from tacty.ui.windows.hue_pick_modal import HuePickModal
 
 from .tracking_ui import Ui_Form

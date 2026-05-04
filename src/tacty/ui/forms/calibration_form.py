@@ -1,8 +1,8 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
+from tacty.models.project import CalibrationOptions, Size
 from tacty.ui.forms.calibration_ui import Ui_Form
-from tacty.ui.models.project import CalibrationOptions, Size
 
 
 class PageTemplate:

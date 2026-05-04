@@ -3,7 +3,7 @@ from PySide6.QtGui import QPainter, QPixmap, QWheelEvent
 from PySide6.QtWidgets import QGraphicsPixmapItem, QGraphicsScene, QGraphicsView
 from typing_extensions import override
 
-from tacty.ui.utils.cvConversions import cvToQ
+from tacty.utils.cvConversions import cvToQ
 
 
 class ImageViewer(QGraphicsView):

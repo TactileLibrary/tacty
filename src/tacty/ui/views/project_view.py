@@ -10,11 +10,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from tacty.models.project import Project
+from tacty.opencv.tracking_pipeline import TrackingPipeline
 from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.forms.calibration_form import CalibrationForm
 from tacty.ui.forms.tracking_form import TrackingForm
-from tacty.ui.models.project import Project
-from tacty.ui.opencv.tracking_pipeline import TrackingPipeline
 from tacty.ui.windows import CornerPickModal
 
 

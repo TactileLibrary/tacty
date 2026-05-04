@@ -5,12 +5,12 @@ import numpy as np
 from cv2.typing import MatLike
 from PySide6.QtCore import QThread, Signal
 
-from tacty.ui.models.project import BoundingBox, Point, Project, TrackedMarker
-from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
-from tacty.ui.opencv.classifiers.AiClassifier import AiClassifier
-from tacty.ui.opencv.classifiers.BaseClassifier import BaseClassifier
-from tacty.ui.opencv.classifiers.HuMomentsClassifier import HuMomentsClassifier
-from tacty.ui.utils.cvConversions import toSpace
+from tacty.models.project import BoundingBox, Point, Project, TrackedMarker
+from tacty.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.opencv.classifiers.AiClassifier import AiClassifier
+from tacty.opencv.classifiers.BaseClassifier import BaseClassifier
+from tacty.opencv.classifiers.HuMomentsClassifier import HuMomentsClassifier
+from tacty.utils.cvConversions import toSpace
 
 
 class TrackingPipeline(QThread):

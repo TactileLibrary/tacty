@@ -16,10 +16,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from tacty.ui.models.project import Project
-from tacty.ui.opencv.calibration_pipeline import CalibrationPipeline
-from tacty.ui.opencv.tracking_display_pipeline import TrackingDisplayPipeline
-from tacty.ui.utils.cvConversions import cvToQ
+from tacty.models.project import Project
+from tacty.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.opencv.tracking_display_pipeline import TrackingDisplayPipeline
+from tacty.utils.cvConversions import cvToQ
 
 MAX_FPS = 1000 // 30
 

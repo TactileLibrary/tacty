@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from cv2.typing import MatLike
 
-from tacty.ui.models.project import CalibrationOptions
+from tacty.models.project import CalibrationOptions
 
 
 class CalibrationPipeline:

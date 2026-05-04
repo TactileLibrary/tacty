@@ -12,9 +12,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from tacty.models.project import Corners, Size
 from tacty.ui.components.corner_overlay import CornerOverlay
-from tacty.ui.models.project import Corners, Size
-from tacty.ui.utils.cvConversions import cvToQ
+from tacty.utils.cvConversions import cvToQ
 
 MAX_FPS = 1000 // 30
 

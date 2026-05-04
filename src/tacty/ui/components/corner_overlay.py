@@ -4,8 +4,8 @@ from PySide6.QtCore import QEvent, QPoint, Qt
 from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPen, QPolygon
 from PySide6.QtWidgets import QWidget
 
-from tacty.ui.models.project import Corners, Size
-from tacty.ui.utils.cvConversions import toSpace
+from tacty.models.project import Corners, Size
+from tacty.utils.cvConversions import toSpace
 
 
 class CornerOverlay(QWidget):

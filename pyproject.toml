@@ -10,6 +10,7 @@ requires-python = ">=3.14"
 dependencies = [
     "onnxruntime>=1.25.1",
     "opencv-contrib-python-headless>=4.13.0.92",
+    "pandas[performance]>=3.0.2",
     "pydantic>=2.12.5",
     "pyside6>=6.10.2",
 ]

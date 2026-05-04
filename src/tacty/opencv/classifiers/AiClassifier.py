@@ -9,7 +9,7 @@ from onnxruntime.capi.onnxruntime_inference_collection import (  # pyright: igno
 )
 from PySide6.QtCore import QFile, QIODeviceBase
 
-from tacty.ui.opencv.classifiers.BaseClassifier import BaseClassifier
+from tacty.opencv.classifiers.BaseClassifier import BaseClassifier
 
 
 class AiClassifier(BaseClassifier):

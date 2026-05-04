@@ -1,8 +1,8 @@
 import cv2
 from cv2.typing import MatLike
 
-from tacty.ui.models.project import Project
-from tacty.ui.utils.cvConversions import toSpace
+from tacty.models.project import Project
+from tacty.utils.cvConversions import toSpace
 
 
 class TrackingDisplayPipeline:

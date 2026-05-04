@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from cv2.typing import MatLike
 
-from tacty.ui.opencv.classifiers.BaseClassifier import BaseClassifier
+from tacty.opencv.classifiers.BaseClassifier import BaseClassifier
 
 
 class HuMomentsClassifier(BaseClassifier):

@@ -3,7 +3,7 @@ from cv2.typing import MatLike
 from PySide6.QtCore import QPoint
 from PySide6.QtGui import QImage
 
-from tacty.ui.models.project import Point, Size
+from tacty.models.project import Point, Size
 
 
 def cvToQ(frame: MatLike) -> QImage:
