@@ -1,41 +1,57 @@
+from typing import cast
+
 import cv2
+import pandas as pd
 from cv2.typing import MatLike
 
-from tacty.models.project import Project
+from tacty.models.project import CalibrationOptions, Point
 from tacty.utils.cvConversions import toSpace
 
 
 class TrackingDisplayPipeline:
-    data: Project
+    data: pd.DataFrame | None
+    calibration_options: CalibrationOptions
 
-    def __init__(self, data: Project):
+    def __init__(
+        self, data: pd.DataFrame | None, calibration_options: CalibrationOptions
+    ):
         self.data = data
+        self.calibration_options = calibration_options
 
-    def process(self, img: MatLike) -> MatLike:
-        markers = self.data.trackingData.get(self.data.frame)
+    def process(self, img: MatLike, frame: int) -> MatLike:
+        if self.data is None:
+            return img
+
+        markers = self.data.loc[frame]
 
         if markers is None:
             return img
 
         canvas = img.copy()
 
-        fingerToMarker: dict[str, str] = (
-            self.data.trackingOptions.fingerMapping.model_dump()
-        )
-        markerToFinger: dict[str, str] = {m: f for f, m in fingerToMarker.items()}
+        sides = ["left", "right"]
+        fingers = ["Thumb", "Index", "Middle", "Ring", "Pinky", "Palm"]
 
-        for key in markers:
-            marker = markers[key]
+        combinations = [(s, f) for s in sides for f in fingers]
 
+        for side, finger in combinations:
+            marker = markers[side + finger]
+
+            if pd.isna(marker["x"]) or pd.isna(marker["y"]):
+                continue
+
+            # bounds rendering
             tl = toSpace(
-                marker.bounds.tl,
-                self.data.calibrationOptions.pageSize,
-                self.data.calibrationOptions.processingResolution(),
+                Point(x=marker["_bounds_topleft_x"], y=marker["_bounds_topleft_y"]),
+                self.calibration_options.pageSize,
+                self.calibration_options.processingResolution(),
             )
             br = toSpace(
-                marker.bounds.br,
-                self.data.calibrationOptions.pageSize,
-                self.data.calibrationOptions.processingResolution(),
+                Point(
+                    x=marker["_bounds_bottomright_x"], y=marker["_bounds_bottomright_y"]
+                ),
+                self.calibration_options.pageSize,
+                self.calibration_options.processingResolution(),
             )
 
             _ = cv2.rectangle(
@@ -46,68 +62,31 @@ class TrackingDisplayPipeline:
                 2,
             )
 
-            _ = cv2.putText(
-                canvas, key, tl.toCv(), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255)
-            )
+            # finger - palm line rendering
+            if finger != "Palm":
+                palmMarker = markers[side + "Palm"]
 
-            associated_finger = markerToFinger[key]
-
-            if associated_finger.startswith("left"):
-                associated_palm = fingerToMarker.get("leftPalm")
-                if not associated_palm:
+                if pd.isna(palmMarker["x"]) or pd.isna(palmMarker["y"]):
                     continue
-                if associated_palm:
-                    palmMarker = markers.get(associated_palm)
-                    if not palmMarker:
-                        continue
 
-                    fingerCenter = toSpace(
-                        marker.centroid,
-                        self.data.calibrationOptions.pageSize,
-                        self.data.calibrationOptions.processingResolution(),
-                    )
+                fingerCenter = toSpace(
+                    Point(x=marker["x"], y=marker["y"]),
+                    self.calibration_options.pageSize,
+                    self.calibration_options.processingResolution(),
+                )
 
-                    palmCenter = toSpace(
-                        palmMarker.centroid,
-                        self.data.calibrationOptions.pageSize,
-                        self.data.calibrationOptions.processingResolution(),
-                    )
+                palmCenter = toSpace(
+                    Point(x=palmMarker["x"], y=palmMarker["y"]),
+                    self.calibration_options.pageSize,
+                    self.calibration_options.processingResolution(),
+                )
 
-                    _ = cv2.line(
-                        canvas,
-                        fingerCenter.toCv(),
-                        palmCenter.toCv(),
-                        (255, 255, 255),
-                        1,
-                    )
-
-            if associated_finger.startswith("right"):
-                associated_palm = fingerToMarker.get("rightPalm")
-                if not associated_palm:
-                    continue
-                if associated_palm:
-                    palmMarker = markers.get(associated_palm)
-                    if not palmMarker:
-                        continue
-
-                    fingerCenter = toSpace(
-                        marker.centroid,
-                        self.data.calibrationOptions.pageSize,
-                        self.data.calibrationOptions.processingResolution(),
-                    )
-
-                    palmCenter = toSpace(
-                        palmMarker.centroid,
-                        self.data.calibrationOptions.pageSize,
-                        self.data.calibrationOptions.processingResolution(),
-                    )
-
-                    _ = cv2.line(
-                        canvas,
-                        fingerCenter.toCv(),
-                        palmCenter.toCv(),
-                        (255, 255, 255),
-                        1,
-                    )
+                _ = cv2.line(
+                    canvas,
+                    fingerCenter.toCv(),
+                    palmCenter.toCv(),
+                    (255, 255, 255),
+                    1,
+                )
 
         return canvas

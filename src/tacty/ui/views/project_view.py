@@ -134,9 +134,12 @@ class ProjectView(QWidget):
 
         self.tracker.start()
 
-    def processData(self):
+    def processData(self) -> None:
+        data = None
         if len(self.project.trackingData.keys()) > 0:
-            self.dataProcessor.processs()
+            data = self.dataProcessor.processs()
+        self.player.updateData(data)
+        self.player.updateDisplay()
 
     def trackingFinished(self):
         if self.modal:
@@ -144,13 +147,13 @@ class ProjectView(QWidget):
 
         self.tracking.trackingData = len(self.project.trackingData.keys()) > 0
         self.tracking.updateData()
-        self.player.updateDisplay()
+        self.processData()
 
     def resetTracking(self):
         self.project.trackingData = {}
         self.tracking.trackingData = False
         self.tracking.updateData()
-        self.player.updateDisplay()
+        self.processData()
 
     def updateProject(self):
         self.player.updateProject()

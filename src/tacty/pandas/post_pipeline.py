@@ -11,8 +11,9 @@ class PostProcessingPipeline:
     def __init__(self, project: Project):
         self.project = project
 
-    def processs(self):
+    def processs(self) -> pd.DataFrame:
         df = self.loadDataframe()
+        return df
 
     def loadDataframe(self) -> pd.DataFrame:
         # transforming the TrackingData into a dict that contains another dict, with a tuple as key
@@ -21,6 +22,22 @@ class PostProcessingPipeline:
                 (inner_key, "x"): tp.centroid.x for inner_key, tp in inner_dict.items()
             }
             | {(inner_key, "y"): tp.centroid.y for inner_key, tp in inner_dict.items()}
+            | {
+                (inner_key, "_bounds_topleft_x"): tp.bounds.tl.x
+                for inner_key, tp in inner_dict.items()
+            }
+            | {
+                (inner_key, "_bounds_topleft_y"): tp.bounds.tl.y
+                for inner_key, tp in inner_dict.items()
+            }
+            | {
+                (inner_key, "_bounds_bottomright_x"): tp.bounds.br.x
+                for inner_key, tp in inner_dict.items()
+            }
+            | {
+                (inner_key, "_bounds_bottomright_y"): tp.bounds.br.y
+                for inner_key, tp in inner_dict.items()
+            }
             for outer_key, inner_dict in self.project.trackingData.items()
         }
 
@@ -39,8 +56,5 @@ class PostProcessingPipeline:
                 if (mapped := mapping.get(col[0])) is not None
             ]
         )
-
-        print(df.head())
-        print(df.shape)
 
         return df

@@ -4,6 +4,7 @@ from typing import override
 import cv2
 from cv2 import VideoCapture
 from cv2.typing import MatLike
+from pandas import DataFrame
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QFont, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
@@ -51,6 +52,7 @@ class VideoPlayer(QWidget):
         self, project: Project, video: VideoCapture, debugImages: dict[str, MatLike]
     ):
         super().__init__()
+        self.project = project
 
         mainLayout = QVBoxLayout()
         self.setLayout(mainLayout)
@@ -59,7 +61,9 @@ class VideoPlayer(QWidget):
             str(project.calibrationOptions.videoFrameCount)
         )
         self.calibrationPipeline = CalibrationPipeline(project.calibrationOptions)
-        self.trackingPipeline = TrackingDisplayPipeline(project)
+        self.trackingPipeline = TrackingDisplayPipeline(
+            None, self.project.calibrationOptions
+        )
         self.debugImages = debugImages
 
         # video display
@@ -92,7 +96,6 @@ class VideoPlayer(QWidget):
         _ = self.updateTimer.timeout.connect(self.updateDisplay)
         self.processingTime = MAX_FPS
 
-        self.project = project
         self.updateProject()
 
     def updateFrame(self, frame: int) -> None:
@@ -111,13 +114,16 @@ class VideoPlayer(QWidget):
         if not self.updateTimer.isActive():
             self.updateTimer.start(max(self.processingTime * 2, MAX_FPS))
 
+    def updateData(self, data: DataFrame | None) -> None:
+        self.trackingPipeline.data = data
+
     def updateDisplay(self) -> None:
         startTime = time.time()
         _ = self.video.set(cv2.CAP_PROP_POS_FRAMES, self.project.frame)
         _, self.img = self.video.read()
 
         img = self.calibrationPipeline.process(self.img)
-        img = self.trackingPipeline.process(img)
+        img = self.trackingPipeline.process(img, self.project.frame)
 
         qimg = cvToQ(img)
         pixmap = QPixmap.fromImage(qimg)
