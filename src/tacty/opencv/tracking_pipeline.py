@@ -394,7 +394,6 @@ class TrackingPipeline(QThread):
             self.project.trackingData[frame] = markers
 
             self.progress.emit(frame)
-            print("Processed frame", frame)
             frame += 1
 
         # close the video

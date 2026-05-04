@@ -1,6 +1,7 @@
 from typing import cast
 
 import cv2
+import numpy as np
 import pandas as pd
 from cv2.typing import MatLike
 
@@ -61,6 +62,32 @@ class TrackingDisplayPipeline:
                 (255, 255, 255),
                 2,
             )
+
+            # onion skin rendering, +/- 1s
+            window = round(self.calibration_options.videoFps.value)
+            idx_min = cast(int, self.data.index.min())
+            idx_max = cast(int, self.data.index.max())
+            start_frame = max(idx_min, frame - window)
+            end_frame = min(idx_max, frame + window)
+            window_data = self.data.loc[start_frame:end_frame, (side + finger)]
+            coordinates = window_data[["x", "y"]].dropna().values
+
+            if len(coordinates) > 1:
+                # vectorized toSpace logic - should move to a differenf file later
+                og = self.calibration_options.pageSize
+                to = self.calibration_options.processingResolution()
+                scales = np.array([to.w / og.w, to.h / og.h])
+                scaled_pts = np.round(coordinates * scales).astype(np.int32)
+
+                # draw a poliline
+                _ = cv2.polylines(
+                    canvas,
+                    [scaled_pts],
+                    isClosed=False,
+                    color=(255, 255, 255),
+                    thickness=1,
+                    lineType=cv2.LINE_AA,  # Optional: anti-aliased for better looks
+                )
 
             # finger - palm line rendering
             if finger != "Palm":
