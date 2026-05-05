@@ -1,9 +1,13 @@
+from typing import Generic, TypeVar
+
 from pydantic import BaseModel
 
 from tacty.utils.unitConversions import mmToInch
 
+T = TypeVar("T")
 
-class Value[T](BaseModel):
+
+class Value(BaseModel, Generic[T]):
     value: T
     default: T
 
@@ -79,7 +83,7 @@ class TrackedMarker(BaseModel):
     bounds: BoundingBox
 
 
-class ColorOptions[T](BaseModel):
+class ColorOptions(BaseModel, Generic[T]):
     r: T
     y: T
     g: T
@@ -106,8 +110,8 @@ class FingerMapping(BaseModel):
         return self.model_dump()
 
     def toInverseDict(self) -> dict[str, str]:
-        dict = self.toDict()
-        inverse = {v: k for k, v in dict.items()}
+        dictionary = self.toDict()
+        inverse = {v: k for k, v in dictionary.items()}
         return inverse
 
 
