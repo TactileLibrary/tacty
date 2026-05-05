@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Iulian Rotaru", email = "iulian@rotaru.cc" }
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.12, <3.13"
 dependencies = [
     "onnxruntime>=1.25.1",
     "opencv-contrib-python-headless>=4.13.0.92",

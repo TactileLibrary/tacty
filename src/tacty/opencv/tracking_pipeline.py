@@ -1,11 +1,11 @@
 from time import time
 from typing import cast, override
-from warnings import deprecated
 
 import cv2
 import numpy as np
 from cv2.typing import MatLike
 from PySide6.QtCore import QThread, Signal
+from typing_extensions import deprecated
 
 from tacty.models.project import BoundingBox, Point, Project, TrackedMarker
 from tacty.opencv.calibration_pipeline import CalibrationPipeline
