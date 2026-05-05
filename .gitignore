@@ -10,4 +10,6 @@ wheels/
 .venv
 
 # Trinity projects (not ideally portable)
-*.tproj
+samples/*.tproj
+samples/*.csv
+samples/*.xlsx
