@@ -16,6 +16,7 @@ from tacty.pandas.post_pipeline import PostProcessingPipeline
 from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.forms.calibration_form import CalibrationForm
 from tacty.ui.forms.export_form import ExportForm
+from tacty.ui.forms.postprocessing_form import PostProcessingForm
 from tacty.ui.forms.tracking_form import TrackingForm
 from tacty.ui.windows import CornerPickModal
 
@@ -33,6 +34,7 @@ class ProjectView(QWidget):
     imageProcessingIdx: int
     tracking: TrackingForm
     trackingIdx: int
+    dataProcessing: PostProcessingForm
     dataProcessingIdx: int
     export: ExportForm
     exportIdx: int
@@ -91,7 +93,11 @@ class ProjectView(QWidget):
         _ = self.tracking.startProcessing.connect(self.startTracking)
         _ = self.tracking.resetTrackingData.connect(self.resetTracking)
 
-        self.dataProcessingIdx = self.sidebar.addItem(QLabel("4"), "4. Data processing")
+        self.dataProcessing = PostProcessingForm(self.project.postProcessingOptions)
+        self.dataProcessingIdx = self.sidebar.addItem(
+            self.dataProcessing, "4. Data processing"
+        )
+        _ = self.dataProcessing.dataChanged.connect(self.processData)
 
         self.export = ExportForm()
         self.exportIdx = self.sidebar.addItem(self.export, "5. Export")

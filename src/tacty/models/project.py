@@ -120,6 +120,12 @@ class TrackingOptions(BaseModel):
     classifier: str = "hu"
 
 
+class PostProcessingOptions(BaseModel):
+    speedOutlier: bool = True
+    anatomyOutlier: bool = True
+    interpolation: bool = True
+
+
 class Project(BaseModel):
     projectVersion: int
     videoFile: str
@@ -127,4 +133,5 @@ class Project(BaseModel):
     frame: int = 0
     calibrationOptions: CalibrationOptions
     trackingOptions: TrackingOptions = TrackingOptions()
+    postProcessingOptions: PostProcessingOptions = PostProcessingOptions()
     trackingData: dict[int, dict[str, TrackedMarker]] = {}
