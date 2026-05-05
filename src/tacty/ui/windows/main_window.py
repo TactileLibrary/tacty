@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
         if not name:
             return
         qInfo(f"Opening project: {name}")
-        url = QFileInfo(name).canonicalPath()
+        url = QFileInfo(name).absolutePath()
         settings.setValue("lastPath", url)
         file = QFile(name)
         opened = file.open(

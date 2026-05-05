@@ -63,5 +63,5 @@ class PathInput(QWidget):
         if picked:
             fileName = dialog.selectedFiles()[0]
             self.text.setText(fileName)
-            folder = QFileInfo(fileName).canonicalPath()
+            folder = QFileInfo(fileName).absolutePath()
             settings.setValue("lastPath", folder)

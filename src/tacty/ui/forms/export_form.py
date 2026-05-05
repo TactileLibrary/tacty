@@ -54,7 +54,7 @@ class ExportForm(QWidget):
         picked = dialog.exec()
         if picked:
             fileName = dialog.selectedFiles()[0]
-            folder = QFileInfo(fileName).canonicalPath()
+            folder = QFileInfo(fileName).absolutePath()
             settings.setValue("lastPath", folder)
             return fileName
         return None
