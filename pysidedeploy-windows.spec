@@ -7,7 +7,7 @@ title = tacty
 project_dir = .
 
 # source file entry point path. default = main.py
-input_file = run.py
+input_file = tacty.py
 
 # directory where the executable output is generated
 exec_directory = dist

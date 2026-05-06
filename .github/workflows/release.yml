@@ -44,7 +44,7 @@ jobs:
           chmod +x appimagetool
 
           mkdir -p AppDir/usr/bin
-          cp -r dist/tacty/* AppDir/usr/bin/
+          cp -r dist/tacty.dist/* AppDir/usr/bin/
 
           cp linux/tacty.desktop AppDir/
           cp src/tacty/resources/icons/tl.png AppDir/tacty.png
