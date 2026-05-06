@@ -13,3 +13,6 @@ wheels/
 samples/*.tproj
 samples/*.csv
 samples/*.xlsx
+
+# pyside-deploy
+deployment/

@@ -68,7 +68,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --include-package=pydantic_core --include-package=pandas --include-package=numpy --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=disable
+extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=attach
 
 [buildozer]
 
