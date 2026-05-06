@@ -67,7 +67,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest
+extra_args = --assume-yes-for-downloads --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest
 
 [buildozer]
 

@@ -1,5 +1,5 @@
 [Setup]
-AppName=tacty
+AppName=Tacty
 AppVersion=1.0
 AppPublisher=TactileLibrary
 DefaultDirName={autopf}\tacty
@@ -16,8 +16,8 @@ SetupIconFile=..\src\tacty\resources\icons\tl.ico
 Source: "..\dist\tacty.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\tacty"; Filename: "{app}\tacty.exe"
-Name: "{autodesktop}\tacty"; Filename: "{app}\tacty.exe"; Tasks: desktopicon
+Name: "{group}\Tacty"; Filename: "{app}\tacty.exe"
+Name: "{autodesktop}\Tacty"; Filename: "{app}\tacty.exe"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"

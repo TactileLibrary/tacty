@@ -40,7 +40,7 @@ jobs:
 
       - name: Create AppImage
         run: |
-          wget -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool
 
           mkdir -p AppDir/usr/bin
