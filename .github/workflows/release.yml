@@ -52,6 +52,12 @@ jobs:
             mv AppDir/usr/bin/run AppDir/usr/bin/tacty
           fi
 
+          chmod +x AppDir/usr/bin/tacty
+
+          cd AppDir
+          ln -s usr/bin/tacty AppRun
+          cd ..
+
           cp linux/tacty.desktop AppDir/
           cp src/tacty/resources/icons/tl.png AppDir/tacty.png
 
