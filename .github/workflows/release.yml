@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Cache Nuitka compiler data
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Nuitka
+          key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-nuitka-
+
       - name: Build with pyside-deploy in standalone mode
         run: uv run pyside6-deploy -c ./pysidedeploy-linux.spec
 
@@ -61,7 +69,15 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Build Standalone
+      - name: Cache Nuitka compiler data
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\Nuitka\Nuitka
+          key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-nuitka-
+
+      - name: Build with pyside-deploy in standalone mode
         run: uv run pyside6-deploy -c ./pysidedeploy-windows.spec
 
       - name: Compile Inno Setup Installer
