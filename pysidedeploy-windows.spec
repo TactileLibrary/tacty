@@ -7,7 +7,7 @@ title = tacty
 project_dir = .
 
 # source file entry point path. default = main.py
-input_file = tacty.py
+input_file = run.py
 
 # directory where the executable output is generated
 exec_directory = dist
@@ -67,7 +67,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --assume-yes-for-downloads --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=disable
+extra_args = --assume-yes-for-downloads --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=attach
 
 [buildozer]
 

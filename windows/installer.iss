@@ -16,8 +16,8 @@ SetupIconFile=..\src\tacty\resources\icons\tl.ico
 Source: "..\dist\tacty.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\Tacty"; Filename: "{app}\tacty.exe"
-Name: "{autodesktop}\Tacty"; Filename: "{app}\tacty.exe"; Tasks: desktopicon
+Name: "{group}\Tacty"; Filename: "{app}\Tacty.exe"
+Name: "{autodesktop}\Tacty"; Filename: "{app}\Tacty.exe"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"

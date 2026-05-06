@@ -46,6 +46,12 @@ jobs:
           mkdir -p AppDir/usr/bin
           cp -r dist/tacty.dist/* AppDir/usr/bin/
 
+          if [ -f "AppDir/usr/bin/run.bin" ]; then
+            mv AppDir/usr/bin/run.bin AppDir/usr/bin/tacty
+          elif [ -f "AppDir/usr/bin/run" ]; then
+            mv AppDir/usr/bin/run AppDir/usr/bin/tacty
+          fi
+
           cp linux/tacty.desktop AppDir/
           cp src/tacty/resources/icons/tl.png AppDir/tacty.png
 
@@ -82,6 +88,11 @@ jobs:
 
       - name: Build with pyside-deploy in standalone mode
         run: uv run pyside6-deploy -c ./pysidedeploy-windows.spec
+
+      - name: Rename Binary
+        shell: pwsh
+        run: |
+          Move-Item "dist/tacty.dist/run.exe" "dist/tacty.dist/Tacty.exe"
 
       - name: Compile Inno Setup Installer
         run: iscc windows/installer.iss
