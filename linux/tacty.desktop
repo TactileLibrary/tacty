@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=tacty
+Comment=Integrated finger tracking toolkit.
+Exec=tacty
+Icon=tacty
+Categories=Utility;Accessibility;Education;
+Terminal=false

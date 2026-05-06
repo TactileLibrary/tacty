@@ -1,0 +1,73 @@
+name: Build and Release tacty
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y patchelf ccache libfuse2 build-essential
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build with pyside-deploy in standalone mode
+        run: uv run pyside6-deploy -c ./pysidedeploy-linux.spec
+
+      - name: Create AppImage
+        run: |
+          wget -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool
+
+          mkdir -p AppDir/usr/bin
+          cp -r dist/tacty/* AppDir/usr/bin/
+
+          cp linux/tacty.desktop AppDir/
+          cp src/tacty/resources/icons/tl.png AppDir/tacty.png
+
+          ./appimagetool --appimage-extract-and-run AppDir tacty-linux-x86_64.AppImage
+
+      - name: Upload Linux Artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tacty-linux-x86_64.AppImage
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build Standalone
+        run: uv run pyside6-deploy -c ./pysidedeploy-windows.spec
+
+      - name: Compile Inno Setup Installer
+        run: iscc windows/installer.iss
+
+      - name: Upload Windows Artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Output/tacty-windows-installer.exe

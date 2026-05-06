@@ -13,62 +13,61 @@ input_file = run.py
 exec_directory = dist
 
 # path to the project file relative to project_dir
-project_file = 
+project_file =
 
 # application icon
-icon = src/tacty/resources/icons/tl.ico
+icon = src/tacty/resources/icons/tl.png
 
 [python]
 
 # python path
-# python_path = 
+# python_path =
 # python packages to install
 packages = Nuitka==2.7.11
 
 # buildozer = for deploying Android application
 android_packages = buildozer==1.5.0,cython==0.29.33
-python_path = C:\Users\rotar\Documents\GitHub\tacty\.venv\Scripts\python.exe
 
 [qt]
 
 # paths to required qml files. comma separated
 # normally all the qml files required by the project are added automatically
 # design studio projects include the qml files using qt resources
-qml_files = 
+qml_files =
 
 # excluded qml plugin binaries
-excluded_qml_plugins = 
+excluded_qml_plugins =
 
 # qt modules used. comma separated
-modules = Core,Gui,Widgets
+modules = Core,DBus,Gui,Widgets
 
 # qt plugins used by the application. only relevant for desktop deployment
 # for qt plugins used in android application see [android][plugins]
-plugins = accessiblebridge,egldeviceintegrations,generic,iconengines,imageformats,platforminputcontexts,platforms,platforms/darwin,platformthemes,styles,xcbglintegrations
+plugins = accessiblebridge,egldeviceintegrations,generic,iconengines,imageformats,platforminputcontexts,platforms,platformthemes,styles,xcbglintegrations
 
 [android]
 
 # path to pyside wheel
-wheel_pyside = 
+wheel_pyside =
 
 # path to shiboken wheel
-wheel_shiboken = 
+wheel_shiboken =
 
 # plugins to be copied to libs folder of the packaged application. comma separated
-plugins = 
+plugins =
 
 [nuitka]
 
 # usage description for permissions requested by the app as found in the info.plist file
 # of the app bundle. comma separated
 # eg = extra_args = --show-modules --follow-stdlib
-macos.permissions = 
+macos.permissions =
 
 # mode of using nuitka. accepts standalone or onefile. default = onefile
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=attach
+extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest
 
 [buildozer]
 
@@ -78,20 +77,19 @@ extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --in
 mode = debug
 
 # path to pyside6 and shiboken6 recipe dir
-recipe_dir = 
+recipe_dir =
 
 # path to extra qt android .jar files to be loaded by the application
-jars_dir = 
+jars_dir =
 
 # if empty, uses default ndk path downloaded by buildozer
-ndk_path = 
+ndk_path =
 
 # if empty, uses default sdk path downloaded by buildozer
-sdk_path = 
+sdk_path =
 
 # other libraries to be loaded at app startup. comma separated.
-local_libs = 
+local_libs =
 
 # architecture of deployed platform
-arch = 
-
+arch =
