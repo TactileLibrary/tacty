@@ -21,13 +21,13 @@ icon = src/tacty/resources/icons/tl.ico
 [python]
 
 # python path
-python_path = C:\Users\rotar\Documents\GitHub\tacty\.venv\Scripts\python.exe
-
+# python_path = 
 # python packages to install
 packages = Nuitka==2.7.11
 
 # buildozer = for deploying Android application
 android_packages = buildozer==1.5.0,cython==0.29.33
+python_path = C:\Users\rotar\Documents\GitHub\tacty\.venv\Scripts\python.exe
 
 [qt]
 
@@ -65,7 +65,7 @@ plugins =
 macos.permissions = 
 
 # mode of using nuitka. accepts standalone or onefile. default = onefile
-mode = onefile
+mode = standalone
 
 # specify any extra nuitka arguments
 extra_args = --quiet --noinclude-qt-translations --include-package=pydantic --include-package=pydantic_core --include-package=pandas --include-package=numpy --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --windows-console-mode=disable
