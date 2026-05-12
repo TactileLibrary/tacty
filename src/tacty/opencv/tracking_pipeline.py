@@ -232,8 +232,12 @@ class TrackingPipeline(QThread):
 
         return (color_map * 255).astype(np.uint8)
 
-    def getFastColorMap(self, h: MatLike, sv: MatLike, lut: np.ndarray):
+    def getFastColorMap(
+        self, h: MatLike, sv: MatLike, lut: np.ndarray, debug: str = ""
+    ):
         hue_score = cv2.LUT(h, lut)
+        if debug != "":
+            self.debugImages[debug + " hue difference"] = hue_score
         return cv2.multiply(hue_score, sv, scale=1.0 / 255.0, dtype=cv2.CV_8U)
 
     def precomputeLuts(self, width: int = 15) -> dict[str, np.ndarray]:
@@ -264,6 +268,7 @@ class TrackingPipeline(QThread):
     def updateDebugImages(self, image: MatLike):
         # image is already calibrated
 
+        self.debugImages["Calibrated"] = image
         hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         h, s, v = cv2.split(hsv_img)
 
@@ -273,14 +278,20 @@ class TrackingPipeline(QThread):
         sv_base = cv2.multiply(s, v, scale=1.0 / 255.0)
         sv = cv2.bitwise_and(sv_base, sv_mask)
 
+        self.debugImages["Hue"] = h
+        self.debugImages["Saturation"] = s
+        self.debugImages["Value"] = v
+        self.debugImages["SV base"] = sv_base
+        self.debugImages["SV factor"] = sv
+
         luts = self.precomputeLuts()
 
-        r_map = self.getFastColorMap(h, sv, luts["r"])
-        g_map = self.getFastColorMap(h, sv, luts["g"])
-        b_map = self.getFastColorMap(h, sv, luts["b"])
-        c_map = self.getFastColorMap(h, sv, luts["c"])
-        y_map = self.getFastColorMap(h, sv, luts["y"])
-        m_map = self.getFastColorMap(h, sv, luts["m"])
+        r_map = self.getFastColorMap(h, sv, luts["r"], debug="red")
+        g_map = self.getFastColorMap(h, sv, luts["g"], debug="green")
+        b_map = self.getFastColorMap(h, sv, luts["b"], debug="blue")
+        c_map = self.getFastColorMap(h, sv, luts["c"], debug="cyan")
+        y_map = self.getFastColorMap(h, sv, luts["y"], debug="yellow")
+        m_map = self.getFastColorMap(h, sv, luts["m"], debug="magents")
 
         self.debugImages["Red map"] = r_map
         self.debugImages["Green map"] = g_map
