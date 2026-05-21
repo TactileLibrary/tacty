@@ -56,8 +56,8 @@ uv run pyside6-deploy -c ./pysidedeploy-windows.spec # windows build
 uv run pyside6-deploy -c ./pysidedeploy-linux.spec # linux build
 ```
 
+This produces the directory `dist/tacty.dist`, which includes all required files for the current platform. To bunde these we use the [Inno Setup Installer](https://jrsoftware.org/isinfo.php) for Windows and [appimagetool](https://github.com/AppImage/appimagetool) for Linux. More information can be found by looking at `.github/workflows/release.yml`.
+
 ### Contributing
 
 As of now, pull requests are not enabled. This is due to university rules around the fact that this is my BSc. thesis, which requires all code to be mine. After submitting the thesis they will be opened.
-
-This produces the directory `dist/tacty.dist`, which includes all required files for the current platform. To bunde these we use the [Inno Setup Installer](https://jrsoftware.org/isinfo.php) for Windows and [appimagetool](https://github.com/AppImage/appimagetool) for Linux. More information can be found by looking at `.github/workflows/release.yml`.
