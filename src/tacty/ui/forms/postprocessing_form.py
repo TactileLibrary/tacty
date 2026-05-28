@@ -1,7 +1,9 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem, QWidget
 
-from tacty.models.project import PostProcessingOptions
+from tacty.models.project import AOIRect, Point, PostProcessingOptions
+from tacty.ui.windows.validated_text_modal import ValidatedInputDialog
+from tacty.utils.AOIValidator import AOINameValidator
 
 from .postprocessing_ui import Ui_Form
 
@@ -12,6 +14,7 @@ class PostProcessingForm(QWidget):
     data: PostProcessingOptions
 
     dataChanged: Signal = Signal()
+    requestRect: Signal = Signal()
 
     def __init__(self, data: PostProcessingOptions):
         super().__init__()
@@ -22,11 +25,16 @@ class PostProcessingForm(QWidget):
 
         self.data = data
         self.updateData()
+        self.updateTable()
 
         # connectors
         _ = self.ui.outlierAnatomy.checkStateChanged.connect(self.saveData)
         _ = self.ui.outlierSpeed.checkStateChanged.connect(self.saveData)
         _ = self.ui.interpolation.checkStateChanged.connect(self.saveData)
+        _ = self.ui.AOIAddRect.clicked.connect(self.requestRect.emit)
+
+        # disable poly since it's not implemented yet
+        self.ui.AOIAddPoly.setDisabled(True)
 
     def updateData(self):
         self.ui.outlierAnatomy.setChecked(self.data.anatomyOutlier)
@@ -39,3 +47,40 @@ class PostProcessingForm(QWidget):
         self.data.interpolation = self.ui.interpolation.isChecked()
 
         self.dataChanged.emit()
+
+    def updateTable(self):
+        # clear previous data
+        self.ui.AOITable.clearContents()
+
+        # set up properties
+        self.ui.AOITable.setColumnCount(2)
+        self.ui.AOITable.setRowCount(len(self.data.aois))
+        self.ui.AOITable.setHorizontalHeaderLabels(["Name", "Type"])
+        self.ui.AOITable.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.ui.AOITable.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.Stretch
+        )
+        self.ui.AOITable.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+
+        # populate
+        for idx, aoi in enumerate(self.data.aois):
+            self.ui.AOITable.setItem(idx, 0, QTableWidgetItem(aoi.name))
+            self.ui.AOITable.setItem(idx, 1, QTableWidgetItem(aoi.type.value))
+
+    def addRectangleAOI(self, tl: Point, br: Point):
+        # get name
+        used = [aoi.name for aoi in self.data.aois]
+
+        validator = AOINameValidator(used)
+
+        name = ValidatedInputDialog.getText(title="AOI Name", validator=validator)
+
+        if not name:
+            return
+
+        aoi = AOIRect(name=name, tl=tl, br=br)
+        self.data.aois.append(aoi)
+
+        self.updateTable()

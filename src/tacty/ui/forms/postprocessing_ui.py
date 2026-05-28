@@ -15,8 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QLabel, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QHeaderView,
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -57,6 +58,37 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.interpolation)
 
+        self.AOILabel = QLabel(Form)
+        self.AOILabel.setObjectName(u"AOILabel")
+        self.AOILabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.AOILabel)
+
+        self.AOITable = QTableWidget(Form)
+        self.AOITable.setObjectName(u"AOITable")
+
+        self.verticalLayout.addWidget(self.AOITable)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.AOIAddRect = QPushButton(Form)
+        self.AOIAddRect.setObjectName(u"AOIAddRect")
+
+        self.horizontalLayout.addWidget(self.AOIAddRect)
+
+        self.AOIAddPoly = QPushButton(Form)
+        self.AOIAddPoly.setObjectName(u"AOIAddPoly")
+
+        self.horizontalLayout.addWidget(self.AOIAddPoly)
+
+        self.AOIDelete = QPushButton(Form)
+        self.AOIDelete.setObjectName(u"AOIDelete")
+
+        self.horizontalLayout.addWidget(self.AOIDelete)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
@@ -80,5 +112,9 @@ class Ui_Form(object):
         self.outlierSpeed.setText(QCoreApplication.translate("Form", u"Detect by speed", None))
         self.missingLabel.setText(QCoreApplication.translate("Form", u"### Fill missing data", None))
         self.interpolation.setText(QCoreApplication.translate("Form", u"Fill gaps using interpolated data", None))
+        self.AOILabel.setText(QCoreApplication.translate("Form", u"### Areas of interest", None))
+        self.AOIAddRect.setText(QCoreApplication.translate("Form", u"Add rectangle", None))
+        self.AOIAddPoly.setText(QCoreApplication.translate("Form", u"Add polygon", None))
+        self.AOIDelete.setText(QCoreApplication.translate("Form", u"Delete selected", None))
     # retranslateUi
 

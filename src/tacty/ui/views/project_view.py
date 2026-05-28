@@ -19,6 +19,7 @@ from tacty.ui.forms.export_form import ExportForm
 from tacty.ui.forms.postprocessing_form import PostProcessingForm
 from tacty.ui.forms.tracking_form import TrackingForm
 from tacty.ui.windows import CornerPickModal
+from tacty.ui.windows.rectangle_pick_modal import RectanglePickModal
 
 
 class ProjectView(QWidget):
@@ -98,6 +99,7 @@ class ProjectView(QWidget):
             self.dataProcessing, "4. Data processing"
         )
         _ = self.dataProcessing.dataChanged.connect(self.processData)
+        _ = self.dataProcessing.requestRect.connect(self.getRectAOI)
 
         self.export = ExportForm()
         self.exportIdx = self.sidebar.addItem(self.export, "5. Export")
@@ -107,6 +109,20 @@ class ProjectView(QWidget):
         _ = self.player.frameChanged.connect(self.updateDebugImages)
 
         self.processData()
+
+    def getRectAOI(self):
+        img = self.player.getImage()
+        if img is None:
+            return
+        dialog = RectanglePickModal(
+            image=img, pageSize=self.project.calibrationOptions.pageSize
+        )
+        res = dialog.exec()
+        if res == QDialog.DialogCode.Rejected:
+            return
+        tl, br = dialog.getData()
+
+        self.dataProcessing.addRectangleAOI(tl, br)
 
     def updateDebugImages(self):
         if not self.debugMode:
