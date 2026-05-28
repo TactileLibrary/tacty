@@ -1,6 +1,10 @@
-from typing import Generic, TypeVar
+from enum import Enum
+from typing import Annotated, Generic, TypeVar
 
-from pydantic import BaseModel
+import cv2
+import numpy as np
+from pydantic import BaseModel, Field
+from typing_extensions import Literal
 
 from tacty.utils.unitConversions import mmToInch
 
@@ -124,10 +128,49 @@ class TrackingOptions(BaseModel):
     classifier: str = "hu"
 
 
+class AOIType(str, Enum):
+    RECTANGLE = "rectangle"
+    POLYGON = "polygon"
+
+
+class AOIBase(BaseModel):
+    name: str
+
+
+class AOIRect(AOIBase):
+    type: Literal[AOIType.RECTANGLE] = AOIType.RECTANGLE
+    tl: Point
+    br: Point
+
+    def test(self, other: Point) -> bool:
+        return (
+            other.x >= self.tl.x
+            and other.x <= self.br.x
+            and other.y >= self.tl.y
+            and other.y <= self.br.y
+        )
+
+
+class AOIPoly(AOIBase):
+    type: Literal[AOIType.POLYGON] = AOIType.POLYGON
+    points: list[Point]
+
+    def test(self, other: Point) -> bool:
+        contour = np.array([p.toCv() for p in self.points], dtype=np.int32).reshape(
+            (-1, 1, 2)
+        )
+
+        return cv2.pointPolygonTest(contour, other.toCv(), measureDist=False) >= 0
+
+
+AOI = Annotated[AOIRect | AOIPoly, Field(discriminator="type")]
+
+
 class PostProcessingOptions(BaseModel):
     speedOutlier: bool = True
     anatomyOutlier: bool = True
     interpolation: bool = True
+    aois: list[AOI] = []
 
 
 class Project(BaseModel):
