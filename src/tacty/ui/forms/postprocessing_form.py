@@ -1,5 +1,11 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem, QWidget
+from PySide6.QtWidgets import (
+    QAbstractItemView,
+    QHeaderView,
+    QMessageBox,
+    QTableWidgetItem,
+    QWidget,
+)
 
 from tacty.models.project import AOIRect, Point, PostProcessingOptions
 from tacty.ui.windows.validated_text_modal import ValidatedInputDialog
@@ -12,6 +18,8 @@ class PostProcessingForm(QWidget):
     ui: Ui_Form
 
     data: PostProcessingOptions
+
+    selectedAOI: int = -1
 
     dataChanged: Signal = Signal()
     requestRect: Signal = Signal()
@@ -26,15 +34,39 @@ class PostProcessingForm(QWidget):
         self.data = data
         self.updateData()
         self.updateTable()
+        self.toggleDelButton()
 
         # connectors
         _ = self.ui.outlierAnatomy.checkStateChanged.connect(self.saveData)
         _ = self.ui.outlierSpeed.checkStateChanged.connect(self.saveData)
         _ = self.ui.interpolation.checkStateChanged.connect(self.saveData)
         _ = self.ui.AOIAddRect.clicked.connect(self.requestRect.emit)
+        _ = self.ui.AOITable.itemSelectionChanged.connect(self.toggleDelButton)
+        _ = self.ui.AOIDelete.clicked.connect(self.deleteAOI)
 
         # disable poly since it's not implemented yet
         self.ui.AOIAddPoly.setDisabled(True)
+
+    def deleteAOI(self):
+        if self.selectedAOI == -1:
+            return
+
+        name = self.data.aois[self.selectedAOI].name
+        confirm = QMessageBox.question(
+            self,
+            "Confirm AOI deletion",
+            f"Are you sure you want to delete '{name}'?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+
+        if confirm == QMessageBox.StandardButton.Yes:
+            _ = self.data.aois.pop(self.selectedAOI)
+            self.updateTable()
+
+    def toggleDelButton(self):
+        self.selectedAOI = self.ui.AOITable.currentRow()
+        self.ui.AOIDelete.setEnabled(len(self.ui.AOITable.selectedItems()) > 0)
 
     def updateData(self):
         self.ui.outlierAnatomy.setChecked(self.data.anatomyOutlier)
