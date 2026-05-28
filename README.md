@@ -22,14 +22,14 @@ Planned:
 
 ### Windows
 
-1. Download the [latest installer](https://github.com/TactileLibrary/tacty/releases/download/latest/tacty-windows-installer.exe).
+1. Download the [latest installer](https://github.com/TactileLibrary/tacty/releases/latest/download/tacty-windows-installer.exe).
 2. Follow the steps in the installer.
 3. Run the application from your Dekstop or Start Menu.
 
 ### Linux
 
 1. Ensure your distribution supports [AppImages](https://appimage.org/).
-2. Download the [latest AppImage](https://github.com/TactileLibrary/tacty/releases/download/latest/tacty-linux-x86_64.AppImage)
+2. Download the [latest AppImage](https://github.com/TactileLibrary/tacty/releases/latest/download/tacty-linux-x86_64.AppImage)
 3. Double click the file to run the application.
 
 ### MacOS
