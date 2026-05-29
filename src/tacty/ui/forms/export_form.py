@@ -133,7 +133,7 @@ class ExportForm(QWidget):
             {
                 "Time": stacked["Time"].astype(int),
                 "Participant": stacked["Participant"].astype(str),
-                "Stimulus": "test",
+                "Stimulus": self.name,
                 "AOI": aoi_strings,
                 "X": stacked["x"] if "x" in stacked.columns else np.nan,
                 "Y": stacked["y"] if "y" in stacked.columns else np.nan,
