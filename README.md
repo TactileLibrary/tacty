@@ -10,7 +10,7 @@ Available:
 - Calibrate color tracking hues and tolerances.
 - Multiple shape classifiers (Hu Moments, AI Classifier).
 - Data cleanup (outlier detection, interpolation).
-- `.csv` and `.xslx` export for the movement data.
+- `.csv` and `.xslx` export for the movement data, as well as a dedicated [GazePlotter](https://gazeplotter.com) exporter.
 
 Planned:
 
