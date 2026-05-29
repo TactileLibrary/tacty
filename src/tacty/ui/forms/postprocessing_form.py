@@ -116,3 +116,4 @@ class PostProcessingForm(QWidget):
         self.data.aois.append(aoi)
 
         self.updateTable()
+        self.dataChanged.emit()

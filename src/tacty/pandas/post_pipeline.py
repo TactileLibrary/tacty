@@ -3,7 +3,7 @@ from typing import cast
 import numpy as np
 import pandas as pd
 
-from tacty.models.project import Project
+from tacty.models.project import Point, Project
 
 
 class PostProcessingPipeline:
@@ -26,7 +26,40 @@ class PostProcessingPipeline:
             )
         df = df.round()  # need ints
 
+        self.addAOIs(df)  # add the AOI data
+
         return df.astype("Int32")
+
+    def addAOIs(self, df: pd.DataFrame) -> None:
+        aois = self.project.postProcessingOptions.aois
+        if not aois:
+            return
+
+        markers = df.columns.get_level_values(0).unique()
+
+        for marker in markers:
+            if (marker, "x") not in df.columns or (marker, "y") not in df.columns:
+                continue
+
+            # extract the coordinates
+            marker_x = df[(marker, "x")]
+            marker_y = df[(marker, "y")]
+            coords = pd.concat([marker_x, marker_y], axis=1)
+
+            for aoi in aois:
+                feature_name = f"in_{aoi.name}"
+
+                def testAOI(row) -> int:
+                    x_val, y_val = row.iloc[0], row.iloc[1]
+
+                    # default 0 if we don't have position dataa
+                    if pd.isna(x_val) or pd.isna(y_val):
+                        return 0
+
+                    pt = Point(x=x_val, y=y_val)
+                    return 1 if aoi.test(pt) else 0
+
+                df[(marker, feature_name)] = coords.apply(testAOI, axis=1)
 
     def removeSpeedOutliers(self, df: pd.DataFrame) -> None:
         for marker in df.columns.get_level_values(0).unique():
