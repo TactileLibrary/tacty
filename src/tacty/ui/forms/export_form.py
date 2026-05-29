@@ -16,6 +16,9 @@ class ExportForm(QWidget):
 
     data: pd.DataFrame | None = None
 
+    fps: float | None = None
+    name: str | None = None
+
     def __init__(self):
         super().__init__()
 
@@ -30,11 +33,18 @@ class ExportForm(QWidget):
         _ = self.ui.flatXLSX.clicked.connect(self.saveToXLSX)
         _ = self.ui.gazePlotter.clicked.connect(self.saveToGazePlotter)
 
-    def updateData(self, data: pd.DataFrame | None = None):
+    def updateData(
+        self,
+        data: pd.DataFrame | None = None,
+        fps: float | None = None,
+        name: str | None = None,
+    ):
         self.data = data
+        self.fps = fps
+        self.name = name
 
         buttons = [self.ui.flatCSV, self.ui.flatXLSX, self.ui.gazePlotter]
-        enabled = self.data is not None
+        enabled = self.data is not None and fps is not None and name is not None
 
         for button in buttons:
             button.setEnabled(enabled)
@@ -62,7 +72,7 @@ class ExportForm(QWidget):
         return None
 
     def filterData(self) -> pd.DataFrame | None:
-        if self.data is None:
+        if self.data is None or self.fps is None:
             return None
 
         filtered: pd.DataFrame = cast(
@@ -71,6 +81,10 @@ class ExportForm(QWidget):
                 :, ~self.data.columns.get_level_values(1).str.startswith("_")
             ].copy(),
         )
+
+        mpf = 1000 / self.fps
+
+        filtered.index = (filtered.index * mpf).round().astype(int)
 
         return filtered
 

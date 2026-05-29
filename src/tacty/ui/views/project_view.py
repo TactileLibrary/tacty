@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import cv2
 from cv2.typing import MatLike
 from PySide6.QtCore import Signal
@@ -165,7 +167,11 @@ class ProjectView(QWidget):
             data = self.dataProcessor.processs()
         self.player.updateData(data)
         self.player.updateDisplay()
-        self.export.updateData(data)
+        self.export.updateData(
+            data,
+            self.project.calibrationOptions.videoFps.value,
+            Path(self.project.videoFile).name,
+        )
 
     def trackingFinished(self):
         if self.modal:
