@@ -14,8 +14,10 @@ class AOINameValidator(QValidator):
 
     @override
     def validate(self, text: str, pos: int):
-        # comas are fully invalid, you should not be allowed to press them
+        # some chars are fully invalid, you should not be allowed to press them
         if "," in text:
+            return QValidator.State.Invalid, text, pos
+        if "|" in text:
             return QValidator.State.Invalid, text, pos
 
         # for already used names we use intermediate, so the user can still change it

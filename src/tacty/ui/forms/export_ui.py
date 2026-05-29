@@ -38,18 +38,37 @@ class Ui_Form(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.positionCSV = QPushButton(Form)
-        self.positionCSV.setObjectName(u"positionCSV")
+        self.flatCSV = QPushButton(Form)
+        self.flatCSV.setObjectName(u"flatCSV")
 
-        self.horizontalLayout.addWidget(self.positionCSV)
+        self.horizontalLayout.addWidget(self.flatCSV)
 
-        self.positionXLSX = QPushButton(Form)
-        self.positionXLSX.setObjectName(u"positionXLSX")
+        self.flatXLSX = QPushButton(Form)
+        self.flatXLSX.setObjectName(u"flatXLSX")
 
-        self.horizontalLayout.addWidget(self.positionXLSX)
+        self.horizontalLayout.addWidget(self.flatXLSX)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.connectorsLabel = QLabel(Form)
+        self.connectorsLabel.setObjectName(u"connectorsLabel")
+        self.connectorsLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.connectorsLabel)
+
+        self.gazePlotterLabel = QLabel(Form)
+        self.gazePlotterLabel.setObjectName(u"gazePlotterLabel")
+        self.gazePlotterLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+        self.gazePlotterLabel.setScaledContents(False)
+        self.gazePlotterLabel.setWordWrap(True)
+
+        self.verticalLayout.addWidget(self.gazePlotterLabel)
+
+        self.gazePlotter = QPushButton(Form)
+        self.gazePlotter.setObjectName(u"gazePlotter")
+
+        self.verticalLayout.addWidget(self.gazePlotter)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -63,8 +82,14 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.positionDataLabel.setText(QCoreApplication.translate("Form", u"### Position data", None))
-        self.positionCSV.setText(QCoreApplication.translate("Form", u"Export .csv", None))
-        self.positionXLSX.setText(QCoreApplication.translate("Form", u"Export .xlsx", None))
+        self.positionDataLabel.setText(QCoreApplication.translate("Form", u"### Flat data", None))
+        self.flatCSV.setText(QCoreApplication.translate("Form", u"Export .csv", None))
+        self.flatXLSX.setText(QCoreApplication.translate("Form", u"Export .xlsx", None))
+        self.connectorsLabel.setText(QCoreApplication.translate("Form", u"### Connectors", None))
+        self.gazePlotterLabel.setText(QCoreApplication.translate("Form", u"#### GazePlotter\n"
+" GazePlotter is a free web application for eye-tracking data analysis and visualization. Built with a commitment to open science, GazePlotter transforms complex gaze data into intuitive, interactive visualizations without requiring registration, subscriptions, or server uploads.\n"
+"\n"
+"More information on [the official website](https://gazeplotter.com/).", None))
+        self.gazePlotter.setText(QCoreApplication.translate("Form", u"Export to GazePlotter", None))
     # retranslateUi
 

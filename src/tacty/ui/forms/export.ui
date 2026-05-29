@@ -23,7 +23,7 @@
    <item>
     <widget class="QLabel" name="positionDataLabel">
      <property name="text">
-      <string>### Position data</string>
+      <string>### Flat data</string>
      </property>
      <property name="textFormat">
       <enum>Qt::TextFormat::MarkdownText</enum>
@@ -33,20 +33,56 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="positionCSV">
+      <widget class="QPushButton" name="flatCSV">
        <property name="text">
         <string>Export .csv</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="positionXLSX">
+      <widget class="QPushButton" name="flatXLSX">
        <property name="text">
         <string>Export .xlsx</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="connectorsLabel">
+     <property name="text">
+      <string>### Connectors</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::MarkdownText</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="gazePlotterLabel">
+     <property name="text">
+      <string>#### GazePlotter
+ GazePlotter is a free web application for eye-tracking data analysis and visualization. Built with a commitment to open science, GazePlotter transforms complex gaze data into intuitive, interactive visualizations without requiring registration, subscriptions, or server uploads.
+
+More information on [the official website](https://gazeplotter.com/).</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::MarkdownText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="gazePlotter">
+     <property name="text">
+      <string>Export to GazePlotter</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
