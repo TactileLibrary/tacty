@@ -34,6 +34,7 @@ from tacty.models.project import (
     Value,
 )
 from tacty.ui.views import ProjectView, WelcomeView
+from tacty.ui.windows.changelog_dialog import ChangelogDialog
 from tacty.ui.windows.image_viewer_popup import ImageViewerPopup
 from tacty.ui.windows.new_project_modal import NewProjectModal
 from tacty.utils.hash import getHashFromPath
@@ -186,6 +187,8 @@ class MainWindow(QMainWindow):
 
         # About menu
         aboutMenu = QMenu("&About")
+        _ = aboutMenu.addAction("&Changelog", self.showChangelog)
+        _ = aboutMenu.addSeparator()
         _ = aboutMenu.addAction("About &Tacty", self.showAbout)
         _ = aboutMenu.addAction("About &QT", self.showAboutQt)
         _ = self.menuBar().addMenu(aboutMenu)
@@ -373,9 +376,17 @@ class MainWindow(QMainWindow):
         templateValues = {
             "title": "About Tacty",
             "description": "Tacty is an open source tactile interaction analysis toolkit.",
-            "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-6147b5284/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
+            "developers": "Development is lead by [Iulian Rotaru](https://www.linkedin.com/in/iulian-rotaru-cc/) as part of the [TactileLibrary](https://tactilelibrary.net) research center of the [West University of Timișoara](https://www.uvt.ro/en/).",
             "theme": "Stylesheets provided by [BreezeStyleSheets](https://github.com/Alexhuszagh/BreezeStyleSheets/).",
             "version": f"Current version: v{QCoreApplication.applicationVersion()}",
+            "libraries": (
+                "- [PySide6](https://doc.qt.io/qtforpython-6/index.html) for the user interface.\n"
+                "- [OpenCV](https://opencv.org/) for image processing.\n"
+                "- [ONNX Runtime](https://onnxruntime.ai/) for the AI classifier.\n"
+                "- [NumPy](https://numpy.org/) for data processing.\n"
+                "- [Pandas](https://pandas.pydata.org/) for working with tabular data.\n"
+                "- [Pydantic](https://pydantic.dev/docs/validation/) for parsing the project file."
+            ),
         }
         aboutText = template.format(**templateValues)
         doc = QTextDocument()
@@ -385,3 +396,6 @@ class MainWindow(QMainWindow):
 
     def showAboutQt(self) -> None:
         QMessageBox.aboutQt(self)
+
+    def showChangelog(self) -> None:
+        ChangelogDialog.showChangelog()

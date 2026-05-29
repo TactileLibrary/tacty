@@ -10,4 +10,7 @@
     <file>onnx/tacty-ai-classifier-v2-32x-0-circle-1-square.onnx</file>
     <file>onnx/tacty-ai-classifier-v3-32x-0-circle-1-square.onnx</file>
 </qresource>
+<qresource prefix="/">
+    <file alias="CHANGELOG.md">../../../CHANGELOG.md</file>
+</qresource>
 </RCC>
