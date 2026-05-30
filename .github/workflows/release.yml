@@ -67,11 +67,12 @@ jobs:
         id: changelog_reader
         uses: anton-yurchenko/git-release-changelog-reader@v2
         with:
-          version: ${{ github.ref_name }
+          version: ${{ github.ref_name }}
 
       - name: Upload Linux Artifact
         uses: softprops/action-gh-release@v2
         with:
+          body: $ {{ steps.changelog_reader.outputs.changes }}
           files: tacty-linux-x86_64.AppImage
 
   build-windows:
@@ -113,9 +114,10 @@ jobs:
         id: changelog_reader
         uses: anton-yurchenko/git-release-changelog-reader@v2
         with:
-          version: ${{ github.ref_name }
+          version: ${{ github.ref_name }}
 
       - name: Upload Windows Artifact
         uses: softprops/action-gh-release@v2
         with:
+          body: $ {{ steps.changelog_reader.outputs.changes }}
           files: Output/tacty-windows-installer.exe
