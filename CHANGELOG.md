@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic changelog parsing in the deployment Github Action
 - Open source credits in the About window
 
+### Fixed
+
+- Caching bug on Windows causing long build times
+
 ## [v0.4.1] - 2026-05-29
 
 ### Fixed

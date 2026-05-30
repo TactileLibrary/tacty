@@ -64,15 +64,17 @@ jobs:
           ./appimagetool --appimage-extract-and-run AppDir tacty-linux-x86_64.AppImage
 
       - name: Extract version
-        id: kacl
-        uses: zogot/kacl-parser@1.0.0
+        id: changelog_reader
+        uses: release-flow/keep-a-changelog-action@v3
         with:
+          command: query
           version: ${{ github.ref_name }}
 
       - name: Upload Linux Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.kacl.outputs.release }}
+          body: ${{ steps.changelog_reader.outputs.notes }}
+          append_body: false
           files: tacty-linux-x86_64.AppImage
 
   build-windows:
@@ -94,7 +96,7 @@ jobs:
       - name: Cache Nuitka compiler data
         uses: actions/cache@v4
         with:
-          path: ~\AppData\Local\Nuitka\Nuitka
+          path: ${{ env.LOCALAPPDATA }}\Nuitka\Nuitka
           key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-nuitka-
@@ -111,13 +113,15 @@ jobs:
         run: iscc windows/installer.iss
 
       - name: Extract version
-        id: kacl
-        uses: zogot/kacl-parser@1.0.0
+        id: changelog_reader
+        uses: release-flow/keep-a-changelog-action@v3
         with:
+          command: query
           version: ${{ github.ref_name }}
 
       - name: Upload Windows Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.kacl.outputs.release }}
+          body: ${{ steps.changelog_reader.outputs.notes }}
+          append_body: false
           files: Output/tacty-windows-installer.exe
