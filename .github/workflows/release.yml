@@ -72,7 +72,7 @@ jobs:
       - name: Upload Linux Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: $ {{ steps.kacl.outputs.release }}
+          body: ${{ steps.kacl.outputs.release }}
           files: tacty-linux-x86_64.AppImage
 
   build-windows:
@@ -119,5 +119,5 @@ jobs:
       - name: Upload Windows Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: $ {{ steps.kacl.outputs.release }}
+          body: ${{ steps.kacl.outputs.release }}
           files: Output/tacty-windows-installer.exe
