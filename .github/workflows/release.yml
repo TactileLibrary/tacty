@@ -63,16 +63,16 @@ jobs:
 
           ./appimagetool --appimage-extract-and-run AppDir tacty-linux-x86_64.AppImage
 
-      - name: Extract Changelog Section
-        id: changelog_reader
-        uses: anton-yurchenko/git-release-changelog-reader@v2
+      - name: Extract version
+        id: kacl
+        uses: zogot/kacl-parser@1.0.0
         with:
           version: ${{ github.ref_name }}
 
       - name: Upload Linux Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: $ {{ steps.changelog_reader.outputs.changes }}
+          body: $ {{ steps.kacl.outputs.release }}
           files: tacty-linux-x86_64.AppImage
 
   build-windows:
@@ -110,14 +110,14 @@ jobs:
       - name: Compile Inno Setup Installer
         run: iscc windows/installer.iss
 
-      - name: Extract Changelog Section
-        id: changelog_reader
-        uses: anton-yurchenko/git-release-changelog-reader@v2
+      - name: Extract version
+        id: kacl
+        uses: zogot/kacl-parser@1.0.0
         with:
           version: ${{ github.ref_name }}
 
       - name: Upload Windows Artifact
         uses: softprops/action-gh-release@v2
         with:
-          body: $ {{ steps.changelog_reader.outputs.changes }}
+          body: $ {{ steps.kacl.outputs.release }}
           files: Output/tacty-windows-installer.exe
