@@ -22,19 +22,19 @@ Planned:
 
 ### Windows
 
-1. Download the latest .exe file from the [release page](https://github.com/TactileLibrary/tacty/releases).
+1. Download the latest `.exe` file from the [release page](https://github.com/TactileLibrary/tacty/releases).
 2. Follow the steps in the installer.
 3. Run the application from your Dekstop or Start Menu.
 
 ### Linux
 
 1. Ensure your distribution supports [AppImages](https://appimage.org/).
-2. Download the latest .AppImage file from the [releage page](https://github.com/TactileLibrary/tacty/releases).
+2. Download the latest `.AppImage` file from the [releage page](https://github.com/TactileLibrary/tacty/releases).
 3. Double click the file to run the application.
 
 ### MacOS
 
-1. Download the latest .dmg file from the [release page](https://github.com/TactileLibrary/tacty/releases).
+1. Download the latest `.dmg` file from the [release page](https://github.com/TactileLibrary/tacty/releases).
 2. Double click the file and drag it into your Applications folder.
 3. Run it from your Applications folder or Launchpad.
 
