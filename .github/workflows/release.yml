@@ -11,6 +11,8 @@ permissions:
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
+    env:
+      NUITKA_CACHE_DIR: ${{ github.workspace }}/.nuitka-cache
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +32,7 @@ jobs:
       - name: Cache Nuitka compiler data
         uses: actions/cache@v4
         with:
-          path: ~/.cache/Nuitka
+          path: ${{ github.workspace }}/.nuitka-cache
           key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-nuitka-
@@ -61,24 +63,18 @@ jobs:
           cp linux/tacty.desktop AppDir/
           cp src/tacty/resources/icons/tl.png AppDir/tacty.png
 
-          ./appimagetool --appimage-extract-and-run AppDir tacty-linux-x86_64.AppImage
-
-      - name: Extract version
-        id: changelog_reader
-        uses: release-flow/keep-a-changelog-action@v3
-        with:
-          command: query
-          version: ${{ github.ref_name }}
+          ./appimagetool --appimage-extract-and-run AppDir tacty-${{ github.ref_name }}-${{ runner.arch }}.AppImage
 
       - name: Upload Linux Artifact
-        uses: softprops/action-gh-release@v2
+        uses: actions/upload-artifact@v4
         with:
-          body: ${{ steps.changelog_reader.outputs.release-notes }}
-          append_body: false
-          files: tacty-linux-x86_64.AppImage
+          name: linux-appimage
+          path: tacty-${{ github.ref_name }}-${{ runner.arch }}.AppImage
 
   build-windows:
     runs-on: windows-latest
+    env:
+      NUITKA_CACHE_DIR: ${{ github.workspace }}/.nuitka-cache
     steps:
       - uses: actions/checkout@v4
 
@@ -96,7 +92,7 @@ jobs:
       - name: Cache Nuitka compiler data
         uses: actions/cache@v4
         with:
-          path: ~\AppData\Local\Nuitka\Nuitka
+          path: ${{ github.workspace }}/.nuitka-cache
           key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-nuitka-
@@ -112,6 +108,66 @@ jobs:
       - name: Compile Inno Setup Installer
         run: iscc windows/installer.iss
 
+      - name: Rename Installer
+        shell: pwsh
+        run: |
+          Move-Item "Output/tacty-windows-installer.exe" "Output/tacty-${{ github.ref_name }}-${{ runner.arch }}.exe"
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: Output/tacty-${{ github.ref_name }}-${{ runner.arch }}.exe
+
+  build-macos:
+    runs-on: macos-latest
+    env:
+      NUITKA_CACHE_DIR: ${{ github.workspace }}/.nuitka-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Cache Nuitka compiler data
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuitka-cache
+          key: ${{ runner.os }}-nuitka-${{ hashFiles('uv.lock', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-nuitka-
+
+      - name: Build with pyside-deploy
+        run: uv run pyside6-deploy -c ./pysidedeploy-macos.spec
+
+      - name: Package as DMG
+        run: |
+          mkdir dmg_root
+          cp -r dist/tacty.app dmg_root/
+          hdiutil create -volname "Tacty" -srcfolder dmg_root -ov -format UDZO tacty-${{ github.ref_name }}-${{ runner.arch }}.dmg
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: tacty-${{ github.ref_name }}-${{ runner.arch }}.dmg
+
+  create-release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
       - name: Extract version
         id: changelog_reader
         uses: release-flow/keep-a-changelog-action@v3
@@ -119,9 +175,10 @@ jobs:
           command: query
           version: ${{ github.ref_name }}
 
-      - name: Upload Windows Artifact
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.changelog_reader.outputs.release-notes }}
           append_body: false
-          files: Output/tacty-windows-installer.exe
+          files: |
+            tacty-${{ github.ref_name }}-*
