@@ -16,7 +16,7 @@ exec_directory = dist
 project_file =
 
 # application icon
-icon = src/tacty/resources/icons/tl.png
+icon = src/tacty/resources/icons/tl.icns
 
 [python]
 
