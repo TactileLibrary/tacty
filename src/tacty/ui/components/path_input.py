@@ -1,6 +1,6 @@
 from enum import Enum
 
-from PySide6.QtCore import QFileInfo, QSettings
+from PySide6.QtCore import QFileInfo, QSettings, QStandardPaths
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 
@@ -55,7 +55,9 @@ class PathInput(QWidget):
         settings = QSettings()
         defaultPath = settings.value("lastPath", type=str)
         if not isinstance(defaultPath, str):
-            defaultPath = ""
+            defaultPath = QStandardPaths.writableLocation(
+                QStandardPaths.StandardLocation.DocumentsLocation
+            )
 
         dialog.setDirectory(defaultPath)
 

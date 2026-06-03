@@ -10,6 +10,7 @@ from PySide6.QtCore import (
     QIODevice,
     QIODeviceBase,
     QSettings,
+    QStandardPaths,
     QTextStream,
     Signal,
     qInfo,
@@ -218,7 +219,9 @@ class MainWindow(QMainWindow):
         settings = QSettings()
         url = settings.value("lastPath", type=str)
         if not isinstance(url, str):
-            url = ""
+            url = QStandardPaths.writableLocation(
+                QStandardPaths.StandardLocation.DocumentsLocation
+            )
         name, _ = QFileDialog.getOpenFileName(
             self, "Open project", url, "Tacty Project (*.tproj)"
         )

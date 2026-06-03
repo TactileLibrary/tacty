@@ -62,6 +62,7 @@ class Ui_Form(object):
         self.gazePlotterLabel.setTextFormat(Qt.TextFormat.MarkdownText)
         self.gazePlotterLabel.setScaledContents(False)
         self.gazePlotterLabel.setWordWrap(True)
+        self.gazePlotterLabel.setOpenExternalLinks(True)
 
         self.verticalLayout.addWidget(self.gazePlotterLabel)
 

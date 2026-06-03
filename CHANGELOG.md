@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.5.1] - 2026-06-03
+
+### Changed
+
+- The default folder was changed to the user's Documents folder
+
+### Fixed
+
+- Bug where the default theme upon installing is `Breeze Dark`, but in the menu `Native` is selected
+- Installer on MacOS
+- Application name on MacOS
+- External link in the GazePlotter section not clickable on MacOS 
+
 ## [v0.5.0] - 2026-06-02
 
 ### Added

@@ -149,6 +149,7 @@ jobs:
         run: |
           mkdir dmg_root
           cp -r dist/tacty.app dmg_root/
+          ln -s /Applications dmg_root/Applications
           hdiutil create -volname "Tacty" -srcfolder dmg_root -ov -format UDZO tacty-${{ github.ref_name }}-${{ runner.arch }}.dmg
 
       - name: Upload macOS Artifact

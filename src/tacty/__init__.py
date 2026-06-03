@@ -51,7 +51,7 @@ def main() -> None:
 def loadTheme(app: QApplication):
     settings = QSettings()
     settings.beginGroup("appearance")
-    theme = settings.value("theme", type=str) or "dark"
+    theme = settings.value("theme", type=str) or "native"
     color = settings.value("color", type=str) or "blue"
     settings.endGroup()
     global main_window

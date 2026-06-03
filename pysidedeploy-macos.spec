@@ -63,7 +63,7 @@ macos.permissions =
 mode = standalone
 
 # specify any extra nuitka arguments
-extra_args = --assume-yes-for-downloads --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --macos-create-app-bundle
+extra_args = --assume-yes-for-downloads --noinclude-qt-translations --include-package=pydantic --include-package=pandas --nofollow-import-to=*.tests --nofollow-import-to=*.pytest --macos-create-app-bundle --macos-app-name=Tacty --output-filename=Tacty
 
 [buildozer]
 

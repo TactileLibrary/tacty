@@ -5,7 +5,7 @@ from typing import cast
 
 import numpy as np
 import pandas as pd
-from PySide6.QtCore import QFileInfo, QSettings
+from PySide6.QtCore import QFileInfo, QSettings, QStandardPaths
 from PySide6.QtWidgets import QFileDialog, QWidget
 
 from .export_ui import Ui_Form
@@ -59,7 +59,9 @@ class ExportForm(QWidget):
         settings = QSettings()
         defaultPath = settings.value("lastPath", type=str)
         if not isinstance(defaultPath, str):
-            defaultPath = ""
+            defaultPath = QStandardPaths.writableLocation(
+                QStandardPaths.StandardLocation.DocumentsLocation
+            )
 
         dialog.setDirectory(defaultPath)
 
