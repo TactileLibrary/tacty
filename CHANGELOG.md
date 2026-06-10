@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.6.0] - 2026-06-10
+
+The main goal of the `v0.6.x` lineup will be improving the accuracy of the tracking pipeline.
+
+### Changed
+
+- *(BREAKING)* Massively speed up hash checking, but invalidates all previous hashes
+- Raised the minimum treshold for identifying stickers
+
+### Fixed
+
+- Bug where a single sticker would sometimes fail to be detected
+- Color extraction accuracy improvements
+- Icon fix for Windows
+
 ## [v0.5.1] - 2026-06-03
 
 ### Changed
@@ -19,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - External link in the GazePlotter section not clickable on MacOS 
 
 ## [v0.5.0] - 2026-06-02
+
+With `v0.5.x` we're working on MacOS support.
 
 ### Added
 
@@ -44,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.4.0] - 2026-05-29
 
-With v0.4 we're starting to add support for Areas of Interest. For now only rectangles are supported, but most of the code for polygon support is already implemented, I just need to implement the interatctive selector.
+With `v0.4.x` we're starting to add support for Areas of Interest. For now only rectangles are supported, but most of the code for polygon support is already implemented, I just need to implement the interatctive selector.
 
 ### Added
 

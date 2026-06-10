@@ -241,12 +241,33 @@ class MainWindow(QMainWindow):
         json = bytes(file.readAll().data())
         project = Project.model_validate_json(json)
         hash = getHashFromPath(project.videoFile)
-        if project.videoHash != hash:
+        if hash is None:
             err = QErrorMessage(self)
-            err.showMessage(
-                "Video file changed. Please restore the original file, or create a new project."
-            )
+            err.showMessage("Video file not found.")
             return
+        if project.videoHash != hash:
+            msg_box = QMessageBox(self)
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+            msg_box.setWindowTitle("Video file changed")
+            msg_box.setText(
+                "The video file has been modified or replaced since this project was last saved.\n\n Please restore the file or create a new project."
+            )
+
+            open_anyway_button = msg_box.addButton(
+                "Open anyway", QMessageBox.ButtonRole.AcceptRole
+            )
+            cancel_button = msg_box.addButton(
+                "Cancel", QMessageBox.ButtonRole.RejectRole
+            )
+
+            msg_box.setDefaultButton(cancel_button)
+
+            msg_box.exec()
+
+            if msg_box.clickedButton() != open_anyway_button:
+                return
+
+        project.videoHash = hash
         self.openedFile = name
         self.showProject(project)
 

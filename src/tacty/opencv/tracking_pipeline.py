@@ -30,9 +30,7 @@ class TrackingPipeline(QThread):
         self.debugImages = debugImages
 
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
-        _, max_val, _, _ = cv2.minMaxLoc(img)
-
-        max_val = max(max_val, 10)
+        max_val = 255  # logic moved to map generation
 
         tolerance = int(max_val * tolerance)
 
@@ -166,15 +164,15 @@ class TrackingPipeline(QThread):
         label, _ = self.classifier.pred(mask)
 
         # get data in physical space
-        c = Point(x=round(centroids[1][0]), y=round(centroids[1][1]))  # pyright: ignore [reportAny]
+        c = Point(x=round(centroids[index][0]), y=round(centroids[index][1]))  # pyright: ignore [reportAny]
         cs = toSpace(
             c,
             self.project.calibrationOptions.processingResolution(),
             self.project.calibrationOptions.pageSize,
         )
         tl = Point(
-            x=round(stats[1][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
-            y=round(stats[1][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
+            x=round(stats[index][cv2.CC_STAT_LEFT]),  # pyright: ignore [reportAny]
+            y=round(stats[index][cv2.CC_STAT_TOP]),  # pyright: ignore [reportAny]
         )
         tls = toSpace(
             tl,
@@ -182,8 +180,8 @@ class TrackingPipeline(QThread):
             self.project.calibrationOptions.pageSize,
         )
         br = Point(
-            x=tl.x + round(stats[1][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
-            y=tl.y + round(stats[1][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
+            x=tl.x + round(stats[index][cv2.CC_STAT_WIDTH]),  # pyright: ignore [reportAny]
+            y=tl.y + round(stats[index][cv2.CC_STAT_HEIGHT]),  # pyright: ignore [reportAny]
         )
         brs = toSpace(
             br,
@@ -202,17 +200,24 @@ class TrackingPipeline(QThread):
             img, connectivity=8
         )
 
-        areas = stats[1:, cv2.CC_STAT_AREA]
-        top_indices = np.argsort(areas)[::-1][:2] + 1
+        if count <= 1:
+            return
 
-        if count > 2 and stats[top_indices[1]][cv2.CC_STAT_AREA] > 25:
+        areas = stats[1:, cv2.CC_STAT_AREA]
+        sorted_offsets = np.argsort(areas)[::-1]
+        sorted_indices = sorted_offsets + 1
+        top_indices = [
+            idx for idx in sorted_indices if stats[idx, cv2.CC_STAT_AREA] > 25
+        ]
+
+        if len(top_indices) >= 2:
             # found both markers
             self.classifyTwoMarkers(
                 labels, stats, centroids, color, markers, top_indices
             )
             return
 
-        if count == 2 and stats[top_indices[0]][cv2.CC_STAT_AREA] > 25:
+        if len(top_indices) == 1:
             # found one marker
             self.classifyOneMarker(
                 labels, stats, centroids, color, markers, top_indices[0]
@@ -238,7 +243,14 @@ class TrackingPipeline(QThread):
         hue_score = cv2.LUT(h, lut)
         if debug != "":
             self.debugImages[debug + " hue difference"] = hue_score
-        return cv2.multiply(hue_score, sv, scale=1.0 / 255.0, dtype=cv2.CV_8U)
+        color_map = cv2.multiply(hue_score, sv, scale=1.0 / 255.0, dtype=cv2.CV_8U)
+
+        _, max_val, _, _ = cv2.minMaxLoc(color_map)
+
+        if max_val < 20:
+            return np.zeros_like(color_map)
+
+        return cv2.normalize(color_map, color_map, 0, 255, cv2.NORM_MINMAX)
 
     def precomputeLuts(self, width: int = 15) -> dict[str, np.ndarray]:
         luts: dict[str, np.ndarray] = {}
