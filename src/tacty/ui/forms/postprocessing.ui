@@ -31,22 +31,22 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="outlierAnatomy">
-     <property name="toolTip">
-      <string>Removes finger markers that are too close or too far from the palm marker</string>
-     </property>
-     <property name="text">
-      <string>Detect by kinematic constaint</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QCheckBox" name="outlierSpeed">
      <property name="toolTip">
       <string>Removes markers that are moving too fast</string>
      </property>
      <property name="text">
       <string>Detect by speed</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="outlierAnatomy">
+     <property name="toolTip">
+      <string>Removes finger markers that are too close or too far from the palm marker</string>
+     </property>
+     <property name="text">
+      <string>Detect by kinematic constaint</string>
      </property>
     </widget>
    </item>

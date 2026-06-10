@@ -14,10 +14,10 @@ class PostProcessingPipeline:
 
     def processs(self) -> pd.DataFrame:
         df = self.loadDataframe()
-        if self.project.postProcessingOptions.anatomyOutlier:
-            self.removeAnatomyOutliers(df)
         if self.project.postProcessingOptions.speedOutlier:
             self.removeSpeedOutliers(df)
+        if self.project.postProcessingOptions.anatomyOutlier:
+            self.removeAnatomyOutliers(df)
         if self.project.postProcessingOptions.interpolation:
             df = df.interpolate(
                 method="linear",
@@ -102,9 +102,6 @@ class PostProcessingPipeline:
                 else None
             )
             anchor = f"{prefix}Palm"
-            if anchor in markers:
-                palm_missing = df[(anchor, "x")].isna()
-                df.loc[palm_missing, (marker, slice(None))] = np.nan
             if anchor not in palms:
                 continue
 
@@ -155,6 +152,8 @@ class PostProcessingPipeline:
 
         # rename the columns to the finger names
         mapping = self.project.trackingOptions.fingerMapping.toInverseDict()
+        valid_columns = [col for col in df.columns if mapping.get(col[0]) is not None]
+        df = cast(pd.DataFrame, df[valid_columns])
         columns = cast(list[tuple[str, str]], list(df.columns))
         df.columns = pd.MultiIndex.from_tuples(
             [

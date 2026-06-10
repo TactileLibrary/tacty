@@ -37,15 +37,15 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.outlierLabel)
 
-        self.outlierAnatomy = QCheckBox(Form)
-        self.outlierAnatomy.setObjectName(u"outlierAnatomy")
-
-        self.verticalLayout.addWidget(self.outlierAnatomy)
-
         self.outlierSpeed = QCheckBox(Form)
         self.outlierSpeed.setObjectName(u"outlierSpeed")
 
         self.verticalLayout.addWidget(self.outlierSpeed)
+
+        self.outlierAnatomy = QCheckBox(Form)
+        self.outlierAnatomy.setObjectName(u"outlierAnatomy")
+
+        self.verticalLayout.addWidget(self.outlierAnatomy)
 
         self.missingLabel = QLabel(Form)
         self.missingLabel.setObjectName(u"missingLabel")
@@ -103,13 +103,13 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.outlierLabel.setText(QCoreApplication.translate("Form", u"### Outlier removal", None))
 #if QT_CONFIG(tooltip)
-        self.outlierAnatomy.setToolTip(QCoreApplication.translate("Form", u"Removes finger markers that are too close or too far from the palm marker", None))
-#endif // QT_CONFIG(tooltip)
-        self.outlierAnatomy.setText(QCoreApplication.translate("Form", u"Detect by kinematic constaint", None))
-#if QT_CONFIG(tooltip)
         self.outlierSpeed.setToolTip(QCoreApplication.translate("Form", u"Removes markers that are moving too fast", None))
 #endif // QT_CONFIG(tooltip)
         self.outlierSpeed.setText(QCoreApplication.translate("Form", u"Detect by speed", None))
+#if QT_CONFIG(tooltip)
+        self.outlierAnatomy.setToolTip(QCoreApplication.translate("Form", u"Removes finger markers that are too close or too far from the palm marker", None))
+#endif // QT_CONFIG(tooltip)
+        self.outlierAnatomy.setText(QCoreApplication.translate("Form", u"Detect by kinematic constaint", None))
         self.missingLabel.setText(QCoreApplication.translate("Form", u"### Fill missing data", None))
         self.interpolation.setText(QCoreApplication.translate("Form", u"Fill gaps using interpolated data", None))
         self.AOILabel.setText(QCoreApplication.translate("Form", u"### Areas of interest", None))

@@ -97,18 +97,18 @@ class ColorOptions(BaseModel, Generic[T]):
 
 
 class FingerMapping(BaseModel):
-    leftThumb: str = "cyanCircle"
-    leftIndex: str = "yellowCircle"
-    leftMiddle: str = "blueCircle"
-    leftRing: str = "greenCircle"
-    leftPinky: str = "redCircle"
-    leftPalm: str = "magentaCircle"
-    rightThumb: str = "cyanSquare"
-    rightIndex: str = "yellowSquare"
-    rightMiddle: str = "blueSquare"
-    rightRing: str = "greenSquare"
-    rightPinky: str = "redSquare"
-    rightPalm: str = "magentaSquare"
+    leftThumb: str | None = "cyanCircle"
+    leftIndex: str | None = "yellowCircle"
+    leftMiddle: str | None = "blueCircle"
+    leftRing: str | None = "greenCircle"
+    leftPinky: str | None = "redCircle"
+    leftPalm: str | None = "magentaCircle"
+    rightThumb: str | None = "cyanSquare"
+    rightIndex: str | None = "yellowSquare"
+    rightMiddle: str | None = "blueSquare"
+    rightRing: str | None = "greenSquare"
+    rightPinky: str | None = "redSquare"
+    rightPalm: str | None = "magentaSquare"
 
     def toDict(self) -> dict[str, str]:
         return self.model_dump()

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.6.1] - 2026-06-10
+
+### Added
+
+- Ability to disable certain fingers
+
+### Fixed
+
+- Reordered the outlier detection algorithms, fixing a bug with kinetic detection
+- Kinetic detection no longer breaks everything in the frames where the palm is missing
+- Incorrect versioning on previous release
+
 ## [v0.6.0] - 2026-06-10
 
 The main goal of the `v0.6.x` lineup will be improving the accuracy of the tracking pipeline.

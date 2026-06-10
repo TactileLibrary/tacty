@@ -35,8 +35,15 @@ class TrackingDisplayPipeline:
 
         combinations = [(s, f) for s in sides for f in fingers]
 
+        active_markers = self.data.columns.get_level_values(0)
+
         for side, finger in combinations:
-            marker = markers[side + finger]
+            finger_name = side + finger
+
+            if finger_name not in active_markers:
+                continue
+
+            marker = markers[finger_name]
 
             if pd.isna(marker["x"]) or pd.isna(marker["y"]):
                 continue
@@ -102,7 +109,12 @@ class TrackingDisplayPipeline:
 
             # finger - palm line rendering
             if finger != "Palm":
-                palmMarker = markers[side + "Palm"]
+                palm_name = side + "Palm"
+
+                if palm_name not in active_markers:
+                    continue
+
+                palmMarker = markers[palm_name]
 
                 if pd.isna(palmMarker["x"]) or pd.isna(palmMarker["y"]):
                     continue

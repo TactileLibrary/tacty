@@ -131,6 +131,8 @@ class TrackingForm(QWidget):
 
             box.addItem(icon, name, value)
 
+        box.addItem("Disable", None)
+
         _ = box.currentIndexChanged.connect(
             lambda _, b=box, f=finger: self.saveComboBox(b, f)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
         )
