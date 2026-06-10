@@ -170,6 +170,7 @@ class PostProcessingOptions(BaseModel):
     speedOutlier: bool = True
     anatomyOutlier: bool = True
     interpolation: bool = True
+    interpolationLimit: float = 0.0
     aois: list[AOI] = []
 
 

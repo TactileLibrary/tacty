@@ -6,7 +6,7 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x06\xd2\
+\x00\x00\x0aD\
 #\
  Changelog\x0d\x0a\x0d\x0aAl\
 l notable change\
@@ -24,100 +24,155 @@ ngelog.com/en/1.\
 rsioning](https:\
 //semver.org/spe\
 c/v2.0.0.html).\x0d\
-\x0a\x0d\x0a## [unrelease\
-d]\x0d\x0a\x0d\x0a### Change\
-d\x0d\x0a\x0d\x0a- Raised th\
-e minimum tresho\
-ld for identifyi\
-ng stickers\x0d\x0a- M\
-assively speed u\
-p hash checking,\
- but invalidates\
- all previous ha\
-shes\x0d\x0a\x0d\x0a### Fixe\
-d\x0d\x0a\x0d\x0a- Bug where\
- a single sticke\
-r would sometime\
-s fail to be det\
-ected\x0d\x0a\x0d\x0a## [v0.\
-5.1] - 2026-06-0\
-3\x0d\x0a\x0d\x0a### Changed\
-\x0d\x0a\x0d\x0a- The defaul\
-t folder was cha\
-nged to the user\
-'s Documents fol\
-der\x0d\x0a\x0d\x0a### Fixed\
-\x0d\x0a\x0d\x0a- Bug where \
-the default them\
-e upon installin\
-g is `Breeze Dar\
-k`, but in the m\
-enu `Native` is \
-selected\x0d\x0a- Inst\
-aller on MacOS\x0d\x0a\
-- Application na\
-me on MacOS\x0d\x0a- E\
-xternal link in \
-the GazePlotter \
-section not clic\
-kable on MacOS \x0d\
-\x0a\x0d\x0a## [v0.5.0] -\
- 2026-06-02\x0d\x0a\x0d\x0a#\
+\x0a\x0d\x0a## [v0.6.2] -\
+ 2026-06-11\x0d\x0a\x0d\x0a#\
 ## Added\x0d\x0a\x0d\x0a- Ma\
-cOS support (tar\
-geting Apple Sil\
-icon)\x0d\x0a\x0d\x0a### Fix\
-ed\x0d\x0a\x0d\x0a- Bugs/ine\
-fficiencies in t\
-he release pipel\
-ine\x0d\x0a\x0d\x0a## [v0.4.\
-2] - 2026-05-30\x0d\
-\x0a\x0d\x0a### Added\x0d\x0a\x0d\x0a\
-- Changelog wind\
-ow\x0d\x0a- Automatic \
-changelog parsin\
-g in the deploym\
-ent Github Actio\
-n\x0d\x0a- Open source\
- credits in the \
-About window\x0d\x0a\x0d\x0a\
-## [v0.4.1] - 20\
-26-05-29\x0d\x0a\x0d\x0a### \
-Fixed\x0d\x0a\x0d\x0a- `Stim\
-ulus` field in G\
-azePlotter expor\
-t set to video f\
-ile name\x0d\x0a\x0d\x0a## [\
-v0.4.0] - 2026-0\
-5-29\x0d\x0a\x0d\x0aWith v0.\
-4 we're starting\
- to add support \
-for Areas of Int\
-erest. For now o\
-nly rectangles a\
-re supported, bu\
-t most of the co\
-de for polygon s\
-upport is alread\
-y implemented, I\
- just need to im\
-plement the inte\
-ratctive selecto\
-r.\x0d\x0a\x0d\x0a### Added\x0d\
-\x0a\x0d\x0a- Rectangular\
- Areas of Intere\
-st\x0d\x0a- GazePlotte\
-r exporter\x0d\x0a\x0d\x0a##\
-# Changed\x0d\x0a\x0d\x0a- T\
-ime value in exp\
-orts changed fro\
-m frame to milis\
-econd\x0d\x0a\x0d\x0a## [v0.\
-3.0] - 2026-05-0\
-6\x0d\x0a\x0d\x0aThis is the\
- first public re\
-lease of Tacty.\x0d\
-\x0a\
+sk cleanup using\
+ morphological o\
+pening and closi\
+ng (unconfigurab\
+le for now)\x0d\x0a- O\
+ption to limit t\
+he interpolation\
+ applied\x0d\x0a\x0d\x0a### \
+Changed\x0d\x0a\x0d\x0a- Hue\
+ tolerance for m\
+arker finding (1\
+5 to 10)\x0d\x0a\x0d\x0a### \
+Fixed\x0d\x0a\x0d\x0a- Wrong\
+ changelog in th\
+e last releases\x0d\
+\x0a- Various track\
+ing and postproc\
+essing bugs\x0d\x0a\x0d\x0a#\
+# [v0.6.1] - 202\
+6-06-10\x0d\x0a\x0d\x0a### A\
+dded\x0d\x0a\x0d\x0a- Abilit\
+y to disable cer\
+tain fingers\x0d\x0a\x0d\x0a\
+### Fixed\x0d\x0a\x0d\x0a- R\
+eordered the out\
+lier detection a\
+lgorithms, fixin\
+g a bug with kin\
+etic detection\x0d\x0a\
+- Kinetic detect\
+ion no longer br\
+eaks everything \
+in the frames wh\
+ere the palm is \
+missing\x0d\x0a- Incor\
+rect versioning \
+on previous rele\
+ase\x0d\x0a\x0d\x0a## [v0.6.\
+0] - 2026-06-10\x0d\
+\x0a\x0d\x0aThe main goal\
+ of the `v0.6.x`\
+ lineup will be \
+improving the ac\
+curacy of the tr\
+acking pipeline.\
+\x0d\x0a\x0d\x0a### Changed\x0d\
+\x0a\x0d\x0a- *(BREAKING)\
+* Massively spee\
+d up hash checki\
+ng, but invalida\
+tes all previous\
+ hashes\x0d\x0a- Raise\
+d the minimum tr\
+eshold for ident\
+ifying stickers\x0d\
+\x0a\x0d\x0a### Fixed\x0d\x0a\x0d\x0a\
+- Bug where a si\
+ngle sticker wou\
+ld sometimes fai\
+l to be detected\
+\x0d\x0a- Color extrac\
+tion accuracy im\
+provements\x0d\x0a- Ic\
+on fix for Windo\
+ws\x0d\x0a\x0d\x0a## [v0.5.1\
+] - 2026-06-03\x0d\x0a\
+\x0d\x0a### Changed\x0d\x0a\x0d\
+\x0a- The default f\
+older was change\
+d to the user's \
+Documents folder\
+\x0d\x0a\x0d\x0a### Fixed\x0d\x0a\x0d\
+\x0a- Bug where the\
+ default theme u\
+pon installing i\
+s `Breeze Dark`,\
+ but in the menu\
+ `Native` is sel\
+ected\x0d\x0a- Install\
+er on MacOS\x0d\x0a- A\
+pplication name \
+on MacOS\x0d\x0a- Exte\
+rnal link in the\
+ GazePlotter sec\
+tion not clickab\
+le on MacOS \x0d\x0a\x0d\x0a\
+## [v0.5.0] - 20\
+26-06-02\x0d\x0a\x0d\x0aWith\
+ `v0.5.x` we're \
+working on MacOS\
+ support.\x0d\x0a\x0d\x0a###\
+ Added\x0d\x0a\x0d\x0a- MacO\
+S support (targe\
+ting Apple Silic\
+on)\x0d\x0a\x0d\x0a### Fixed\
+\x0d\x0a\x0d\x0a- Bugs/ineff\
+iciencies in the\
+ release pipelin\
+e\x0d\x0a\x0d\x0a## [v0.4.2]\
+ - 2026-05-30\x0d\x0a\x0d\
+\x0a### Added\x0d\x0a\x0d\x0a- \
+Changelog window\
+\x0d\x0a- Automatic ch\
+angelog parsing \
+in the deploymen\
+t Github Action\x0d\
+\x0a- Open source c\
+redits in the Ab\
+out window\x0d\x0a\x0d\x0a##\
+ [v0.4.1] - 2026\
+-05-29\x0d\x0a\x0d\x0a### Fi\
+xed\x0d\x0a\x0d\x0a- `Stimul\
+us` field in Gaz\
+ePlotter export \
+set to video fil\
+e name\x0d\x0a\x0d\x0a## [v0\
+.4.0] - 2026-05-\
+29\x0d\x0a\x0d\x0aWith `v0.4\
+.x` we're starti\
+ng to add suppor\
+t for Areas of I\
+nterest. For now\
+ only rectangles\
+ are supported, \
+but most of the \
+code for polygon\
+ support is alre\
+ady implemented,\
+ I just need to \
+implement the in\
+teratctive selec\
+tor.\x0d\x0a\x0d\x0a### Adde\
+d\x0d\x0a\x0d\x0a- Rectangul\
+ar Areas of Inte\
+rest\x0d\x0a- GazePlot\
+ter exporter\x0d\x0a\x0d\x0a\
+### Changed\x0d\x0a\x0d\x0a-\
+ Time value in e\
+xports changed f\
+rom frame to mil\
+isecond\x0d\x0a\x0d\x0a## [v\
+0.3.0] - 2026-05\
+-06\x0d\x0a\x0d\x0aThis is t\
+he first public \
+release of Tacty\
+.\x0d\x0a\
 \x00\x00\xe3\x22\
 \x08\
 \x07\x12\x07pytorch\x1a\x052.5.\
@@ -88541,18 +88596,18 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x06\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x9e\xb2\xc4\x10\x15\
+\x00\x00\x01\x9e\xb3\xcf\x99[\
 \x00\x00\x00.\x00\x02\x00\x00\x00\x01\x00\x00\x00\x05\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x01\x8c\x00\x00\x00\x00\x00\x01\x00\x15];\
+\x00\x00\x01\x8c\x00\x00\x00\x00\x00\x01\x00\x15`\xad\
 \x00\x00\x01\x9ev\x18\x062\
-\x00\x00\x01\xa2\x00\x01\x00\x00\x00\x01\x00\x15^N\
+\x00\x00\x01\xa2\x00\x01\x00\x00\x00\x01\x00\x15a\xc0\
 \x00\x00\x01\x9e\xb2\x03qK\
-\x00\x00\x01$\x00\x00\x00\x00\x00\x01\x00\x11@\xdf\
+\x00\x00\x01$\x00\x00\x00\x00\x00\x01\x00\x11DQ\
 \x00\x00\x01\x9d\xe0\x9f\x08;\
-\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x00\xe9\xfc\
+\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x00\xedn\
 \x00\x00\x01\x9d\xe0\xca\xc1W\
-\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x06\xd6\
+\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x0aH\
 \x00\x00\x01\x9d\xdf\xd89O\
 "
 

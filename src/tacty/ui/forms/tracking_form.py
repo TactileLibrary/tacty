@@ -137,7 +137,7 @@ class TrackingForm(QWidget):
             lambda _, b=box, f=finger: self.saveComboBox(b, f)  # pyright: ignore [reportUnknownArgumentType, reportUnknownLambdaType]
         )
 
-    def setComboBoxToData(self, box: QComboBox, data: str):
+    def setComboBoxToData(self, box: QComboBox, data: str | None):
         index = box.findData(data)
         box.setCurrentIndex(index)
 

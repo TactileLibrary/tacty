@@ -61,11 +61,39 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="interpolation">
-     <property name="text">
-      <string>Fill gaps using interpolated data</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="interpolation">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Linearly interpolates between known points to fill missing data</string>
+       </property>
+       <property name="text">
+        <string>Fill gaps using interpolated data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="interpolationLimit">
+       <property name="toolTip">
+        <string>Maximum duration to interpolate. Note that it will fill this many seconds BEFORE and AFTER known points.
+
+Set to 0 to disable limit.</string>
+       </property>
+       <property name="suffix">
+        <string>s</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="AOILabel">

@@ -40,6 +40,7 @@ class PostProcessingForm(QWidget):
         _ = self.ui.outlierAnatomy.checkStateChanged.connect(self.saveData)
         _ = self.ui.outlierSpeed.checkStateChanged.connect(self.saveData)
         _ = self.ui.interpolation.checkStateChanged.connect(self.saveData)
+        _ = self.ui.interpolationLimit.editingFinished.connect(self.saveData)
         _ = self.ui.AOIAddRect.clicked.connect(self.requestRect.emit)
         _ = self.ui.AOITable.itemSelectionChanged.connect(self.toggleDelButton)
         _ = self.ui.AOIDelete.clicked.connect(self.deleteAOI)
@@ -72,11 +73,17 @@ class PostProcessingForm(QWidget):
         self.ui.outlierAnatomy.setChecked(self.data.anatomyOutlier)
         self.ui.outlierSpeed.setChecked(self.data.speedOutlier)
         self.ui.interpolation.setChecked(self.data.interpolation)
+        self.ui.interpolationLimit.setValue(self.data.interpolationLimit)
+
+        self.ui.interpolationLimit.setEnabled(self.data.interpolation)
 
     def saveData(self):
         self.data.anatomyOutlier = self.ui.outlierAnatomy.isChecked()
         self.data.speedOutlier = self.ui.outlierSpeed.isChecked()
         self.data.interpolation = self.ui.interpolation.isChecked()
+        self.data.interpolationLimit = self.ui.interpolationLimit.value()
+
+        self.ui.interpolationLimit.setEnabled(self.data.interpolation)
 
         self.dataChanged.emit()
 

@@ -13,6 +13,13 @@ class PostProcessingPipeline:
         self.project = project
 
     def processs(self) -> pd.DataFrame:
+        interpolationLimit = self.project.postProcessingOptions.interpolationLimit
+        interpolationLimit = (
+            round(interpolationLimit * self.project.calibrationOptions.videoFps.value)
+            if interpolationLimit
+            else None
+        )
+
         df = self.loadDataframe()
         if self.project.postProcessingOptions.speedOutlier:
             self.removeSpeedOutliers(df)
@@ -20,9 +27,7 @@ class PostProcessingPipeline:
             self.removeAnatomyOutliers(df)
         if self.project.postProcessingOptions.interpolation:
             df = df.interpolate(
-                method="linear",
-                # limit=round(self.project.calibrationOptions.videoFps.value / 4),
-                # removing the limit for now, might expose this in the UI later
+                method="linear", limit=interpolationLimit, limit_direction="both"
             )
         df = df.round()  # need ints
 

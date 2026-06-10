@@ -193,6 +193,33 @@ class TrackingPipeline(QThread):
             centroid=cs, bounds=BoundingBox(tl=tls, br=brs)
         )
 
+    def cleanMask(self, img: MatLike):
+        height = img.shape[0]
+        scale = height / 1000  # around the default of 92 DPI on A3
+        open_base = 3
+        close_base = 5
+
+        # compute kernel sizes to use
+        open_size = max(open_base, int(open_base * scale))
+        if open_size % 2 == 0:
+            open_size += 1
+        close_size = max(close_base, int(close_base * scale))
+        if close_size % 2 == 0:
+            close_size += 1
+
+        # create the kernels
+        kernel_open = cv2.getStructuringElement(cv2.MORPH_RECT, (open_size, open_size))
+        kernel_close = cv2.getStructuringElement(
+            cv2.MORPH_RECT, (close_size, close_size)
+        )
+
+        # open to remove specks
+        img_cleaned = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel_open)
+        # close to fill gaps
+        img_cleaned = cv2.morphologyEx(img_cleaned, cv2.MORPH_CLOSE, kernel_close)
+
+        return img_cleaned
+
     def findMarkers(
         self, img: MatLike, color: str, markers: dict[str, TrackedMarker]
     ) -> None:
@@ -213,7 +240,7 @@ class TrackingPipeline(QThread):
         if len(top_indices) >= 2:
             # found both markers
             self.classifyTwoMarkers(
-                labels, stats, centroids, color, markers, top_indices
+                labels, stats, centroids, color, markers, np.ndarray(top_indices)
             )
             return
 
@@ -227,7 +254,7 @@ class TrackingPipeline(QThread):
     @deprecated(
         "Extremely slow due to repeated arithmetics. Use getFastColorMap() and precomputeLuts() instead."
     )
-    def getColorMap(self, h: MatLike, sv: MatLike, target_hue: int, width: int = 15):
+    def getColorMap(self, h: MatLike, sv: MatLike, target_hue: int, width: int = 10):
         diff = np.abs(h - target_hue)
         dist = np.minimum(diff, 180 - diff)
 
@@ -303,7 +330,7 @@ class TrackingPipeline(QThread):
         b_map = self.getFastColorMap(h, sv, luts["b"], debug="blue")
         c_map = self.getFastColorMap(h, sv, luts["c"], debug="cyan")
         y_map = self.getFastColorMap(h, sv, luts["y"], debug="yellow")
-        m_map = self.getFastColorMap(h, sv, luts["m"], debug="magents")
+        m_map = self.getFastColorMap(h, sv, luts["m"], debug="magenta")
 
         self.debugImages["Red map"] = r_map
         self.debugImages["Green map"] = g_map
@@ -325,6 +352,20 @@ class TrackingPipeline(QThread):
         self.debugImages["Cyan mask"] = c_mask
         self.debugImages["Yellow mask"] = y_mask
         self.debugImages["Magenta mask"] = m_mask
+
+        r_mask_clean = self.cleanMask(r_mask)
+        g_mask_clean = self.cleanMask(g_mask)
+        b_mask_clean = self.cleanMask(b_mask)
+        c_mask_clean = self.cleanMask(c_mask)
+        y_mask_clean = self.cleanMask(y_mask)
+        m_mask_clean = self.cleanMask(m_mask)
+
+        self.debugImages["Red clean mask"] = r_mask_clean
+        self.debugImages["green clean mask"] = g_mask_clean
+        self.debugImages["Blue clean mask"] = b_mask_clean
+        self.debugImages["Cyan clean mask"] = c_mask_clean
+        self.debugImages["Yellow clean mask"] = y_mask_clean
+        self.debugImages["Magenta clean mask"] = m_mask_clean
 
     @override
     def run(self):
@@ -355,6 +396,7 @@ class TrackingPipeline(QThread):
         timeMap: float = 0
         timeMask: float = 0
         timeTrack: float = 0
+        timeClean: float = 0
 
         luts = self.precomputeLuts()
 
@@ -403,16 +445,25 @@ class TrackingPipeline(QThread):
             t6 = time()
             timeMask += t6 - t5
 
+            r_mask_clean = self.cleanMask(r_mask)
+            g_mask_clean = self.cleanMask(g_mask)
+            b_mask_clean = self.cleanMask(b_mask)
+            c_mask_clean = self.cleanMask(c_mask)
+            y_mask_clean = self.cleanMask(y_mask)
+            m_mask_clean = self.cleanMask(m_mask)
+            t7 = time()
+            timeClean += t7 - t6
+
             markers: dict[str, TrackedMarker] = {}
 
-            self.findMarkers(r_mask, "red", markers)
-            self.findMarkers(g_mask, "green", markers)
-            self.findMarkers(b_mask, "blue", markers)
-            self.findMarkers(c_mask, "cyan", markers)
-            self.findMarkers(y_mask, "yellow", markers)
-            self.findMarkers(m_mask, "magenta", markers)
-            t7 = time()
-            timeTrack += t7 - t6
+            self.findMarkers(r_mask_clean, "red", markers)
+            self.findMarkers(g_mask_clean, "green", markers)
+            self.findMarkers(b_mask_clean, "blue", markers)
+            self.findMarkers(c_mask_clean, "cyan", markers)
+            self.findMarkers(y_mask_clean, "yellow", markers)
+            self.findMarkers(m_mask_clean, "magenta", markers)
+            t8 = time()
+            timeTrack += t8 - t7
 
             self.project.trackingData[frame] = markers
 
@@ -427,7 +478,7 @@ class TrackingPipeline(QThread):
 
         # print profiler
         print(
-            f"Time spent: decoding {timeDecoding}s, calibrating {timeCalibration}s, transforming to HSV {timeHSV}s, extracting color maps {timeMap}s, computing masks {timeMask}s and tracking the fingers {timeTrack}s."
+            f"Time spent: decoding {timeDecoding}s, calibrating {timeCalibration}s, transforming to HSV {timeHSV}s, extracting color maps {timeMap}s, computing masks {timeMask}s, cleaning the masks {timeClean}s and tracking the fingers {timeTrack}s."
         )
 
         self.finished.emit()

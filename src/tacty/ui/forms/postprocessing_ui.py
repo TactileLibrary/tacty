@@ -15,9 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QHeaderView,
-    QLabel, QPushButton, QSizePolicy, QSpacerItem,
-    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QDoubleSpinBox, QHBoxLayout,
+    QHeaderView, QLabel, QPushButton, QSizePolicy,
+    QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -53,10 +54,26 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.missingLabel)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.interpolation = QCheckBox(Form)
         self.interpolation.setObjectName(u"interpolation")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.interpolation.sizePolicy().hasHeightForWidth())
+        self.interpolation.setSizePolicy(sizePolicy1)
 
-        self.verticalLayout.addWidget(self.interpolation)
+        self.horizontalLayout_2.addWidget(self.interpolation)
+
+        self.interpolationLimit = QDoubleSpinBox(Form)
+        self.interpolationLimit.setObjectName(u"interpolationLimit")
+        self.interpolationLimit.setDecimals(1)
+
+        self.horizontalLayout_2.addWidget(self.interpolationLimit)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.AOILabel = QLabel(Form)
         self.AOILabel.setObjectName(u"AOILabel")
@@ -111,7 +128,16 @@ class Ui_Form(object):
 #endif // QT_CONFIG(tooltip)
         self.outlierAnatomy.setText(QCoreApplication.translate("Form", u"Detect by kinematic constaint", None))
         self.missingLabel.setText(QCoreApplication.translate("Form", u"### Fill missing data", None))
+#if QT_CONFIG(tooltip)
+        self.interpolation.setToolTip(QCoreApplication.translate("Form", u"Linearly interpolates between known points to fill missing data", None))
+#endif // QT_CONFIG(tooltip)
         self.interpolation.setText(QCoreApplication.translate("Form", u"Fill gaps using interpolated data", None))
+#if QT_CONFIG(tooltip)
+        self.interpolationLimit.setToolTip(QCoreApplication.translate("Form", u"Maximum duration to interpolate. Note that it will fill this many seconds BEFORE and AFTER known points.\n"
+"\n"
+"Set to 0 to disable limit.", None))
+#endif // QT_CONFIG(tooltip)
+        self.interpolationLimit.setSuffix(QCoreApplication.translate("Form", u"s", None))
         self.AOILabel.setText(QCoreApplication.translate("Form", u"### Areas of interest", None))
         self.AOIAddRect.setText(QCoreApplication.translate("Form", u"Add rectangle", None))
         self.AOIAddPoly.setText(QCoreApplication.translate("Form", u"Add polygon", None))
