@@ -240,7 +240,7 @@ class TrackingPipeline(QThread):
         if len(top_indices) >= 2:
             # found both markers
             self.classifyTwoMarkers(
-                labels, stats, centroids, color, markers, np.ndarray(top_indices)
+                labels, stats, centroids, color, markers, np.array(top_indices)
             )
             return
 
