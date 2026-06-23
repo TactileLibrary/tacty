@@ -52,6 +52,8 @@ uv sync # installs Python and dependencies
 uv run tacty # run the app
 ```
 
+If you don't wish to install uv on your system, you can also use the provided `devcontainer`.
+
 ### Production builds
 
 For the production build we use [pyside6-deploy](https://doc.qt.io/qtforpython-6/deployment/deployment-pyside6-deploy.html) which makes use of [Nuitka](https://nuitka.net/) to compile Python code to C for better efficiency.
