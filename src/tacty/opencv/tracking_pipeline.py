@@ -1,5 +1,5 @@
 from time import time
-from typing import cast, override
+from typing import override
 
 import cv2
 import numpy as np
@@ -9,6 +9,7 @@ from typing_extensions import deprecated
 
 from tacty.models.project import BoundingBox, Point, Project, TrackedMarker
 from tacty.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.opencv.preprocessing_pipeline import PreProcessingPipeline
 from tacty.opencv.classifiers.AiClassifier import AiClassifier
 from tacty.opencv.classifiers.BaseClassifier import BaseClassifier
 from tacty.opencv.classifiers.HuMomentsClassifier import HuMomentsClassifier
@@ -24,10 +25,15 @@ class TrackingPipeline(QThread):
 
     classifier: BaseClassifier | None = None
 
+    calibration: CalibrationPipeline
+    preprocessing: PreProcessingPipeline
+
     def __init__(self, project: Project, debugImages: dict[str, MatLike]):
         super().__init__()
         self.project = project
         self.debugImages = debugImages
+        self.calibration = CalibrationPipeline(project.calibrationOptions)
+        self.preprocessing = PreProcessingPipeline(project.preProcessingOptions, project.videoFile)
 
     def mapToMask(self, img: MatLike, tolerance: float = 0.25) -> MatLike:
         max_val = 255  # logic moved to map generation
@@ -305,6 +311,10 @@ class TrackingPipeline(QThread):
         return luts
 
     def updateDebugImages(self, image: MatLike):
+        if "Original" in self.debugImages:
+            # show the preprocessed image
+            self.debugImages["Preprocessed"] = self.preprocessing.process(self.debugImages["Original"])
+
         # image is already calibrated
 
         self.debugImages["Calibrated"] = image
@@ -373,9 +383,6 @@ class TrackingPipeline(QThread):
         video = cv2.VideoCapture(self.project.videoFile, cv2.CAP_FFMPEG)
         video.setExceptionMode(True)
 
-        # prepare a calibrationPipeline
-        calibration = CalibrationPipeline(self.project.calibrationOptions)
-
         # prepare a classifier
         if self.project.trackingOptions.classifier == "hu":
             self.classifier = HuMomentsClassifier()
@@ -397,6 +404,7 @@ class TrackingPipeline(QThread):
         timeMask: float = 0
         timeTrack: float = 0
         timeClean: float = 0
+        timePreprocessing: float = 0
 
         luts = self.precomputeLuts()
 
@@ -411,14 +419,18 @@ class TrackingPipeline(QThread):
             t2 = time()
             timeDecoding += t2 - t1
 
-            calibrated_img = calibration.process(img)
+            preprocessed_img = self.preprocessing.process(img)
             t3 = time()
-            timeCalibration += t3 - t2
+            timePreprocessing += t3 - t2
+            
+            calibrated_img = self.calibration.process(preprocessed_img)
+            t4 = time()
+            timeCalibration += t4 - t3
 
             hsv_img = cv2.cvtColor(calibrated_img, cv2.COLOR_BGR2HSV)
             h, s, v = cv2.split(hsv_img)
-            t4 = time()
-            timeHSV = t4 - t3
+            t5 = time()
+            timeHSV = t5 - t4   
 
             # changed this to CV math for better performance
             lower_hsv = np.array([0, 50, 50], dtype=np.uint8)
@@ -433,8 +445,8 @@ class TrackingPipeline(QThread):
             c_map = self.getFastColorMap(h, sv, luts["c"])
             y_map = self.getFastColorMap(h, sv, luts["y"])
             m_map = self.getFastColorMap(h, sv, luts["m"])
-            t5 = time()
-            timeMap += t5 - t4
+            t6 = time()
+            timeMap += t6 - t5
 
             r_mask = self.mapToMask(r_map, self.project.trackingOptions.tolerances.r)
             g_mask = self.mapToMask(g_map, self.project.trackingOptions.tolerances.g)
@@ -442,8 +454,8 @@ class TrackingPipeline(QThread):
             c_mask = self.mapToMask(c_map, self.project.trackingOptions.tolerances.c)
             y_mask = self.mapToMask(y_map, self.project.trackingOptions.tolerances.y)
             m_mask = self.mapToMask(m_map, self.project.trackingOptions.tolerances.m)
-            t6 = time()
-            timeMask += t6 - t5
+            t7 = time()
+            timeMask += t7 - t6
 
             r_mask_clean = self.cleanMask(r_mask)
             g_mask_clean = self.cleanMask(g_mask)
@@ -451,8 +463,8 @@ class TrackingPipeline(QThread):
             c_mask_clean = self.cleanMask(c_mask)
             y_mask_clean = self.cleanMask(y_mask)
             m_mask_clean = self.cleanMask(m_mask)
-            t7 = time()
-            timeClean += t7 - t6
+            t8 = time()
+            timeClean += t8 - t7
 
             markers: dict[str, TrackedMarker] = {}
 
@@ -462,8 +474,8 @@ class TrackingPipeline(QThread):
             self.findMarkers(c_mask_clean, "cyan", markers)
             self.findMarkers(y_mask_clean, "yellow", markers)
             self.findMarkers(m_mask_clean, "magenta", markers)
-            t8 = time()
-            timeTrack += t8 - t7
+            t9 = time()
+            timeTrack += t9 - t8
 
             self.project.trackingData[frame] = markers
 
