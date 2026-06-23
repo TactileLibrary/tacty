@@ -19,6 +19,7 @@ from tacty.ui.components.video_player import VideoPlayer
 from tacty.ui.forms.calibration_form import CalibrationForm
 from tacty.ui.forms.export_form import ExportForm
 from tacty.ui.forms.postprocessing_form import PostProcessingForm
+from tacty.ui.forms.preprocessing_form import PreProcessingForm
 from tacty.ui.forms.tracking_form import TrackingForm
 from tacty.ui.windows import CornerPickModal
 from tacty.ui.windows.rectangle_pick_modal import RectanglePickModal
@@ -35,6 +36,7 @@ class ProjectView(QWidget):
     calibrationIdx: int
     calibration: CalibrationForm
     imageProcessingIdx: int
+    imageProcessing: PreProcessingForm
     tracking: TrackingForm
     trackingIdx: int
     dataProcessing: PostProcessingForm
@@ -83,9 +85,8 @@ class ProjectView(QWidget):
             self.openInteractivePicker
         )
 
-        self.imageProcessingIdx = self.sidebar.addItem(
-            QLabel("2"), "2. Image processing"
-        )
+        self.imageProcessing = PreProcessingForm(self.project.preProcessingOptions, self.project.calibrationOptions.videoTrim.end.default)
+        self.imageProcessingIdx = self.sidebar.addItem(self.imageProcessing, "2. Image processing")
 
         self.tracking = TrackingForm(
             self.project.trackingOptions,

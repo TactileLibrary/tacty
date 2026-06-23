@@ -173,6 +173,10 @@ class PostProcessingOptions(BaseModel):
     interpolationLimit: float = 0.0
     aois: list[AOI] = []
 
+class PreProcessingOptions(BaseModel):
+    bgrEnabled: bool = False
+    bgrFrame: int = 0
+    bgrThreshold: float = 0.1
 
 class Project(BaseModel):
     projectVersion: int
@@ -183,3 +187,4 @@ class Project(BaseModel):
     trackingOptions: TrackingOptions = TrackingOptions()
     postProcessingOptions: PostProcessingOptions = PostProcessingOptions()
     trackingData: dict[int, dict[str, TrackedMarker]] = {}
+    preProcessingOptions: PreProcessingOptions = PreProcessingOptions()
