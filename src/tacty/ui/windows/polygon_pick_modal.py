@@ -13,16 +13,16 @@ from PySide6.QtWidgets import (
 )
 
 from tacty.models.project import Point, Size
-from tacty.ui.components.rectangle_overlay import RectangleOverlay
+from tacty.ui.components.polygon_overlay import PolygonOverlay
 from tacty.utils.cvConversions import cvToQ
 
 MAX_FPS = 1000 // 30
 
 
-class RectanglePickModal(QDialog):
+class PolygonPickModal(QDialog):
     buttonBox: QDialogButtonBox
     display: QLabel
-    overlay: RectangleOverlay
+    overlay: PolygonOverlay
     image: MatLike
 
     # throttle mechanism
@@ -61,9 +61,8 @@ class RectanglePickModal(QDialog):
         h: int
         w: int
         h, w = self.image.shape[:2]  # pyright: ignore [reportAny] have to do thiss due to C bindings
-        self.overlay = RectangleOverlay(
-            tl=Point(x=round(pageSize.w * 0.25), y=round(pageSize.h * 0.25)),
-            br=Point(x=round(pageSize.w * 0.75), y=round(pageSize.h * 0.75)),
+        self.overlay = PolygonOverlay(
+            tPoints=[],
             pageSize=pageSize,
             parent=self.display,
         )
@@ -77,6 +76,15 @@ class RectanglePickModal(QDialog):
         _ = self.buttonBox.accepted.connect(self.accept)
         _ = self.buttonBox.rejected.connect(self.reject)
         layout.addWidget(self.buttonBox)
+
+        _ = self.overlay.closedChanged.connect(self.checkValid)
+        self.checkValid()
+
+    def checkValid(self):
+        if not self.overlay.closed or len(self.overlay.tPoints) < 3:
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
+        else:
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
 
     def scheduleUpdateDisplay(self) -> None:
         if not self.updateTimer.isActive():
@@ -111,7 +119,7 @@ class RectanglePickModal(QDialog):
 
         self.overlay.setGeometry(x, y, video_w, video_h)
 
-    def getData(self) -> tuple[Point, Point]:
+    def getData(self) -> list[Point]:
         return self.overlay.getData()
 
     @override

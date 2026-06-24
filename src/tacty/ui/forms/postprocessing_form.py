@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from tacty.models.project import AOIRect, Point, PostProcessingOptions
+from tacty.models.project import AOIRect, AOIPoly, Point, PostProcessingOptions
 from tacty.ui.windows.validated_text_modal import ValidatedInputDialog
 from tacty.utils.AOIValidator import AOINameValidator
 
@@ -23,6 +23,7 @@ class PostProcessingForm(QWidget):
 
     dataChanged: Signal = Signal()
     requestRect: Signal = Signal()
+    requestPoly: Signal = Signal()
 
     def __init__(self, data: PostProcessingOptions):
         super().__init__()
@@ -42,11 +43,9 @@ class PostProcessingForm(QWidget):
         _ = self.ui.interpolation.checkStateChanged.connect(self.saveData)
         _ = self.ui.interpolationLimit.editingFinished.connect(self.saveData)
         _ = self.ui.AOIAddRect.clicked.connect(self.requestRect.emit)
+        _ = self.ui.AOIAddPoly.clicked.connect(self.requestPoly.emit)
         _ = self.ui.AOITable.itemSelectionChanged.connect(self.toggleDelButton)
         _ = self.ui.AOIDelete.clicked.connect(self.deleteAOI)
-
-        # disable poly since it's not implemented yet
-        self.ui.AOIAddPoly.setDisabled(True)
 
     def deleteAOI(self):
         if self.selectedAOI == -1:
@@ -120,6 +119,23 @@ class PostProcessingForm(QWidget):
             return
 
         aoi = AOIRect(name=name, tl=tl, br=br)
+        self.data.aois.append(aoi)
+
+        self.updateTable()
+        self.dataChanged.emit()
+
+    def addPolygonAOI(self, points: list[Point]):
+        # get name
+        used = [aoi.name for aoi in self.data.aois]
+
+        validator = AOINameValidator(used)
+
+        name = ValidatedInputDialog.getText(title="AOI Name", validator=validator)
+
+        if not name:
+            return
+
+        aoi = AOIPoly(name=name, points=points)
         self.data.aois.append(aoi)
 
         self.updateTable()

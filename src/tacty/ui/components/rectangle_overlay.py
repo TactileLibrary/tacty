@@ -20,14 +20,12 @@ class RectangleOverlay(QWidget):
         self,
         tl: Point,
         br: Point,
-        resolution: Size,
         pageSize: Size,
         parent: QWidget | None = None,
     ):
         super().__init__(parent)
         self.tl = tl
         self.br = br
-        self.resolution = resolution
         self.pageSize = pageSize
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
