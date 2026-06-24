@@ -86,6 +86,7 @@ class ProjectView(QWidget):
 
         self.imageProcessing = PreProcessingForm(self.project.preProcessingOptions, self.project.calibrationOptions.videoTrim.end.default)
         self.imageProcessingIdx = self.sidebar.addItem(self.imageProcessing, "2. Image processing")
+        _ = self.imageProcessing.dataChanged.connect(self.updateProject)
 
         self.tracking = TrackingForm(
             self.project.trackingOptions,

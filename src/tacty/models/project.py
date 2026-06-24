@@ -177,6 +177,9 @@ class PreProcessingOptions(BaseModel):
     bgrEnabled: bool = False
     bgrFrame: int = 0
     bgrThreshold: float = 0.1
+    denoiseEnabled: bool = False
+    denoiseSize: int = 3
+    denoiseFilter: str = "gaussian"
 
 class Project(BaseModel):
     projectVersion: int

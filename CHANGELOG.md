@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.7.1] - 2026-06-24
+
+### Added
+
+- Denoising options
+- Preprocessing options now affect the viewer
+
+### Changed
+
+- More aggressive cleanup for the background removal mask
+- Disable background removal controls when the feature is disabled
+
+### Fixed
+
+- In-app changelog wasn't updated with `v0.7.0`
+
 ## [v0.7.0] - 2026-06-23
 
 The `0.7.x` versions add the last bits of functionality planned before the initial release of Tacty.

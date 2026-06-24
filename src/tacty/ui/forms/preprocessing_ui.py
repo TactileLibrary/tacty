@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QFormLayout, QHBoxLayout,
-    QLabel, QSizePolicy, QSlider, QSpacerItem,
-    QSpinBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
+    QHBoxLayout, QLabel, QSizePolicy, QSlider,
+    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -31,6 +31,79 @@ class Ui_Form(object):
         Form.setSizePolicy(sizePolicy)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.denoisingLabel = QLabel(Form)
+        self.denoisingLabel.setObjectName(u"denoisingLabel")
+        self.denoisingLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.denoisingLabel)
+
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.denoisingEnabledLabel = QLabel(Form)
+        self.denoisingEnabledLabel.setObjectName(u"denoisingEnabledLabel")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.denoisingEnabledLabel.sizePolicy().hasHeightForWidth())
+        self.denoisingEnabledLabel.setSizePolicy(sizePolicy1)
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.denoisingEnabledLabel)
+
+        self.denoisingEnabled = QCheckBox(Form)
+        self.denoisingEnabled.setObjectName(u"denoisingEnabled")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.denoisingEnabled)
+
+        self.denoisingFilterLabel = QLabel(Form)
+        self.denoisingFilterLabel.setObjectName(u"denoisingFilterLabel")
+        sizePolicy1.setHeightForWidth(self.denoisingFilterLabel.sizePolicy().hasHeightForWidth())
+        self.denoisingFilterLabel.setSizePolicy(sizePolicy1)
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.denoisingFilterLabel)
+
+        self.denoisingFilter = QComboBox(Form)
+        self.denoisingFilter.addItem("")
+        self.denoisingFilter.addItem("")
+        self.denoisingFilter.addItem("")
+        self.denoisingFilter.addItem("")
+        self.denoisingFilter.setObjectName(u"denoisingFilter")
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.denoisingFilter)
+
+        self.denoisingSizeLabel = QLabel(Form)
+        self.denoisingSizeLabel.setObjectName(u"denoisingSizeLabel")
+        sizePolicy1.setHeightForWidth(self.denoisingSizeLabel.sizePolicy().hasHeightForWidth())
+        self.denoisingSizeLabel.setSizePolicy(sizePolicy1)
+
+        self.formLayout_2.setWidget(2, QFormLayout.ItemRole.LabelRole, self.denoisingSizeLabel)
+
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.denoisingSizeSlider = QSlider(Form)
+        self.denoisingSizeSlider.setObjectName(u"denoisingSizeSlider")
+        self.denoisingSizeSlider.setMinimum(3)
+        self.denoisingSizeSlider.setMaximum(15)
+        self.denoisingSizeSlider.setSingleStep(2)
+        self.denoisingSizeSlider.setPageStep(4)
+        self.denoisingSizeSlider.setOrientation(Qt.Orientation.Horizontal)
+
+        self.horizontalLayout_2.addWidget(self.denoisingSizeSlider)
+
+        self.denoisingSize = QSpinBox(Form)
+        self.denoisingSize.setObjectName(u"denoisingSize")
+        self.denoisingSize.setMinimum(1)
+        self.denoisingSize.setMaximum(15)
+        self.denoisingSize.setSingleStep(2)
+        self.denoisingSize.setValue(3)
+
+        self.horizontalLayout_2.addWidget(self.denoisingSize)
+
+
+        self.formLayout_2.setLayout(2, QFormLayout.ItemRole.FieldRole, self.horizontalLayout_2)
+
+
+        self.verticalLayout.addLayout(self.formLayout_2)
+
         self.backgroundLabel = QLabel(Form)
         self.backgroundLabel.setObjectName(u"backgroundLabel")
         self.backgroundLabel.setTextFormat(Qt.TextFormat.MarkdownText)
@@ -43,9 +116,6 @@ class Ui_Form(object):
         self.formLayout.setVerticalSpacing(6)
         self.bgrEnabledLabel = QLabel(Form)
         self.bgrEnabledLabel.setObjectName(u"bgrEnabledLabel")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.bgrEnabledLabel.sizePolicy().hasHeightForWidth())
         self.bgrEnabledLabel.setSizePolicy(sizePolicy1)
 
@@ -108,6 +178,23 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.denoisingLabel.setText(QCoreApplication.translate("Form", u"### Denoising", None))
+        self.denoisingEnabledLabel.setText(QCoreApplication.translate("Form", u"Enabled", None))
+        self.denoisingEnabled.setText("")
+#if QT_CONFIG(tooltip)
+        self.denoisingFilterLabel.setToolTip(QCoreApplication.translate("Form", u"A frame with no hands or shadows", None))
+#endif // QT_CONFIG(tooltip)
+        self.denoisingFilterLabel.setText(QCoreApplication.translate("Form", u"Filter type", None))
+        self.denoisingFilter.setItemText(0, QCoreApplication.translate("Form", u"Box", None))
+        self.denoisingFilter.setItemText(1, QCoreApplication.translate("Form", u"Gaussian", None))
+        self.denoisingFilter.setItemText(2, QCoreApplication.translate("Form", u"Median", None))
+        self.denoisingFilter.setItemText(3, QCoreApplication.translate("Form", u"Bilateral", None))
+
+#if QT_CONFIG(tooltip)
+        self.denoisingSizeLabel.setToolTip(QCoreApplication.translate("Form", u"A frame with no hands or shadows", None))
+#endif // QT_CONFIG(tooltip)
+        self.denoisingSizeLabel.setText(QCoreApplication.translate("Form", u"Size", None))
+        self.denoisingSize.setSuffix(QCoreApplication.translate("Form", u"px", None))
         self.backgroundLabel.setText(QCoreApplication.translate("Form", u"### Background removal", None))
         self.bgrEnabledLabel.setText(QCoreApplication.translate("Form", u"Enabled", None))
         self.bgrEnabled.setText("")

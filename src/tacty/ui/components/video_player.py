@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 
 from tacty.models.project import Project
 from tacty.opencv.calibration_pipeline import CalibrationPipeline
+from tacty.opencv.preprocessing_pipeline import PreProcessingPipeline
 from tacty.opencv.tracking_display_pipeline import TrackingDisplayPipeline
 from tacty.utils.cvConversions import cvToQ
 
@@ -35,6 +36,7 @@ class VideoPlayer(QWidget):
     img: MatLike | None = None
 
     # pipelines
+    preProcessingPipeline: PreProcessingPipeline
     calibrationPipeline: CalibrationPipeline
     trackingPipeline: TrackingDisplayPipeline
 
@@ -64,8 +66,8 @@ class VideoPlayer(QWidget):
         self.trackingPipeline = TrackingDisplayPipeline(
             None, self.project.calibrationOptions
         )
+        self.preProcessingPipeline = PreProcessingPipeline(project.preProcessingOptions, project.videoFile)
         self.debugImages = debugImages
-
         # video display
         self.display = QLabel()
         self.display.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -122,7 +124,8 @@ class VideoPlayer(QWidget):
         _ = self.video.set(cv2.CAP_PROP_POS_FRAMES, self.project.frame)
         _, self.img = self.video.read()
 
-        img = self.calibrationPipeline.process(self.img)
+        img = self.preProcessingPipeline.process(self.img)
+        img = self.calibrationPipeline.process(img)
         img = self.trackingPipeline.process(img, self.project.frame)
 
         qimg = cvToQ(img)
