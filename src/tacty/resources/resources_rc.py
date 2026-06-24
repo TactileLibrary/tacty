@@ -6,7 +6,7 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x0cK\
+\x00\x00\x0c\xfd\
 #\
  Changelog\x0a\x0aAll \
 notable changes \
@@ -24,187 +24,198 @@ Semantic Version\
 ing](https://sem\
 ver.org/spec/v2.\
 0.0.html).\x0a\x0a## [\
-v0.7.1] - 2026-0\
+v0.7.2] - 2026-0\
 6-24\x0a\x0a### Added\x0a\
-\x0a- Denoising opt\
-ions\x0a- Preproces\
-sing options now\
- affect the view\
-er\x0a\x0a### Changed\x0a\
-\x0a- More aggressi\
-ve cleanup for t\
-he background re\
-moval mask\x0a- Dis\
-able background \
-removal controls\
- when the featur\
-e is disabled\x0a\x0a#\
-## Fixed\x0a\x0a- In-a\
-pp changelog was\
-n't updated with\
- `v0.7.0`\x0a\x0a## [v\
-0.7.0] - 2026-06\
--23\x0a\x0aThe `0.7.x`\
- versions add th\
-e last bits of f\
-unctionality pla\
-nned before the \
-initial release \
-of Tacty.\x0a\x0a### A\
-dded\x0a\x0a- Ability \
-to enable and co\
-nfigure backgrou\
-nd removal (clea\
-n frame required\
-)\x0a\x0a## [v0.6.3] -\
- 2026-06-11\x0a\x0a###\
- Fixed\x0a\x0a- Memory\
- allocation bug \
-causing tracking\
- to fail or memo\
-ry to leak\x0a\x0a## [\
-v0.6.2] - 2026-0\
-6-11\x0a\x0a### Added\x0a\
-\x0a- Mask cleanup \
-using morphologi\
-cal opening and \
-closing (unconfi\
-gurable for now)\
-\x0a- Option to lim\
-it the interpola\
-tion applied\x0a\x0a##\
-# Changed\x0a\x0a- Hue\
- tolerance for m\
-arker finding (1\
-5 to 10)\x0a\x0a### Fi\
-xed\x0a\x0a- Wrong cha\
-ngelog in the la\
-st releases\x0a- Va\
-rious tracking a\
-nd postprocessin\
-g bugs\x0a\x0a## [v0.6\
-.1] - 2026-06-10\
-\x0a\x0a### Added\x0a\x0a- A\
-bility to disabl\
-e certain finger\
-s\x0a\x0a### Fixed\x0a\x0a- \
-Reordered the ou\
-tlier detection \
-algorithms, fixi\
-ng a bug with ki\
-netic detection\x0a\
-- Kinetic detect\
-ion no longer br\
-eaks everything \
-in the frames wh\
-ere the palm is \
-missing\x0a- Incorr\
-ect versioning o\
-n previous relea\
-se\x0a\x0a## [v0.6.0] \
-- 2026-06-10\x0a\x0aTh\
-e main goal of t\
-he `v0.6.x` line\
-up will be impro\
-ving the accurac\
-y of the trackin\
-g pipeline.\x0a\x0a###\
- Changed\x0a\x0a- *(BR\
-EAKING)* Massive\
-ly speed up hash\
- checking, but i\
-nvalidates all p\
-revious hashes\x0a-\
- Raised the mini\
-mum treshold for\
- identifying sti\
-ckers\x0a\x0a### Fixed\
-\x0a\x0a- Bug where a \
-single sticker w\
-ould sometimes f\
-ail to be detect\
-ed\x0a- Color extra\
-ction accuracy i\
-mprovements\x0a- Ic\
-on fix for Windo\
-ws\x0a\x0a## [v0.5.1] \
-- 2026-06-03\x0a\x0a##\
-# Changed\x0a\x0a- The\
- default folder \
-was changed to t\
-he user's Docume\
-nts folder\x0a\x0a### \
-Fixed\x0a\x0a- Bug whe\
-re the default t\
-heme upon instal\
-ling is `Breeze \
-Dark`, but in th\
-e menu `Native` \
-is selected\x0a- In\
-staller on MacOS\
-\x0a- Application n\
-ame on MacOS\x0a- E\
-xternal link in \
-the GazePlotter \
-section not clic\
-kable on MacOS \x0a\
-\x0a## [v0.5.0] - 2\
-026-06-02\x0a\x0aWith \
-`v0.5.x` we're w\
-orking on MacOS \
-support.\x0a\x0a### Ad\
-ded\x0a\x0a- MacOS sup\
-port (targeting \
-Apple Silicon)\x0a\x0a\
-### Fixed\x0a\x0a- Bug\
-s/inefficiencies\
- in the release \
-pipeline\x0a\x0a## [v0\
-.4.2] - 2026-05-\
-30\x0a\x0a### Added\x0a\x0a-\
- Changelog windo\
-w\x0a- Automatic ch\
-angelog parsing \
-in the deploymen\
-t Github Action\x0a\
-- Open source cr\
-edits in the Abo\
-ut window\x0a\x0a## [v\
-0.4.1] - 2026-05\
--29\x0a\x0a### Fixed\x0a\x0a\
-- `Stimulus` fie\
-ld in GazePlotte\
-r export set to \
-video file name\x0a\
-\x0a## [v0.4.0] - 2\
-026-05-29\x0a\x0aWith \
-`v0.4.x` we're s\
-tarting to add s\
-upport for Areas\
- of Interest. Fo\
-r now only recta\
-ngles are suppor\
-ted, but most of\
- the code for po\
-lygon support is\
- already impleme\
-nted, I just nee\
-d to implement t\
-he interatctive \
-selector.\x0a\x0a### A\
-dded\x0a\x0a- Rectangu\
-lar Areas of Int\
-erest\x0a- GazePlot\
-ter exporter\x0a\x0a##\
-# Changed\x0a\x0a- Tim\
-e value in expor\
-ts changed from \
-frame to milisec\
-ond\x0a\x0a## [v0.3.0]\
- - 2026-05-06\x0a\x0aT\
-his is the first\
- public release \
-of Tacty.\x0a\
+\x0a- Support for p\
+olygonal areas o\
+f interest\x0a\x0a### \
+Fixed\x0a\x0a- Video p\
+layer freezing w\
+hen displaying u\
+ntracked frames,\
+ if other frames\
+ are tracked\x0a\x0a##\
+ [v0.7.1] - 2026\
+-06-24\x0a\x0a### Adde\
+d\x0a\x0a- Denoising o\
+ptions\x0a- Preproc\
+essing options n\
+ow affect the vi\
+ewer\x0a\x0a### Change\
+d\x0a\x0a- More aggres\
+sive cleanup for\
+ the background \
+removal mask\x0a- D\
+isable backgroun\
+d removal contro\
+ls when the feat\
+ure is disabled\x0a\
+\x0a### Fixed\x0a\x0a- In\
+-app changelog w\
+asn't updated wi\
+th `v0.7.0`\x0a\x0a## \
+[v0.7.0] - 2026-\
+06-23\x0a\x0aThe `0.7.\
+x` versions add \
+the last bits of\
+ functionality p\
+lanned before th\
+e initial releas\
+e of Tacty.\x0a\x0a###\
+ Added\x0a\x0a- Abilit\
+y to enable and \
+configure backgr\
+ound removal (cl\
+ean frame requir\
+ed)\x0a\x0a## [v0.6.3]\
+ - 2026-06-11\x0a\x0a#\
+## Fixed\x0a\x0a- Memo\
+ry allocation bu\
+g causing tracki\
+ng to fail or me\
+mory to leak\x0a\x0a##\
+ [v0.6.2] - 2026\
+-06-11\x0a\x0a### Adde\
+d\x0a\x0a- Mask cleanu\
+p using morpholo\
+gical opening an\
+d closing (uncon\
+figurable for no\
+w)\x0a- Option to l\
+imit the interpo\
+lation applied\x0a\x0a\
+### Changed\x0a\x0a- H\
+ue tolerance for\
+ marker finding \
+(15 to 10)\x0a\x0a### \
+Fixed\x0a\x0a- Wrong c\
+hangelog in the \
+last releases\x0a- \
+Various tracking\
+ and postprocess\
+ing bugs\x0a\x0a## [v0\
+.6.1] - 2026-06-\
+10\x0a\x0a### Added\x0a\x0a-\
+ Ability to disa\
+ble certain fing\
+ers\x0a\x0a### Fixed\x0a\x0a\
+- Reordered the \
+outlier detectio\
+n algorithms, fi\
+xing a bug with \
+kinetic detectio\
+n\x0a- Kinetic dete\
+ction no longer \
+breaks everythin\
+g in the frames \
+where the palm i\
+s missing\x0a- Inco\
+rrect versioning\
+ on previous rel\
+ease\x0a\x0a## [v0.6.0\
+] - 2026-06-10\x0a\x0a\
+The main goal of\
+ the `v0.6.x` li\
+neup will be imp\
+roving the accur\
+acy of the track\
+ing pipeline.\x0a\x0a#\
+## Changed\x0a\x0a- *(\
+BREAKING)* Massi\
+vely speed up ha\
+sh checking, but\
+ invalidates all\
+ previous hashes\
+\x0a- Raised the mi\
+nimum treshold f\
+or identifying s\
+tickers\x0a\x0a### Fix\
+ed\x0a\x0a- Bug where \
+a single sticker\
+ would sometimes\
+ fail to be dete\
+cted\x0a- Color ext\
+raction accuracy\
+ improvements\x0a- \
+Icon fix for Win\
+dows\x0a\x0a## [v0.5.1\
+] - 2026-06-03\x0a\x0a\
+### Changed\x0a\x0a- T\
+he default folde\
+r was changed to\
+ the user's Docu\
+ments folder\x0a\x0a##\
+# Fixed\x0a\x0a- Bug w\
+here the default\
+ theme upon inst\
+alling is `Breez\
+e Dark`, but in \
+the menu `Native\
+` is selected\x0a- \
+Installer on Mac\
+OS\x0a- Application\
+ name on MacOS\x0a-\
+ External link i\
+n the GazePlotte\
+r section not cl\
+ickable on MacOS\
+ \x0a\x0a## [v0.5.0] -\
+ 2026-06-02\x0a\x0aWit\
+h `v0.5.x` we're\
+ working on MacO\
+S support.\x0a\x0a### \
+Added\x0a\x0a- MacOS s\
+upport (targetin\
+g Apple Silicon)\
+\x0a\x0a### Fixed\x0a\x0a- B\
+ugs/inefficienci\
+es in the releas\
+e pipeline\x0a\x0a## [\
+v0.4.2] - 2026-0\
+5-30\x0a\x0a### Added\x0a\
+\x0a- Changelog win\
+dow\x0a- Automatic \
+changelog parsin\
+g in the deploym\
+ent Github Actio\
+n\x0a- Open source \
+credits in the A\
+bout window\x0a\x0a## \
+[v0.4.1] - 2026-\
+05-29\x0a\x0a### Fixed\
+\x0a\x0a- `Stimulus` f\
+ield in GazePlot\
+ter export set t\
+o video file nam\
+e\x0a\x0a## [v0.4.0] -\
+ 2026-05-29\x0a\x0aWit\
+h `v0.4.x` we're\
+ starting to add\
+ support for Are\
+as of Interest. \
+For now only rec\
+tangles are supp\
+orted, but most \
+of the code for \
+polygon support \
+is already imple\
+mented, I just n\
+eed to implement\
+ the interatctiv\
+e selector.\x0a\x0a###\
+ Added\x0a\x0a- Rectan\
+gular Areas of I\
+nterest\x0a- GazePl\
+otter exporter\x0a\x0a\
+### Changed\x0a\x0a- T\
+ime value in exp\
+orts changed fro\
+m frame to milis\
+econd\x0a\x0a## [v0.3.\
+0] - 2026-05-06\x0a\
+\x0aThis is the fir\
+st public releas\
+e of Tacty.\x0a\
 \x00\x00\xe3\x22\
 \x08\
 \x07\x12\x07pytorch\x1a\x052.5.\
@@ -88307,18 +88318,18 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x06\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x9e\xfa:#Z\
+\x00\x00\x01\x9e\xfb\xcc\x7fA\
 \x00\x00\x00.\x00\x02\x00\x00\x00\x01\x00\x00\x00\x05\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x01\x8c\x00\x00\x00\x00\x00\x01\x00\x15b\xb4\
+\x00\x00\x01\x8c\x00\x00\x00\x00\x00\x01\x00\x15cf\
 \x00\x00\x01\x9e\xd2|\xb3\xbb\
-\x00\x00\x01\xa2\x00\x04\x00\x00\x00\x01\x00\x15c\xb2\
+\x00\x00\x01\xa2\x00\x04\x00\x00\x00\x01\x00\x15dd\
 \x00\x00\x01\x9e\xd2|\xb3\xa8\
-\x00\x00\x01$\x00\x00\x00\x00\x00\x01\x00\x11FX\
+\x00\x00\x01$\x00\x00\x00\x00\x00\x01\x00\x11G\x0a\
 \x00\x00\x01\x9e\xd2|\xb3\xa8\
-\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x00\xefu\
+\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x00\xf0'\
 \x00\x00\x01\x9e\xd2|\xb3\xab\
-\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x0cO\
+\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x0d\x01\
 \x00\x00\x01\x9e\xd2|\xb3\xa8\
 "
 

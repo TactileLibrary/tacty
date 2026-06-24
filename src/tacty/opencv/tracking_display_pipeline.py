@@ -20,7 +20,7 @@ class TrackingDisplayPipeline:
         self.calibration_options = calibration_options
 
     def process(self, img: MatLike, frame: int) -> MatLike:
-        if self.data is None:
+        if self.data is None or frame not in self.data.index:
             return img
 
         markers = self.data.loc[frame]
