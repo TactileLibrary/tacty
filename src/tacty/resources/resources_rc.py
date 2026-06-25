@@ -6,7 +6,7 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x0d4\
+\x00\x00\x0d\xa9\
 #\
  Changelog\x0a\x0aAll \
 notable changes \
@@ -24,202 +24,209 @@ Semantic Version\
 ing](https://sem\
 ver.org/spec/v2.\
 0.0.html).\x0a\x0a## [\
-v0.7.3] - 2026-0\
-6-24\x0a\x0a### Added\x0a\
-\x0a- Heatmap expor\
-t\x0a\x0a## [v0.7.2] -\
- 2026-06-24\x0a\x0a###\
- Added\x0a\x0a- Suppor\
-t for polygonal \
-areas of interes\
-t\x0a\x0a### Fixed\x0a\x0a- \
-Video player fre\
-ezing when displ\
-aying untracked \
-frames, if other\
- frames are trac\
-ked\x0a\x0a## [v0.7.1]\
- - 2026-06-24\x0a\x0a#\
-## Added\x0a\x0a- Deno\
-ising options\x0a- \
-Preprocessing op\
-tions now affect\
- the viewer\x0a\x0a###\
- Changed\x0a\x0a- More\
- aggressive clea\
-nup for the back\
-ground removal m\
-ask\x0a- Disable ba\
-ckground removal\
- controls when t\
-he feature is di\
-sabled\x0a\x0a### Fixe\
-d\x0a\x0a- In-app chan\
-gelog wasn't upd\
-ated with `v0.7.\
-0`\x0a\x0a## [v0.7.0] \
-- 2026-06-23\x0a\x0aTh\
-e `0.7.x` versio\
-ns add the last \
-bits of function\
-ality planned be\
-fore the initial\
- release of Tact\
-y.\x0a\x0a### Added\x0a\x0a-\
- Ability to enab\
-le and configure\
+v0.7.4] - 2026-0\
+6-25\x0a\x0a### Change\
+d\x0a\x0a- Heatmap exp\
+orter now also o\
+utputs a combine\
+d heatmap of all\
+ of the fingers\x0a\
+\x0a## [v0.7.3] - 2\
+026-06-24\x0a\x0a### A\
+dded\x0a\x0a- Heatmap \
+export\x0a\x0a## [v0.7\
+.2] - 2026-06-24\
+\x0a\x0a### Added\x0a\x0a- S\
+upport for polyg\
+onal areas of in\
+terest\x0a\x0a### Fixe\
+d\x0a\x0a- Video playe\
+r freezing when \
+displaying untra\
+cked frames, if \
+other frames are\
+ tracked\x0a\x0a## [v0\
+.7.1] - 2026-06-\
+24\x0a\x0a### Added\x0a\x0a-\
+ Denoising optio\
+ns\x0a- Preprocessi\
+ng options now a\
+ffect the viewer\
+\x0a\x0a### Changed\x0a\x0a-\
+ More aggressive\
+ cleanup for the\
  background remo\
-val (clean frame\
- required)\x0a\x0a## [\
-v0.6.3] - 2026-0\
-6-11\x0a\x0a### Fixed\x0a\
-\x0a- Memory alloca\
-tion bug causing\
- tracking to fai\
-l or memory to l\
-eak\x0a\x0a## [v0.6.2]\
- - 2026-06-11\x0a\x0a#\
-## Added\x0a\x0a- Mask\
- cleanup using m\
-orphological ope\
-ning and closing\
- (unconfigurable\
- for now)\x0a- Opti\
-on to limit the \
-interpolation ap\
-plied\x0a\x0a### Chang\
-ed\x0a\x0a- Hue tolera\
-nce for marker f\
-inding (15 to 10\
-)\x0a\x0a### Fixed\x0a\x0a- \
-Wrong changelog \
-in the last rele\
-ases\x0a- Various t\
-racking and post\
-processing bugs\x0a\
-\x0a## [v0.6.1] - 2\
-026-06-10\x0a\x0a### A\
-dded\x0a\x0a- Ability \
-to disable certa\
-in fingers\x0a\x0a### \
-Fixed\x0a\x0a- Reorder\
-ed the outlier d\
-etection algorit\
-hms, fixing a bu\
-g with kinetic d\
-etection\x0a- Kinet\
-ic detection no \
-longer breaks ev\
-erything in the \
-frames where the\
- palm is missing\
-\x0a- Incorrect ver\
-sioning on previ\
-ous release\x0a\x0a## \
-[v0.6.0] - 2026-\
-06-10\x0a\x0aThe main \
-goal of the `v0.\
-6.x` lineup will\
- be improving th\
-e accuracy of th\
-e tracking pipel\
-ine.\x0a\x0a### Change\
-d\x0a\x0a- *(BREAKING)\
-* Massively spee\
-d up hash checki\
-ng, but invalida\
-tes all previous\
- hashes\x0a- Raised\
- the minimum tre\
-shold for identi\
-fying stickers\x0a\x0a\
-### Fixed\x0a\x0a- Bug\
- where a single \
-sticker would so\
-metimes fail to \
-be detected\x0a- Co\
-lor extraction a\
-ccuracy improvem\
-ents\x0a- Icon fix \
-for Windows\x0a\x0a## \
-[v0.5.1] - 2026-\
-06-03\x0a\x0a### Chang\
-ed\x0a\x0a- The defaul\
-t folder was cha\
-nged to the user\
-'s Documents fol\
-der\x0a\x0a### Fixed\x0a\x0a\
-- Bug where the \
-default theme up\
-on installing is\
- `Breeze Dark`, \
-but in the menu \
-`Native` is sele\
-cted\x0a- Installer\
- on MacOS\x0a- Appl\
-ication name on \
-MacOS\x0a- External\
- link in the Gaz\
-ePlotter section\
- not clickable o\
-n MacOS \x0a\x0a## [v0\
-.5.0] - 2026-06-\
-02\x0a\x0aWith `v0.5.x\
-` we're working \
-on MacOS support\
-.\x0a\x0a### Added\x0a\x0a- \
-MacOS support (t\
-argeting Apple S\
-ilicon)\x0a\x0a### Fix\
-ed\x0a\x0a- Bugs/ineff\
-iciencies in the\
- release pipelin\
-e\x0a\x0a## [v0.4.2] -\
- 2026-05-30\x0a\x0a###\
- Added\x0a\x0a- Change\
-log window\x0a- Aut\
-omatic changelog\
- parsing in the \
-deployment Githu\
-b Action\x0a- Open \
-source credits i\
-n the About wind\
-ow\x0a\x0a## [v0.4.1] \
-- 2026-05-29\x0a\x0a##\
-# Fixed\x0a\x0a- `Stim\
-ulus` field in G\
-azePlotter expor\
-t set to video f\
-ile name\x0a\x0a## [v0\
-.4.0] - 2026-05-\
-29\x0a\x0aWith `v0.4.x\
-` we're starting\
- to add support \
-for Areas of Int\
-erest. For now o\
-nly rectangles a\
-re supported, bu\
-t most of the co\
-de for polygon s\
-upport is alread\
-y implemented, I\
- just need to im\
-plement the inte\
-ratctive selecto\
-r.\x0a\x0a### Added\x0a\x0a-\
- Rectangular Are\
-as of Interest\x0a-\
- GazePlotter exp\
-orter\x0a\x0a### Chang\
-ed\x0a\x0a- Time value\
- in exports chan\
-ged from frame t\
-o milisecond\x0a\x0a##\
- [v0.3.0] - 2026\
--05-06\x0a\x0aThis is \
-the first public\
- release of Tact\
-y.\x0a\
+val mask\x0a- Disab\
+le background re\
+moval controls w\
+hen the feature \
+is disabled\x0a\x0a###\
+ Fixed\x0a\x0a- In-app\
+ changelog wasn'\
+t updated with `\
+v0.7.0`\x0a\x0a## [v0.\
+7.0] - 2026-06-2\
+3\x0a\x0aThe `0.7.x` v\
+ersions add the \
+last bits of fun\
+ctionality plann\
+ed before the in\
+itial release of\
+ Tacty.\x0a\x0a### Add\
+ed\x0a\x0a- Ability to\
+ enable and conf\
+igure background\
+ removal (clean \
+frame required)\x0a\
+\x0a## [v0.6.3] - 2\
+026-06-11\x0a\x0a### F\
+ixed\x0a\x0a- Memory a\
+llocation bug ca\
+using tracking t\
+o fail or memory\
+ to leak\x0a\x0a## [v0\
+.6.2] - 2026-06-\
+11\x0a\x0a### Added\x0a\x0a-\
+ Mask cleanup us\
+ing morphologica\
+l opening and cl\
+osing (unconfigu\
+rable for now)\x0a-\
+ Option to limit\
+ the interpolati\
+on applied\x0a\x0a### \
+Changed\x0a\x0a- Hue t\
+olerance for mar\
+ker finding (15 \
+to 10)\x0a\x0a### Fixe\
+d\x0a\x0a- Wrong chang\
+elog in the last\
+ releases\x0a- Vari\
+ous tracking and\
+ postprocessing \
+bugs\x0a\x0a## [v0.6.1\
+] - 2026-06-10\x0a\x0a\
+### Added\x0a\x0a- Abi\
+lity to disable \
+certain fingers\x0a\
+\x0a### Fixed\x0a\x0a- Re\
+ordered the outl\
+ier detection al\
+gorithms, fixing\
+ a bug with kine\
+tic detection\x0a- \
+Kinetic detectio\
+n no longer brea\
+ks everything in\
+ the frames wher\
+e the palm is mi\
+ssing\x0a- Incorrec\
+t versioning on \
+previous release\
+\x0a\x0a## [v0.6.0] - \
+2026-06-10\x0a\x0aThe \
+main goal of the\
+ `v0.6.x` lineup\
+ will be improvi\
+ng the accuracy \
+of the tracking \
+pipeline.\x0a\x0a### C\
+hanged\x0a\x0a- *(BREA\
+KING)* Massively\
+ speed up hash c\
+hecking, but inv\
+alidates all pre\
+vious hashes\x0a- R\
+aised the minimu\
+m treshold for i\
+dentifying stick\
+ers\x0a\x0a### Fixed\x0a\x0a\
+- Bug where a si\
+ngle sticker wou\
+ld sometimes fai\
+l to be detected\
+\x0a- Color extract\
+ion accuracy imp\
+rovements\x0a- Icon\
+ fix for Windows\
+\x0a\x0a## [v0.5.1] - \
+2026-06-03\x0a\x0a### \
+Changed\x0a\x0a- The d\
+efault folder wa\
+s changed to the\
+ user's Document\
+s folder\x0a\x0a### Fi\
+xed\x0a\x0a- Bug where\
+ the default the\
+me upon installi\
+ng is `Breeze Da\
+rk`, but in the \
+menu `Native` is\
+ selected\x0a- Inst\
+aller on MacOS\x0a-\
+ Application nam\
+e on MacOS\x0a- Ext\
+ernal link in th\
+e GazePlotter se\
+ction not clicka\
+ble on MacOS \x0a\x0a#\
+# [v0.5.0] - 202\
+6-06-02\x0a\x0aWith `v\
+0.5.x` we're wor\
+king on MacOS su\
+pport.\x0a\x0a### Adde\
+d\x0a\x0a- MacOS suppo\
+rt (targeting Ap\
+ple Silicon)\x0a\x0a##\
+# Fixed\x0a\x0a- Bugs/\
+inefficiencies i\
+n the release pi\
+peline\x0a\x0a## [v0.4\
+.2] - 2026-05-30\
+\x0a\x0a### Added\x0a\x0a- C\
+hangelog window\x0a\
+- Automatic chan\
+gelog parsing in\
+ the deployment \
+Github Action\x0a- \
+Open source cred\
+its in the About\
+ window\x0a\x0a## [v0.\
+4.1] - 2026-05-2\
+9\x0a\x0a### Fixed\x0a\x0a- \
+`Stimulus` field\
+ in GazePlotter \
+export set to vi\
+deo file name\x0a\x0a#\
+# [v0.4.0] - 202\
+6-05-29\x0a\x0aWith `v\
+0.4.x` we're sta\
+rting to add sup\
+port for Areas o\
+f Interest. For \
+now only rectang\
+les are supporte\
+d, but most of t\
+he code for poly\
+gon support is a\
+lready implement\
+ed, I just need \
+to implement the\
+ interatctive se\
+lector.\x0a\x0a### Add\
+ed\x0a\x0a- Rectangula\
+r Areas of Inter\
+est\x0a- GazePlotte\
+r exporter\x0a\x0a### \
+Changed\x0a\x0a- Time \
+value in exports\
+ changed from fr\
+ame to milisecon\
+d\x0a\x0a## [v0.3.0] -\
+ 2026-05-06\x0a\x0aThi\
+s is the first p\
+ublic release of\
+ Tacty.\x0a\
 \x00\x10V\xdf\
 \x08\
 \x07\x12\x07pytorch\x1a\x052.5.\
@@ -67831,14 +67838,14 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x06\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x9e\xfe\x9e(\xbe\
+\x00\x00\x01\x9e\xff\xeb\x1c\x18\
 \x00\x00\x00.\x00\x02\x00\x00\x00\x01\x00\x00\x00\x05\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x10d\x1b\
+\x00\x00\x00\xbc\x00\x00\x00\x00\x00\x01\x00\x10d\x90\
 \x00\x00\x01\x9e\xd2|\xb3\xbb\
-\x00\x00\x00\xd2\x00\x04\x00\x00\x00\x01\x00\x10e\x19\
+\x00\x00\x00\xd2\x00\x04\x00\x00\x00\x01\x00\x10e\x8e\
 \x00\x00\x01\x9e\xd2|\xb3\xa8\
-\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x0d8\
+\x00\x00\x00T\x00\x00\x00\x00\x00\x01\x00\x00\x0d\xad\
 \x00\x00\x01\x9e\xd2|\xb3\xab\
 "
 

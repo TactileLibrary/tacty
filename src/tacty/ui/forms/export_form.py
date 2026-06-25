@@ -187,6 +187,8 @@ class ExportForm(QWidget):
 
         fingers = df.columns.get_level_values(0).unique()
 
+        combined_heatmap = np.zeros((height, width), dtype=np.float32)
+
         for finger in fingers:
             heatmap = np.zeros((height, width), dtype=np.float32)
 
@@ -207,6 +209,8 @@ class ExportForm(QWidget):
             if not np.any(heatmap):
                 continue
 
+            combined_heatmap += heatmap.astype(np.float32)
+
             heatmap = cv2.GaussianBlur(heatmap, (0, 0), blur_size)
 
             cv2.normalize(heatmap, heatmap, 0, 255, cv2.NORM_MINMAX)
@@ -218,3 +222,15 @@ class ExportForm(QWidget):
             output_path = Path(loc) / output_filename
             cv2.imwrite(str(output_path), heatmap_color)
 
+        if np.any(combined_heatmap):
+            combined_heatmap = cv2.GaussianBlur(combined_heatmap, (0, 0), blur_size)
+            cv2.normalize(combined_heatmap, combined_heatmap, 0, 255, cv2.NORM_MINMAX)
+            combined_heatmap = combined_heatmap.astype(np.uint8)
+
+            combined_heatmap_color = cv2.applyColorMap(
+                combined_heatmap, cv2.COLORMAP_INFERNO
+            )
+
+            output_filename = "heatmap-combined.png"
+            output_path = Path(loc) / output_filename
+            cv2.imwrite(str(output_path), combined_heatmap_color)

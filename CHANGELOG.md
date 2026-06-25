@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.7.4] - 2026-06-25
+
+### Changed
+
+- Heatmap exporter now also outputs a combined heatmap of all of the fingers
+
 ## [v0.7.3] - 2026-06-24
 
 ### Added
