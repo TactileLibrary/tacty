@@ -1,6 +1,6 @@
 [project]
 name = "tacty"
-version = "0.7.2"
+version = "0.7.3"
 description = "Integrated finger tracking toolkit."
 readme = "README.md"
 authors = [

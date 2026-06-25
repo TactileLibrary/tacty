@@ -1,20 +1,26 @@
 # pyright: reportUnknownMemberType=false
 # because pandas
 
+from pathlib import Path
 from typing import cast
 
+import cv2
 import numpy as np
 import pandas as pd
 from PySide6.QtCore import QFileInfo, QSettings, QStandardPaths
-from PySide6.QtWidgets import QFileDialog, QWidget
+from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
 
 from .export_ui import Ui_Form
 
+from tacty.ui.windows.heatmap_dir_pick_modal import HeatmapDirPickModal
+from tacty.models.project import Size
 
 class ExportForm(QWidget):
     ui: Ui_Form
 
     data: pd.DataFrame | None = None
+
+    heatmapSize: Size | None = None
 
     fps: float | None = None
     name: str | None = None
@@ -32,16 +38,19 @@ class ExportForm(QWidget):
         _ = self.ui.flatCSV.clicked.connect(self.saveToCSV)
         _ = self.ui.flatXLSX.clicked.connect(self.saveToXLSX)
         _ = self.ui.gazePlotter.clicked.connect(self.saveToGazePlotter)
+        _ = self.ui.heatmaps.clicked.connect(self.exportHeatmaps)
 
     def updateData(
         self,
         data: pd.DataFrame | None = None,
         fps: float | None = None,
         name: str | None = None,
+        heatmapSize: Size | None = None
     ):
         self.data = data
         self.fps = fps
         self.name = name
+        self.heatmapSize = heatmapSize
 
         buttons = [self.ui.flatCSV, self.ui.flatXLSX, self.ui.gazePlotter]
         enabled = self.data is not None and fps is not None and name is not None
@@ -149,3 +158,63 @@ class ExportForm(QWidget):
         if loc is None:
             return
         export.to_csv(loc, index=False)
+
+    def exportHeatmaps(self):
+        if not self.heatmapSize:
+            return
+
+        modal = HeatmapDirPickModal()
+        modal.setModal(True)
+        res = modal.exec()
+
+        if res != QDialog.DialogCode.Accepted:
+            return
+
+        if not modal.valid:
+            return
+
+        loc = modal.data()
+        if not loc:
+            return
+
+        df = self.filterData()
+        if df is None or df.empty:
+            return
+
+        height = self.heatmapSize.h
+        width = self.heatmapSize.w
+        blur_size = 5
+
+        fingers = df.columns.get_level_values(0).unique()
+
+        for finger in fingers:
+            heatmap = np.zeros((height, width), dtype=np.float32)
+
+            finger_data = df[finger].dropna(subset=["x", "y"])
+
+            if finger_data.empty:
+                continue
+
+            xs = finger_data["x"].astype(int).values
+            ys = finger_data["y"].astype(int).values
+
+            valid_mask = (xs >= 0) & (xs < width) & (ys >= 0) & (ys < height)
+            xs = xs[valid_mask]
+            ys = ys[valid_mask]
+
+            np.add.at(heatmap, (ys, xs), 1)
+
+            if not np.any(heatmap):
+                continue
+
+            heatmap = cv2.GaussianBlur(heatmap, (0, 0), blur_size)
+
+            cv2.normalize(heatmap, heatmap, 0, 255, cv2.NORM_MINMAX)
+            heatmap = heatmap.astype(np.uint8)
+
+            heatmap_color = cv2.applyColorMap(heatmap, cv2.COLORMAP_INFERNO)
+
+            output_filename = f"heatmap-{finger}.png"
+            output_path = Path(loc) / output_filename
+            cv2.imwrite(str(output_path), heatmap_color)
+

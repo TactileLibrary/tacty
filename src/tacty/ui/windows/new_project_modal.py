@@ -35,6 +35,7 @@ class NewProjectModal(QDialog):
 
         self.projectLocation = PathInput(
             QFileDialog.AcceptMode.AcceptSave,
+            QFileDialog.FileMode.AnyFile,
             "Project location",
             ["Tacty Project (*.tproj)"],
         )
@@ -43,6 +44,7 @@ class NewProjectModal(QDialog):
 
         self.videoLocation = PathInput(
             QFileDialog.AcceptMode.AcceptOpen,
+            QFileDialog.FileMode.ExistingFile,
             "Video location",
             ["Video files (*.mov *.mp4 *.avi *.webm *.mkv)"],
         )

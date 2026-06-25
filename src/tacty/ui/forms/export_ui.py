@@ -51,6 +51,17 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.heatmapsLabel = QLabel(Form)
+        self.heatmapsLabel.setObjectName(u"heatmapsLabel")
+        self.heatmapsLabel.setTextFormat(Qt.TextFormat.MarkdownText)
+
+        self.verticalLayout.addWidget(self.heatmapsLabel)
+
+        self.heatmaps = QPushButton(Form)
+        self.heatmaps.setObjectName(u"heatmaps")
+
+        self.verticalLayout.addWidget(self.heatmaps)
+
         self.connectorsLabel = QLabel(Form)
         self.connectorsLabel.setObjectName(u"connectorsLabel")
         self.connectorsLabel.setTextFormat(Qt.TextFormat.MarkdownText)
@@ -86,6 +97,8 @@ class Ui_Form(object):
         self.positionDataLabel.setText(QCoreApplication.translate("Form", u"### Flat data", None))
         self.flatCSV.setText(QCoreApplication.translate("Form", u"Export .csv", None))
         self.flatXLSX.setText(QCoreApplication.translate("Form", u"Export .xlsx", None))
+        self.heatmapsLabel.setText(QCoreApplication.translate("Form", u"### Heatmaps", None))
+        self.heatmaps.setText(QCoreApplication.translate("Form", u"Export to folder", None))
         self.connectorsLabel.setText(QCoreApplication.translate("Form", u"### Connectors", None))
         self.gazePlotterLabel.setText(QCoreApplication.translate("Form", u"#### GazePlotter\n"
 " GazePlotter is a free web application for eye-tracking data analysis and visualization. Built with a commitment to open science, GazePlotter transforms complex gaze data into intuitive, interactive visualizations without requiring registration, subscriptions, or server uploads.\n"

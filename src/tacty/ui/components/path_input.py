@@ -13,12 +13,14 @@ class PathInput(QWidget):
     title: str
     filters: list[str]
     filterType: FilterType
-    mode: QFileDialog.AcceptMode
+    acceptMode: QFileDialog.AcceptMode
+    fileMode: QFileDialog.FileMode
     # TODO: add a QValidator
 
     def __init__(
         self,
-        mode: QFileDialog.AcceptMode,
+        acceptMode: QFileDialog.AcceptMode,
+        fileMode: QFileDialog.FileMode,
         title: str,
         filters: list[str],
         filterType: FilterType = FilterType.Text,
@@ -28,8 +30,8 @@ class PathInput(QWidget):
         self.title = title
         self.filters = filters
         self.filterType = filterType
-        self.mode = mode
-
+        self.acceptMode = acceptMode
+        self.fileMode = fileMode
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
@@ -45,7 +47,8 @@ class PathInput(QWidget):
         dialog = QFileDialog(self)
 
         dialog.setWindowTitle(self.title)
-        dialog.setAcceptMode(self.mode)
+        dialog.setAcceptMode(self.acceptMode)
+        dialog.setFileMode(self.fileMode)
 
         if self.filterType == PathInput.FilterType.Text:
             dialog.setNameFilters(self.filters)

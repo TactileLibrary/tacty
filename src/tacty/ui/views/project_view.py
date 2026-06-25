@@ -188,6 +188,7 @@ class ProjectView(QWidget):
             data,
             self.project.calibrationOptions.videoFps.value,
             Path(self.project.videoFile).name,
+            self.project.calibrationOptions.pageSize,
         )
 
     def trackingFinished(self):

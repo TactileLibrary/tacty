@@ -49,6 +49,23 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="heatmapsLabel">
+     <property name="text">
+      <string>### Heatmaps</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::MarkdownText</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="heatmaps">
+     <property name="text">
+      <string>Export to folder</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="connectorsLabel">
      <property name="text">
       <string>### Connectors</string>

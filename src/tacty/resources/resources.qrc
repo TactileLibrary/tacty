@@ -1,16 +1,14 @@
 <!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/">
+<qresource prefix="/" compression-algorithm="none">
     <file>icons/tl.svg</file>
 </qresource>
-<qresource prefix="/">
+<qresource prefix="/" compression-algorithm="none">
     <file>templates/about.md</file>
 </qresource>
-<qresource prefix="/">
-    <file>onnx/tacty-ai-classifier-v1-20x-0-circle-1-square.onnx</file>
-    <file>onnx/tacty-ai-classifier-v2-32x-0-circle-1-square.onnx</file>
+<qresource prefix="/" compression-algorithm="none">
     <file>onnx/tacty-ai-classifier-v3-32x-0-circle-1-square.onnx</file>
 </qresource>
-<qresource prefix="/">
+<qresource prefix="/" compression-algorithm="none">
     <file alias="CHANGELOG.md">../../../CHANGELOG.md</file>
 </qresource>
 </RCC>
