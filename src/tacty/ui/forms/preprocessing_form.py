@@ -80,10 +80,10 @@ class PreProcessingForm(QWidget):
         size = self.ui.denoisingSize.value()
         if size % 2 == 0:
             size += 1
+            self.ui.denoisingSize.blockSignals(True)
+            self.ui.denoisingSize.setValue(size)
+            self.ui.denoisingSize.blockSignals(False)
         self.data.denoiseSize = size
-        self.ui.denoisingSize.blockSignals(True)
-        self.ui.denoisingSize.setValue(size)
-        self.ui.denoisingSize.blockSignals(False)
         self.ui.denoisingSizeSlider.blockSignals(True)
         self.ui.denoisingSizeSlider.setValue(size)
         self.ui.denoisingSizeSlider.blockSignals(False)
@@ -92,7 +92,6 @@ class PreProcessingForm(QWidget):
 
     def saveDenoisingSlider(self):
         self.ui.denoisingSize.setValue(self.ui.denoisingSizeSlider.value())
-        self.saveDenoising()
 
     def EnableDisableControls(self):
         bgrEnabled = self.ui.bgrEnabled.isChecked()
