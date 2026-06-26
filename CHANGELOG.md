@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Heatmap exporter now also outputs a combined heatmap of all of the fingers
 
+### Fixed
+
+- Bug causing failure to load the app icon in some of the previous versions
+
 ## [v0.7.3] - 2026-06-24
 
 ### Added
