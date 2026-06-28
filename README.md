@@ -1,19 +1,14 @@
 # Tacty
 
-Tacty is an open source integrated tactile interaction analysis toolkit.
+[Tacty](https://tacty.tactilelibrary.net) is an open source integrated tactile interaction analysis toolkit built using the [Qt Framework](https://www.qt.io/).
 
 ## Features
-
-Available:
 
 - Extract map area from the input video.
 - Calibrate color tracking hues and tolerances.
 - Multiple shape classifiers (Hu Moments, AI Classifier).
 - Data cleanup (outlier detection, interpolation).
 - `.csv` and `.xslx` export for the movement data, as well as a dedicated [GazePlotter](https://gazeplotter.com) exporter.
-
-Planned:
-
 - Heatmap export.
 - Background removal.
 - Areas of interest.
@@ -24,7 +19,7 @@ Planned:
 
 1. Download the latest `.exe` file from the [release page](https://github.com/TactileLibrary/tacty/releases).
 2. Follow the steps in the installer.
-3. Run the application from your Dekstop or Start Menu.
+3. Run the application from your Desktop or Start Menu.
 
 ### Linux
 
@@ -37,6 +32,9 @@ Planned:
 1. Download the latest `.dmg` file from the [release page](https://github.com/TactileLibrary/tacty/releases).
 2. Double click the file and drag it into your Applications folder.
 3. Run it from your Applications folder or Launchpad.
+
+> [!WARNING] 
+> Since the app is unsigned you must authorize it to run by going into `System Settings > Privacy & Security`.
 
 > [!WARNING] 
 > While I try my best to support MacOS, I don't personally own any Apple devices. I test it occasionally on borrowed hardware, but please be patient if you encounter any issues.
@@ -61,10 +59,7 @@ For the production build we use [pyside6-deploy](https://doc.qt.io/qtforpython-6
 ```sh
 uv run pyside6-deploy -c ./pysidedeploy-windows.spec # windows build
 uv run pyside6-deploy -c ./pysidedeploy-linux.spec # linux build
+uv run pyside6-deploy -c ./pysidedeploy-macos.spec # macos build
 ```
 
-This produces the directory `dist/tacty.dist`, which includes all required files for the current platform. To bunde these we use the [Inno Setup Installer](https://jrsoftware.org/isinfo.php) for Windows and [appimagetool](https://github.com/AppImage/appimagetool) for Linux. More information can be found by looking at `.github/workflows/release.yml`.
-
-### Contributing
-
-As of now, pull requests are not enabled. This is due to university rules around the fact that this is my BSc. thesis, which requires all code to be mine. After submitting the thesis they will be opened.
+This produces the directory `dist/tacty.dist`, which includes all required files for the current platform. To bunde these we use the [Inno Setup Installer](https://jrsoftware.org/isinfo.php) for Windows, [appimagetool](https://github.com/AppImage/appimagetool) for Linux, and the built-in `hdiutil` command on MacOS. More information can be found by looking at `.github/workflows/release.yml`.
