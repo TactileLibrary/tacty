@@ -37,7 +37,7 @@ class RectanglePickModal(QDialog):
         self.setModal(True)
         self.setMinimumWidth(900)
         self.setMinimumHeight(450)
-        self.setWindowTitle("Crop area")
+        self.setWindowTitle("Pick rectangle AOI")
 
         # set up throttling
         self.updateTimer = QTimer()
