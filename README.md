@@ -2,6 +2,8 @@
 
 [Tacty](https://tacty.tactilelibrary.net) is an open source integrated tactile interaction analysis toolkit built using the [Qt Framework](https://www.qt.io/).
 
+![Screenshot of Tacty](screenshot.png)
+
 ## Features
 
 - Extract map area from the input video.
